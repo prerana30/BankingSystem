@@ -11,10 +11,9 @@ Welcome to the Bank System Project repository! This project aims to develop a co
 
 ### Technologies Used:
 
-| For Development | For Deployment  |
-| :--------------:|:---------------:|
-| C#              | AWS 			|
-| .NET Core       |  		        |
-| .NET 			  | Amazon S3    	|
-| MS SQL Server   | Amazon RDS     	|
-| Visual Studio   | Amazon Lambda   |
+| For Development | For Deployment  | Tools & Platforms  |
+| :--------------:|:---------------:|:------------------:|
+| C#              | AWS EC2 			  | Firebase           |
+| .NET Core       | AWS S3 	        | Render             |
+| .NET 			      | AWS RDS   	    | Visual Studio      |
+| PostgreSQL      | AWS Lambda     	| GitHub, GitBook, Trello |                   |
