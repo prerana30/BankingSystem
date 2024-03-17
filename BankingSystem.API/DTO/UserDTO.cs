@@ -1,13 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using BankingSystem.API.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace BankingSystem.API.Models
+namespace BankingSystem.API.DTO
 {
-    public class Users
+    public class UserDTO
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int UserId { get; set; }
         [Required]
         [MaxLength(50)]
         public string Username { get; set; }
@@ -26,9 +23,8 @@ namespace BankingSystem.API.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        public Users(int userId, string username, string fullname, string email, string password, string address, Roles userType, DateTime dateOfBirth, DateTime createdAt)
+        public UserDTO( string username, string fullname, string email, string password, string address, Roles userType, DateTime dateOfBirth, DateTime createdAt)
         {
-            UserId = userId;
             Username = username;
             Fullname = fullname;
             Email = email;
@@ -37,11 +33,6 @@ namespace BankingSystem.API.Models
             UserType = userType;
             DateOfBirth = dateOfBirth;
             CreatedAt = createdAt;
-        }
-
-        public Users()
-        {
-
         }
     }
 }
