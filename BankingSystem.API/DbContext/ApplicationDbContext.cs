@@ -11,15 +11,20 @@ public class ApplicationDbContext : DbContext
 
     //Define Databases
     public DbSet<Users> Users { get; set; }
+    //Define Kyc Database
+    public DbSet<KycDocument> KycDocument { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         //seed database
 
         //ignore attributes
+        modelBuilder.Entity<KycDocument>().Ignore(k=> k.UserImagePath);
+        modelBuilder.Entity<KycDocument>().Ignore(k => k.CitizenshipImagePath);
 
         //define foreign key relations
 
         base.OnModelCreating(modelBuilder);
     }
+
 }

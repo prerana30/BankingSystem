@@ -22,7 +22,10 @@ builder.Services.AddSwaggerGen();
 
 //registering the service
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IKycRepository, KycRepository>();
+
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<KycService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); //searches for all profiles automatically
 
