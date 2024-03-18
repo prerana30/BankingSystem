@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BankingSystem.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240318080704_MigrationCheck")]
-    partial class MigrationCheck
+    [Migration("20240318105027_AccountCreation")]
+    partial class AccountCreation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,6 +23,48 @@ namespace BankingSystem.API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("BankingSystem.API.Models.Accounts", b =>
+                {
+                    b.Property<int>("AccountId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AccountId"));
+
+                    b.Property<DateTime>("AccountCreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("AccountCreatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("AccountModifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("AccountModifiedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("AccountNumber")
+                        .HasMaxLength(24)
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("AtmCardNum")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("AtmCardPin")
+                        .HasMaxLength(4)
+                        .HasColumnType("integer");
+
+                    b.Property<long>("Balance")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("AccountId");
+
+                    b.ToTable("Accounts");
+                });
 
             modelBuilder.Entity("BankingSystem.API.Models.Users", b =>
                 {
@@ -36,7 +78,7 @@ namespace BankingSystem.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("DateOfBirth")
@@ -50,6 +92,9 @@ namespace BankingSystem.API.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Password")
                         .IsRequired()

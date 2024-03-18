@@ -11,6 +11,7 @@ public class ApplicationDbContext : DbContext
 
     //Define Databases
     public DbSet<Users> Users { get; set; }
+    public DbSet<Accounts> Accounts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
