@@ -26,7 +26,6 @@ namespace RESTful_API__ASP.NET_Core.Repository
 
         public async Task<IEnumerable<Users>> GetUsersAsync()
         {
-            //return await _context.Users.OrderBy(c => c.Name).ToListAsync();
             return await _context.Users.OrderBy(c => c.Fullname).ToListAsync();
         }
 
@@ -51,7 +50,7 @@ namespace RESTful_API__ASP.NET_Core.Repository
             if (existingUser != null)
             {
                 //transform user entity to usercreationDTO
-                var userToPatch = new UserDTO(existingUser.Username, existingUser.Fullname, existingUser.Email, existingUser.Password, existingUser.Address, existingUser.UserType, existingUser.DateOfBirth, existingUser.CreatedAt);
+                var userToPatch = new UserDTO(existingUser.Username, existingUser.Fullname, existingUser.Email, existingUser.Password, existingUser.Address, existingUser.UserType, existingUser.DateOfBirth);
 
                 patchDocument.ApplyTo(userToPatch);
 
@@ -65,7 +64,9 @@ namespace RESTful_API__ASP.NET_Core.Repository
                 existingUser.Address = userToPatch.Address;
                 existingUser.UserType = userToPatch.UserType;
                 existingUser.DateOfBirth = userToPatch.DateOfBirth;
-                existingUser.CreatedAt = userToPatch.CreatedAt;
+                
+                //update modifiedAt DateTime
+                existingUser.ModifiedAt = DateTime.UtcNow;
 
                 _context.SaveChanges();
                 return existingUser;
@@ -85,7 +86,9 @@ namespace RESTful_API__ASP.NET_Core.Repository
                 existingUser.Address = finalUser.Address;
                 existingUser.UserType = finalUser.UserType;
                 existingUser.DateOfBirth = finalUser.DateOfBirth;
-                existingUser.CreatedAt = finalUser.CreatedAt;
+
+                //update modifiedAt DateTime
+                existingUser.ModifiedAt = DateTime.UtcNow;
 
                 _context.SaveChanges();
                 return existingUser;

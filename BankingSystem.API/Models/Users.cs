@@ -24,9 +24,11 @@ namespace BankingSystem.API.Models
         public Roles UserType { get; set; }
         public DateTime DateOfBirth { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public Users(int userId, string username, string fullname, string email, string password, string address, Roles userType, DateTime dateOfBirth, DateTime createdAt)
+        public DateTime? ModifiedAt { get; set; } = DateTime.UtcNow;
+
+        public Users(int userId, string username, string fullname, string email, string password, string address, Roles userType, DateTime dateOfBirth, DateTime createdAt, DateTime modifiedAt)
         {
             UserId = userId;
             Username = username;
@@ -37,6 +39,7 @@ namespace BankingSystem.API.Models
             UserType = userType;
             DateOfBirth = dateOfBirth;
             CreatedAt = createdAt;
+            ModifiedAt = modifiedAt;
         }
 
         public Users()
