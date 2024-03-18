@@ -21,9 +21,7 @@ namespace BankingSystem.API.DTO
         public Roles UserType { get; set; }
         public DateTime DateOfBirth { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-
-        public UserDTO( string username, string fullname, string email, string password, string address, Roles userType, DateTime dateOfBirth, DateTime createdAt)
+        public UserDTO( string username, string fullname, string email, string password, string address, Roles userType, DateTime dateOfBirth)//, DateTime modifiedAt)
         {
             Username = username;
             Fullname = fullname;
@@ -32,7 +30,12 @@ namespace BankingSystem.API.DTO
             Address = address;
             UserType = userType;
             DateOfBirth = dateOfBirth;
-            CreatedAt = createdAt;
         }
+
+        public UserDTO()
+        {
+
+        }
+
     }
 }
