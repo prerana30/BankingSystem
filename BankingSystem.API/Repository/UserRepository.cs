@@ -67,6 +67,7 @@ namespace RESTful_API__ASP.NET_Core.Repository
                 existingUser.DateOfBirth = userToPatch.DateOfBirth;
                 existingUser.CreatedAt = userToPatch.CreatedAt;
 
+                _context.SaveChanges();
                 return existingUser;
             }
             return null;
