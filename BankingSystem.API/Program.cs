@@ -28,6 +28,9 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<AccountServices>();
 
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddScoped<TransactionServices>();
+
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); //searches for all profiles automatically
 

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BankingSystem.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240318180652_TransactionIntial")]
+    partial class TransactionIntial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,25 +100,7 @@ namespace BankingSystem.API.Migrations
                             AccountId = 1,
                             Amount = 20.289999999999999,
                             TransactionRemarks = "Personal Use",
-                            TransactionTime = new DateTime(2024, 3, 18, 18, 11, 40, 253, DateTimeKind.Utc).AddTicks(6365),
-                            TransactionType = 0
-                        },
-                        new
-                        {
-                            TransactionId = 2,
-                            AccountId = 1,
-                            Amount = 10.09,
-                            TransactionRemarks = "Personal Use WWW",
-                            TransactionTime = new DateTime(2024, 3, 18, 18, 11, 40, 253, DateTimeKind.Utc).AddTicks(6368),
-                            TransactionType = 1
-                        },
-                        new
-                        {
-                            TransactionId = 3,
-                            AccountId = 1,
-                            Amount = 30.289999999999999,
-                            TransactionRemarks = "Personalwqq Use",
-                            TransactionTime = new DateTime(2024, 3, 18, 18, 11, 40, 253, DateTimeKind.Utc).AddTicks(6370),
+                            TransactionTime = new DateTime(2024, 3, 18, 18, 6, 51, 66, DateTimeKind.Utc).AddTicks(5912),
                             TransactionType = 0
                         });
                 });
