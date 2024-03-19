@@ -21,19 +21,19 @@ namespace BankingSystem.API.DTO
             public string GrandFatherName { get; set; }
 
             [Required]
-            public IFormFile UserImagePath { get; set; }
+            public string? UserImagePath { get; set; }
 
             [Required]
-            public IFormFile CitizenshipImagePath { get; set; }
+            public string CitizenshipImagePath { get; set; }
 
             public string PermanentAddress { get; set; }
 
             public DateTime UploadedAt { get; set; } = DateTime.Now;
 
             public KycDocumentDTO(int userId, string fatherName,
-                               string motherName, string grandFatherName,
-                               IFormFile userImagePath, IFormFile citizenshipImagePath,
-                               string permanentAddress)
+                                string motherName, string grandFatherName,
+                                string userImagePath, string citizenshipImagePath,
+                                string permanentAddress)
             {
                 UserId = userId;
                 FatherName = fatherName;
@@ -42,6 +42,10 @@ namespace BankingSystem.API.DTO
                 UserImagePath = userImagePath;
                 CitizenshipImagePath = citizenshipImagePath;
                 PermanentAddress = permanentAddress;
-            }   
+            }
+
+        public KycDocumentDTO()
+        {
+        }
     }
 }

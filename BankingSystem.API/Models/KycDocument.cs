@@ -28,12 +28,10 @@ namespace BankingSystem.API.Models
         public string GrandFatherName { get; set; }
 
         [Required]
-        public IFormFile UserImagePath { get; set; }
-        public string UserImage { get; set; }
+        public string UserImagePath { get; set; }
 
         [Required]
-        public IFormFile CitizenshipImagePath { get; set; }
-        public string CitizenshipImage { get; set; }
+        public string CitizenshipImagePath { get; set; }
 
         public string PermanentAddress { get; set; }
 

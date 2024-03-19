@@ -40,11 +40,12 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<KycDocument>> AddKycDocument([FromBody] KycDocumentDTO kycDocumentDto)
+        public async Task<ActionResult<KycDocument>> AddKycDocumentAsync([FromBody] KycDocumentDTO kycDocumentDto)
         {
             var kycDocument = await _kycService.AddKycDocumentAsync(kycDocumentDto);
             return Ok(kycDocument);
         }
+        
 
         [HttpDelete("{KYCId}")]
         public async Task<IActionResult> DeleteKycDocument(int KYCId)

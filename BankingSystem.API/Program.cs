@@ -1,5 +1,6 @@
 using BankingSystem.API.IRepository;
 using BankingSystem.API.Services;
+using BankingSystem.API.Utils;
 using Microsoft.EntityFrameworkCore;
 using RESTful_API__ASP.NET_Core.Repository;
 
@@ -25,6 +26,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IKycRepository, KycRepository>();
 
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<FirebaseStorageHelper>();
 builder.Services.AddScoped<KycService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); //searches for all profiles automatically

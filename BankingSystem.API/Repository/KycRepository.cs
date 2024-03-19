@@ -34,10 +34,17 @@ namespace RESTful_API__ASP.NET_Core.Repository
                 existingKycDocument.FatherName = updatedKycDocument.FatherName;
                 existingKycDocument.MotherName = updatedKycDocument.MotherName;
                 existingKycDocument.GrandFatherName = updatedKycDocument.GrandFatherName;
-                existingKycDocument.UserImagePath = updatedKycDocument.UserImagePath;
-                existingKycDocument.CitizenshipImagePath = updatedKycDocument.CitizenshipImagePath;
                 existingKycDocument.PermanentAddress = updatedKycDocument.PermanentAddress;
                 existingKycDocument.UploadedAt = updatedKycDocument.UploadedAt;
+
+                if (updatedKycDocument.UserImagePath != null)
+                {
+                    existingKycDocument.UserImagePath = updatedKycDocument.UserImagePath;
+                }
+                if (updatedKycDocument.CitizenshipImagePath != null)
+                {
+                    existingKycDocument.CitizenshipImagePath = updatedKycDocument.CitizenshipImagePath;
+                }
 
                 await _context.SaveChangesAsync();
                 return existingKycDocument;
@@ -61,19 +68,37 @@ namespace RESTful_API__ASP.NET_Core.Repository
             return await _context.KycDocument.Where(k => k.UserId == userId).FirstOrDefaultAsync();
         }
 
-        public void DeleteKycDocumentAsync(int KYCId)
+        public async void DeleteKycDocumentAsync(int KYCId)
         {
-            var kycDocument = GetKYCIdAsync(KYCId);
+            var kycDocument = await GetKYCIdAsync(KYCId);
             if (kycDocument != null)
             {
-                _context.KycDocument.Remove(kycDocument.Result);
-                 _context.SaveChangesAsync();
+                _context.KycDocument.Remove(kycDocument);
+                await  _context.SaveChangesAsync();
             }
         }
 
-        public Task<KycDocument> UpdateKycDocumentAsync(int KYCId, JsonPatchDocument<KycDocumentDTO> kycDetails)
+        public async Task<KycDocument> UpdateKycDocumentAsync(int KYCId, JsonPatchDocument<KycDocumentDTO> kycDetails)
         {
-            throw new NotImplementedException();
+            var kycDocument = await GetKYCIdAsync(KYCId);
+            if (kycDocument == null)
+            {
+                return null;
+            }
+
+            var kycDocumentDTO = new KycDocumentDTO();
+            kycDetails.ApplyTo(kycDocumentDTO);
+            if (kycDocumentDTO.FatherName != null)
+            {
+                kycDocument.FatherName = kycDocumentDTO.FatherName;
+            }
+            if (kycDocumentDTO.MotherName != null)
+            {
+                kycDocument.MotherName = kycDocumentDTO.MotherName;
+            }
+
+            await _context.SaveChangesAsync();
+            return kycDocument;
         }
     }
 }
