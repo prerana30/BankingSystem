@@ -10,6 +10,9 @@ namespace BankingSystem.API.Profiles
             CreateMap<Users, UserDTO>(); //from entity to dto(get)
             CreateMap<UserDTO, Users>(); //from dto to entity (post)
 
+            CreateMap<Accounts, AccountDTO>();
+            CreateMap<AccountDTO, Accounts>();
+
             CreateMap<KycDocument, KycDocumentDTO>();
             CreateMap<KycDocumentDTO, KycDocument>();
         }

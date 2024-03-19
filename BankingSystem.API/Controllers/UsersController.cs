@@ -30,7 +30,7 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Users>> GetUser(int id)
+        public async Task<ActionResult<Users>> GetUser(Guid id)
         {
             var user = await userService.GetUserAsync(id);
             if (user == null)
@@ -64,14 +64,14 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpDelete("{userId}")]
-        public ActionResult DeleteUser(int userId)
+        public ActionResult DeleteUser(Guid userId)
         {
             userService.DeleteUser(userId);
             return NoContent();
         }
 
         [HttpPut("{userId}")]
-        public async Task<ActionResult<Users>> UpdateUsers(int userId, UserDTO user)
+        public async Task<ActionResult<Users>> UpdateUsers(Guid userId, UserDTO user)
         {
             var newUser = await userService.UpdateUsersAsync(userId, user);
             if (newUser == null)
@@ -82,7 +82,7 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpPatch("{userId}")]
-        public async Task<ActionResult<Users>> PatchUserDetails(int userId, JsonPatchDocument<UserDTO> patchDocument)
+        public async Task<ActionResult<Users>> PatchUserDetails(Guid userId, JsonPatchDocument<UserDTO> patchDocument)
         {
             var user = await userService.PatchUserDetails(userId, patchDocument);
             if (!ModelState.IsValid)
