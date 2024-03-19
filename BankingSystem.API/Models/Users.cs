@@ -6,8 +6,7 @@ namespace BankingSystem.API.Models
     public class Users
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int UserId { get; set; }
+        public Guid UserId { get; set; } = Guid.NewGuid();
         [Required]
         [MaxLength(50)]
         public string Username { get; set; }
@@ -28,7 +27,7 @@ namespace BankingSystem.API.Models
 
         public DateTime? ModifiedAt { get; set; } = DateTime.UtcNow;
 
-        public Users(int userId, string username, string fullname, string email, string password, string address, Roles userType, DateTime dateOfBirth, DateTime createdAt, DateTime modifiedAt)
+        public Users(Guid userId, string username, string fullname, string email, string password, string address, Roles userType, DateTime dateOfBirth, DateTime createdAt, DateTime modifiedAt)
         {
             UserId = userId;
             Username = username;

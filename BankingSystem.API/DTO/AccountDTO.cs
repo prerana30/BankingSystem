@@ -18,13 +18,13 @@ namespace BankingSystem.API.DTO
         public DateTime AccountCreatedAt { get; set; } = DateTime.Now;
 
         [Required]
-        public int AccountCreatedBy { get; set; }
+        public Guid AccountCreatedBy { get; set; }
 
         public DateTime AccountModifiedAt { get; set; } = DateTime.Now;
 
-        public int AccountModifiedBy { get; set; }
+        public Guid AccountModifiedBy { get; set; }
 
-        public AccountDTO( long balance, long atmCardNum, int atmCardPin, DateTime accountCreatedAt, int accountCreatedBy, DateTime accountModifiedAt, int accountModifiedBy)
+        public AccountDTO( long balance, long atmCardNum, int atmCardPin, DateTime accountCreatedAt, Guid accountCreatedBy, DateTime accountModifiedAt, Guid accountModifiedBy)
         {
             Balance = balance;
             AtmCardNum = atmCardNum;

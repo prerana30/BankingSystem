@@ -20,7 +20,7 @@ namespace BankingSystem.API.Services
         }
 
 
-        public async Task<IEnumerable<Transaction>> GetTransactionsOfAccountAsync(int accountId)
+        public async Task<IEnumerable<Transaction>> GetTransactionsOfAccountAsync(Guid accountId)
         {
             return await _transactionRepository.GetTransactionsOfAccountAsync(accountId);
 
@@ -37,13 +37,13 @@ namespace BankingSystem.API.Services
         }
 
 
-        public void DeleteTransaction(int accountId, int transactionId)
+        public void DeleteTransaction(Guid accountId, Guid transactionId)
         {
             _transactionRepository.DeleteTransaction(accountId, transactionId);
         }
 
 
-        public async Task<bool> TransactionExistAsync(int transactionId)
+        public async Task<bool> TransactionExistAsync(Guid transactionId)
         {
             return await _transactionRepository.TransactionExistAsync(transactionId);
         }

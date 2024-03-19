@@ -13,7 +13,7 @@ namespace RESTful_API__ASP.NET_Core.Repository
         {
             _context = context ?? throw new ArgumentOutOfRangeException(nameof(context));
         }
-        public async Task<Users?> GetUserAsync(int userId)
+        public async Task<Users?> GetUserAsync(Guid userId)
         {
             //returns only user detail
             return await _context.Users.Where(u => u.UserId == userId).FirstOrDefaultAsync();
@@ -37,14 +37,14 @@ namespace RESTful_API__ASP.NET_Core.Repository
             return GetUserAsync(user.Entity.UserId).Result;
         }
 
-        public void DeleteUser(int userId)
+        public void DeleteUser(Guid userId)
         {
             var user = GetUserAsync(userId);
             _context.Users.Remove(user.Result);
             _context.SaveChangesAsync();
         }
 
-        public async Task<Users> PatchUserDetails(int userId, JsonPatchDocument<UserDTO> patchDocument)
+        public async Task<Users> PatchUserDetails(Guid userId, JsonPatchDocument<UserDTO> patchDocument)
         {
             var existingUser = await GetUserAsync(userId);
             if (existingUser != null)
@@ -74,7 +74,7 @@ namespace RESTful_API__ASP.NET_Core.Repository
             return null;
         }
 
-        public async Task<Users> UpdateUsersAsync(int userId, Users finalUser)
+        public async Task<Users> UpdateUsersAsync(Guid userId, Users finalUser)
         {
             var existingUser = await GetUserAsync(userId);
             if (existingUser != null)

@@ -13,7 +13,7 @@ namespace BankingSystem.API.Repository
         {
             _context = context ?? throw new ArgumentOutOfRangeException(nameof(context));
         }
-        public async Task<Accounts?> GetAccountAsync(int accountId)
+        public async Task<Accounts?> GetAccountAsync(Guid accountId)
         {
             //returns only account detail
             return await _context.Accounts.Where(a => a.AccountId == accountId).FirstOrDefaultAsync();
@@ -38,7 +38,7 @@ namespace BankingSystem.API.Repository
             return GetAccountAsync(account.Entity.AccountId).Result;
         }
 
-        public void DeleteAccount(int accountId)
+        public void DeleteAccount(Guid accountId)
         {
             var account = GetAccountAsync(accountId);
             _context.Accounts.Remove(account.Result);
@@ -47,7 +47,7 @@ namespace BankingSystem.API.Repository
 
 
 
-        public async Task<Accounts> PatchAccountDetails(int accountId, JsonPatchDocument<AccountDTO> aDetails)
+        public async Task<Accounts> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> aDetails)
         {
             var existingAccount = await GetAccountAsync(accountId);
             if (existingAccount != null)
@@ -98,7 +98,7 @@ namespace BankingSystem.API.Repository
         //    }
         //    return null;
         //}
-        public async Task<Accounts> UpdateAccountsAsync(int accountId, Accounts finalaccounts)
+        public async Task<Accounts> UpdateAccountsAsync(Guid accountId, Accounts finalaccounts)
         {
             var existingAccount = await GetAccountAsync(accountId);
             if (existingAccount != null)
@@ -123,7 +123,7 @@ namespace BankingSystem.API.Repository
             throw new NotImplementedException();
         }
 
-        public Task<Accounts> UpdateAccountAsync(int accountId, object finalUser)
+        public Task<Accounts> UpdateAccountAsync(Guid accountId, object finalUser)
         {
             throw new NotImplementedException();
         }

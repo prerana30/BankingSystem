@@ -6,11 +6,14 @@ namespace BankingSystem.API.Models
     public class Transaction
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int TransactionId { get; set; }
+        public Guid TransactionId { get; set; } = Guid.NewGuid();
 
-        [Required]//[ForeignKey]        
-        public int AccountId { get; set; }
+        [Required]
+        public Guid AccountId { get; set; }
+
+        // Navigation property
+        [ForeignKey("AccountId")]
+        public Accounts Accounts { get; set; }
 
         public TransactionType TransactionType { get; set; }
 
@@ -18,7 +21,7 @@ namespace BankingSystem.API.Models
         [MaxLength(50)]
         public double Amount { get; set; }
 
-        public DateTime TransactionTime { get; set; }
+        public DateTime TransactionTime { get; set; }= DateTime.UtcNow;
 
         [MaxLength(150)]
         public string ? TransactionRemarks { get; set; }

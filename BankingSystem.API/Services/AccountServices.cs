@@ -22,7 +22,7 @@ namespace BankingSystem.API.Services
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<Accounts?> GetAccountAsync(int accountId)
+        public async Task<Accounts?> GetAccountAsync(Guid accountId)
         {
             //returns only user detail
             return await AccountRepository.GetAccountAsync(accountId);
@@ -41,17 +41,17 @@ namespace BankingSystem.API.Services
             return await AccountRepository.AddAccounts(finalAccount);
         }
 
-        public void DeleteAccount(int accountId)
+        public void DeleteAccount(Guid accountId)
         {
             AccountRepository.DeleteAccount(accountId);
         }
 
-        public async Task<Accounts> PatchAccountDetails(int accountId, JsonPatchDocument<AccountDTO> patchDocument)
+        public async Task<Accounts> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> patchDocument)
         {
             return await AccountRepository.PatchAccountDetails(accountId, patchDocument);
         }
 
-        public async Task<Accounts> UpdateAccountsAsync(int accountId, AccountDTO accounts)
+        public async Task<Accounts> UpdateAccountsAsync(Guid accountId, AccountDTO accounts)
         {
             var finalAccount = _mapper.Map<Accounts>(accounts);
             //string hashedPassword = BCrypt.Net.BCrypt.HashPassword(users.Password);

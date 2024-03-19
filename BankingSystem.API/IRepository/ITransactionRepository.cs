@@ -4,12 +4,12 @@ namespace BankingSystem.API.IRepository
 {
     public interface ITransactionRepository
     {
-        Task<IEnumerable<Transaction>> GetTransactionsOfAccountAsync(int accountId);
+        Task<IEnumerable<Transaction>> GetTransactionsOfAccountAsync(Guid accountId);
 
-        Task DeleteTransaction(int accountId, int transactionId);
+        Task DeleteTransaction(Guid accountId, Guid transactionId);
 
-        Task<bool> TransactionExistAsync(int transactionId);
+        Task<bool> TransactionExistAsync(Guid transactionId);
 
-        Task<Transaction?> GetTransactionFromAccountAsync(int accountId, int transactionId);
+        Task<Transaction?> GetTransactionFromAccountAsync(Guid accountId, Guid transactionId);
     }
 }

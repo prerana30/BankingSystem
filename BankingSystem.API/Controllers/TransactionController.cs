@@ -17,7 +17,7 @@ namespace BankingSystem.API.Controllers
 
         [Route("api/transactions")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactions(int accountId)
+        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactions(Guid accountId)
         {
             if (await _transactionServices.GetTransactionsOfAccountAsync(accountId) == null)
             {
@@ -30,7 +30,7 @@ namespace BankingSystem.API.Controllers
 
         [Route("api/transactions")]
         [HttpDelete]
-        public async Task<ActionResult> DeleteTransaction(int accountId, int transactionId)
+        public async Task<ActionResult> DeleteTransaction(Guid accountId, Guid transactionId)
         {
             if (!await _transactionServices.TransactionExistAsync(transactionId))
             {
