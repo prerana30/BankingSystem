@@ -9,11 +9,14 @@ namespace BankingSystem.API.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int KYCId { get; set; }
+        public Guid KYCId { get; set; }
 
         [Required]
-        [ForeignKey("Users")]
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
+
+        // Navigation property
+        [ForeignKey("UserId")]
+        public Users User { get; set; }
 
         [Required]
         [MaxLength(50)]
@@ -35,7 +38,9 @@ namespace BankingSystem.API.Models
 
         public string PermanentAddress { get; set; }
 
-        public DateTime UploadedAt { get; set; } = DateTime.Now;
+        public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
+
+        public bool IsApproved { get; set; }    
 
         /*public KycDocument(int KYCId, int userId, string fatherName,
                            string motherName, string grandFatherName,

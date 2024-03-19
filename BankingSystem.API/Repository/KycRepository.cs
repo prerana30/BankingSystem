@@ -26,7 +26,7 @@ namespace RESTful_API__ASP.NET_Core.Repository
             return kycDocument;
         }
 
-        public async Task<KycDocument> UpdateKycDocumentAsync(int KYCId, KycDocument updatedKycDocument)
+        public async Task<KycDocument> UpdateKycDocumentAsync(Guid KYCId, KycDocument updatedKycDocument)
         {
             var existingKycDocument = await _context.KycDocument.FindAsync(KYCId);
             if (existingKycDocument != null)
@@ -58,17 +58,17 @@ namespace RESTful_API__ASP.NET_Core.Repository
             return await _context.KycDocument.ToListAsync();
         }
 
-        public async Task<KycDocument?> GetKYCIdAsync(int KYCId)
+        public async Task<KycDocument?> GetKYCIdAsync(Guid KYCId)
         {
             return await _context.KycDocument.FindAsync(KYCId);
         }
 
-        public async Task<KycDocument> GetKycByUserIdAsync(int userId)
+        public async Task<KycDocument> GetKycByUserIdAsync(Guid userId)
         {
             return await _context.KycDocument.Where(k => k.UserId == userId).FirstOrDefaultAsync();
         }
 
-        public async void DeleteKycDocumentAsync(int KYCId)
+        public async void DeleteKycDocumentAsync(Guid KYCId)
         {
             var kycDocument = await GetKYCIdAsync(KYCId);
             if (kycDocument != null)
@@ -78,7 +78,7 @@ namespace RESTful_API__ASP.NET_Core.Repository
             }
         }
 
-        public async Task<KycDocument> UpdateKycDocumentAsync(int KYCId, JsonPatchDocument<KycDocumentDTO> kycDetails)
+        public async Task<KycDocument> UpdateKycDocumentAsync(Guid KYCId, JsonPatchDocument<KycDocumentDTO> kycDetails)
         {
             var kycDocument = await GetKYCIdAsync(KYCId);
             if (kycDocument == null)

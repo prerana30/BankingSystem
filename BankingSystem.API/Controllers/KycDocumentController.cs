@@ -29,7 +29,7 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpGet("{KYCId}")]
-        public async Task<ActionResult<KycDocument>> GetKycDocument(int KYCId)
+        public async Task<ActionResult<KycDocument>> GetKycDocument(Guid KYCId)
         {
             var kycDocument = await _kycService.GetKycDocumentAsync(KYCId);
             if (kycDocument == null)
@@ -48,14 +48,14 @@ namespace BankingSystem.API.Controllers
         
 
         [HttpDelete("{KYCId}")]
-        public async Task<IActionResult> DeleteKycDocument(int KYCId)
+        public async Task<IActionResult> DeleteKycDocument(Guid KYCId)
         {
              _kycService.DeleteKycDocument(KYCId);
             return NoContent();
         }
 
         [HttpPut("{KYCId}")]
-        public async Task<ActionResult<KycDocument>> UpdateKycDocument(int KYCId, [FromBody] KycDocumentDTO kycDocumentDto)
+        public async Task<ActionResult<KycDocument>> UpdateKycDocument(Guid KYCId, [FromBody] KycDocumentDTO kycDocumentDto)
         {
             var updatedKycDocument = await _kycService.UpdateKycDocumentAsync(KYCId, kycDocumentDto);
             if (updatedKycDocument == null)
@@ -66,7 +66,7 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpPatch("{KYCId}")]
-        public async Task<ActionResult<KycDocument>> PatchKycDocument(int KYCId, [FromBody] JsonPatchDocument<KycDocumentDTO> patchDocument)
+        public async Task<ActionResult<KycDocument>> PatchKycDocument(Guid KYCId, [FromBody] JsonPatchDocument<KycDocumentDTO> patchDocument)
         {
             var patchedKycDocument = await _kycService.UpdateKycDocumentAsync(KYCId, patchDocument);
             if (patchedKycDocument == null)

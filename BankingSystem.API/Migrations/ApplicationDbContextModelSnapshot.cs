@@ -65,6 +65,47 @@ namespace BankingSystem.API.Migrations
                     b.ToTable("Accounts");
                 });
 
+            modelBuilder.Entity("BankingSystem.API.Models.KycDocument", b =>
+                {
+                    b.Property<Guid>("KYCId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("FatherName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("GrandFatherName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("MotherName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("PermanentAddress")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("KYCId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("KycDocument");
+                });
+
             modelBuilder.Entity("BankingSystem.API.Models.Transaction", b =>
                 {
                     b.Property<Guid>("TransactionId")
@@ -95,52 +136,6 @@ namespace BankingSystem.API.Migrations
                     b.ToTable("Transaction");
                 });
 
-            modelBuilder.Entity("BankingSystem.API.Models.KycDocument", b =>
-                {
-                    b.Property<int>("KYCId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("KYCId"));
-
-                    b.Property<string>("CitizenshipImage")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("FatherName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("GrandFatherName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("MotherName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("PermanentAddress")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UploadedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("UserImage")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("KYCId");
-
-                    b.ToTable("KycDocument");
-                });
-
             modelBuilder.Entity("BankingSystem.API.Models.Users", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -169,9 +164,6 @@ namespace BankingSystem.API.Migrations
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime?>("ModifiedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
@@ -191,40 +183,40 @@ namespace BankingSystem.API.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("33101bf4-23cf-4d25-9d49-d1a3607945b3"),
+                            UserId = new Guid("275fb55c-da3e-4920-9797-b31a6022bce6"),
                             Address = "Gothatar, Kathmandu",
-                            CreatedAt = new DateTime(2024, 3, 19, 6, 57, 10, 137, DateTimeKind.Utc).AddTicks(6429),
+                            CreatedAt = new DateTime(2024, 3, 19, 8, 51, 5, 900, DateTimeKind.Utc).AddTicks(780),
                             DateOfBirth = new DateTime(2002, 8, 20, 16, 58, 25, 342, DateTimeKind.Utc),
                             Email = "subritiaryal13@gmail.com",
                             Fullname = "Subriti Aryal",
-                            ModifiedAt = new DateTime(2024, 3, 19, 6, 57, 10, 137, DateTimeKind.Utc).AddTicks(6446),
-                            Password = "$2b$10$LG.NXzRS.y/VIF0Fkxhg0emd3q4I5n.H6FjxaW8fQSdLrI8z3iG7K",
+                            ModifiedAt = new DateTime(2024, 3, 19, 8, 51, 5, 900, DateTimeKind.Utc).AddTicks(794),
+                            Password = "$2b$10$kSUbd5TDt3gcqv6Q2RGT6O3gf8.2WBiTswxFec2vgN.rchPmZT.Wi",
                             UserType = 0,
                             Username = "subs"
                         },
                         new
                         {
-                            UserId = new Guid("e2a3d57f-0f34-4b71-a2f9-4c87777e6c2b"),
+                            UserId = new Guid("f920b0f2-e640-4cdf-9790-2cd53e4fc082"),
                             Address = "Kathmandu",
-                            CreatedAt = new DateTime(2024, 3, 19, 6, 57, 10, 417, DateTimeKind.Utc).AddTicks(3035),
+                            CreatedAt = new DateTime(2024, 3, 19, 8, 51, 5, 974, DateTimeKind.Utc).AddTicks(7033),
                             DateOfBirth = new DateTime(2000, 3, 23, 16, 58, 25, 342, DateTimeKind.Utc),
                             Email = "teller@gmail.com",
                             Fullname = "Teller Person",
-                            ModifiedAt = new DateTime(2024, 3, 19, 6, 57, 10, 417, DateTimeKind.Utc).AddTicks(3062),
-                            Password = "$2b$10$/x.zWa.Iv3Ri0UXzabb9TOzCRlWMQ0NRoyHp6hWsoQsSQWsU/.dMu",
+                            ModifiedAt = new DateTime(2024, 3, 19, 8, 51, 5, 974, DateTimeKind.Utc).AddTicks(7048),
+                            Password = "$2b$10$zhBu0FoNHiHIERvL.YESq.sGEu4.Va4UspYTxX3V6JvnPyRCisOt6",
                             UserType = 1,
                             Username = "admin"
                         },
                         new
                         {
-                            UserId = new Guid("10262b22-69d0-4126-a513-e887ae6dac61"),
+                            UserId = new Guid("6ac1bb7a-d697-43d8-bcc9-9f915d53e4c8"),
                             Address = "Kathmandu",
-                            CreatedAt = new DateTime(2024, 3, 19, 6, 57, 10, 602, DateTimeKind.Utc).AddTicks(682),
+                            CreatedAt = new DateTime(2024, 3, 19, 8, 51, 6, 76, DateTimeKind.Utc).AddTicks(5560),
                             DateOfBirth = new DateTime(2000, 3, 23, 16, 58, 25, 342, DateTimeKind.Utc),
                             Email = "accountUser@gmail.com",
                             Fullname = "Account Holder",
-                            ModifiedAt = new DateTime(2024, 3, 19, 6, 57, 10, 602, DateTimeKind.Utc).AddTicks(698),
-                            Password = "$2b$10$.SfWGzq2faMIbJ4QO5uvteRCddoRHTnCSAM6afqHbLARL.WAmXoNi",
+                            ModifiedAt = new DateTime(2024, 3, 19, 8, 51, 6, 76, DateTimeKind.Utc).AddTicks(5577),
+                            Password = "$2b$10$n.oHXd8BRukdpIo2CxHOY.psOgGBATecrh8mpI6TtcXclkAKM/cai",
                             UserType = 0,
                             Username = "user"
                         });
@@ -253,6 +245,17 @@ namespace BankingSystem.API.Migrations
                     b.Navigation("CreatedByUser");
 
                     b.Navigation("ModifiedByUser");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BankingSystem.API.Models.KycDocument", b =>
+                {
+                    b.HasOne("BankingSystem.API.Models.Users", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

@@ -58,12 +58,12 @@ namespace BankingSystem.API.Services
             return await _kycRepository.GetKycDocumentAsync();
         }
 
-        public async Task<KycDocument?> GetKycDocumentAsync(int KYCId)
+        public async Task<KycDocument?> GetKycDocumentAsync(Guid KYCId)
         {
             return await _kycRepository.GetKYCIdAsync(KYCId);
         }
 
-        public async Task<KycDocument> GetKycByUserIdAsync(int userId)
+        public async Task<KycDocument> GetKycByUserIdAsync(Guid userId)
         {
             return await _kycRepository.GetKycByUserIdAsync(userId);
         }
@@ -74,18 +74,18 @@ namespace BankingSystem.API.Services
             return await _kycRepository.AddKycDocumentAsync(kycDocument);
         }
 
-        public async Task<KycDocument> UpdateKycDocumentAsync(int KYCId, KycDocumentDTO kycDocumentDto)
+        public async Task<KycDocument> UpdateKycDocumentAsync(Guid KYCId, KycDocumentDTO kycDocumentDto)
         {
             var kycDocument = _mapper.Map<KycDocument>(kycDocumentDto);
             return await _kycRepository.UpdateKycDocumentAsync(KYCId, kycDocument);
         }
 
-        public void DeleteKycDocument(int KYCId)
+        public void DeleteKycDocument(Guid KYCId)
         {
             _kycRepository.DeleteKycDocumentAsync(KYCId);
         }
 
-        public async Task<KycDocument> UpdateKycDocumentAsync(int KYCId, JsonPatchDocument<KycDocumentDTO> kycDetails)
+        public async Task<KycDocument> UpdateKycDocumentAsync(Guid KYCId, JsonPatchDocument<KycDocumentDTO> kycDetails)
         {
             return await _kycRepository.UpdateKycDocumentAsync(KYCId, kycDetails);
         }
