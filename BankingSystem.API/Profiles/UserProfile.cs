@@ -12,6 +12,9 @@ namespace BankingSystem.API.Profiles
 
             CreateMap<Accounts, AccountDTO>();
             CreateMap<AccountDTO, Accounts>();
+
+            CreateMap<KycDocument, KycDocumentDTO>();
+            CreateMap<KycDocumentDTO, KycDocument>();
         }
     }
 }

@@ -1,6 +1,8 @@
-﻿using BankingSystem.API.Models;
+﻿using BankingSystem.API.DTO;
+using BankingSystem.API.Models;
 using BankingSystem.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Principal;
 
 namespace BankingSystem.API.Controllers
 {
@@ -28,6 +30,7 @@ namespace BankingSystem.API.Controllers
             return Ok(await _transactionServices.GetTransactionsOfAccountAsync(accountId));
         }
 
+
         [Route("api/transactions")]
         [HttpDelete]
         public async Task<ActionResult> DeleteTransaction(Guid accountId, Guid transactionId)
@@ -40,5 +43,16 @@ namespace BankingSystem.API.Controllers
 
             return NoContent();
         }
+
+
+        [Route("api/transactions/deposit")]
+        [HttpPost]
+        public async Task<ActionResult<Transaction>> DepositTransaction(DepositTransactionDTO transaction, Guid accountId)
+        {
+            var depositAccount = await _transactionServices.DepositTransactionAsync(transaction, accountId);
+
+            return Ok(depositAccount);
+        }
+
     }
 }

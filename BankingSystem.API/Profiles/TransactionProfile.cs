@@ -10,6 +10,8 @@ namespace BankingSystem.API.Profiles
         {
             CreateMap<Transaction, TransactionDTO>();
             CreateMap<TransactionDTO, Transaction>();
+
+            CreateMap<DepositTransactionDTO, Transaction>();
         }
     }
 }
