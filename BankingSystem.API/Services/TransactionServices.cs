@@ -19,33 +19,31 @@ namespace BankingSystem.API.Services
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-
         public async Task<IEnumerable<Transaction>> GetTransactionsOfAccountAsync(Guid accountId)
         {
             return await _transactionRepository.GetTransactionsOfAccountAsync(accountId);
-
-            //returns only user detail
-            //return await _transactionRepository.GetTransactionsOfAccountAsync(accountId);
-            //if (!await _transactionRepository.TransactionExistAsync(accountId))
-            //{
-            //    _logger.LogInformation($"Account with id {accountId} don't have any transaction.");
-            //    return NotFound();
-            //}
-            //var transactionsOfAccount = await _transactionRepository
-            //    .GetTransactionsOfAccountAsync(accountId);
-            //return _mapper.Map<IEnumerable<TransactionDTO>>(transactionsOfAccount);
         }
-
 
         public void DeleteTransaction(Guid accountId, Guid transactionId)
         {
             _transactionRepository.DeleteTransaction(accountId, transactionId);
         }
 
-
         public async Task<bool> TransactionExistAsync(Guid transactionId)
         {
             return await _transactionRepository.TransactionExistAsync(transactionId);
         }
+
+        public async Task<bool> IsVerifiedKycAsync(Guid kycId)
+        {
+            return await _transactionRepository.IsVerifiedKycAsync(kycId);
+        }
+
+        public async Task<Transaction> DepositTransactionAsync(DepositTransactionDTO transactionDto, Guid accountId)
+        {
+            var transaction = _mapper.Map<Transaction>(transactionDto);
+            return await _transactionRepository.DepositTransactionAsync(transaction, accountId);
+        }
+
     }
 }
