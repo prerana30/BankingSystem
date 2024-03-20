@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using System.Text;
 using System.Security.Cryptography;
 using AutoMapper;
+using RESTful_API__ASP.NET_Core.Repository;
 
 
 
@@ -27,11 +28,15 @@ namespace BankingSystem.API.Services
             //returns only user detail
             return await AccountRepository.GetAccountAsync(accountId);
         }
-      
+
 
         public async Task<IEnumerable<Accounts>> GetAccountsAsync()
         {
             return await AccountRepository.GetAccountsAsync();
+        }
+        public async Task<Accounts?> GetAccountByUserIdAsync(Guid userId)
+        {
+            return await AccountRepository.GetAccountByUserIdAsync(userId);
         }
 
 
