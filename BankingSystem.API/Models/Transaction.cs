@@ -19,7 +19,7 @@ namespace BankingSystem.API.Models
 
         [Required]
         [MaxLength(50)]
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
 
         public DateTime TransactionTime { get; set; }= DateTime.UtcNow;
 

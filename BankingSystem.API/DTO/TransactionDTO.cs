@@ -7,7 +7,7 @@ namespace BankingSystem.API.DTO
     {
         public TransactionType TransactionType { get; set; }
 
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
 
         public DateTime TransactionTime { get; set; }
 
