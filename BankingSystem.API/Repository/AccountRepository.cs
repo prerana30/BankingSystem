@@ -49,8 +49,6 @@ namespace BankingSystem.API.Repository
             _context.SaveChangesAsync();
         }
 
-
-
         public async Task<Accounts> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> aDetails)
         {
             var existingAccount = await GetAccountAsync(accountId);

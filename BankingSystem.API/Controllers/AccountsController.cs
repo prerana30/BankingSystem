@@ -48,15 +48,17 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Accounts>> AddAccounts(AccountDTO account, Guid userId)
+        public async Task<ActionResult<Accounts>> AddAccounts(AccountDTO account, string email)
         {
 
-            var user = await userServices.GetUserAsync(userId);
+            var user = await userServices.GetUserByEmailAsync(email);
 
             if (user == null)
             {
                 return NotFound("User not found");
             }
+
+            var userId = user.UserId;
 
             var checkAccount = await accountServices.GetAccountByUserIdAsync(userId);
             if (checkAccount != null)

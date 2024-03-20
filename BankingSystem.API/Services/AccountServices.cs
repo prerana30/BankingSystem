@@ -34,6 +34,11 @@ namespace BankingSystem.API.Services
         {
             return await AccountRepository.GetAccountsAsync();
         }
+        public async Task<Accounts?> GetAccountByAccountNumberAsync(long accountNumber)
+        {
+            return await AccountRepository.GetAccountByAccountNumberAsync(accountNumber);
+        }  
+
         public async Task<Accounts?> GetAccountByUserIdAsync(Guid userId)
         {
             return await AccountRepository.GetAccountByUserIdAsync(userId);
