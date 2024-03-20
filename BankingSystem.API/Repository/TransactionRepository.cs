@@ -1,4 +1,5 @@
-﻿using BankingSystem.API.IRepository;
+﻿using BankingSystem.API.DTO;
+using BankingSystem.API.IRepository;
 using BankingSystem.API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,6 +8,7 @@ namespace BankingSystem.API.Repository
     public class TransactionRepository : ITransactionRepository
     {
         private readonly ApplicationDbContext _context;
+
 
         public TransactionRepository(ApplicationDbContext context)
         {
@@ -41,10 +43,72 @@ namespace BankingSystem.API.Repository
         }
 
 
-
         public async Task<bool> TransactionExistAsync(Guid transactionId)
         {
             return await _context.Transaction.AnyAsync(c => c.TransactionId == transactionId);
         }
+
+
+        public async Task<bool> IsVerifiedKycAsync(Guid kycId)
+        {
+            return await _context.KycDocument.AnyAsync(c => c.KYCId == kycId);
+        }
+
+        //public async Task<Transaction> DepositTransactionAsync(Transaction transaction, Guid accountId)
+        //{
+        //    var account= await _context.Accounts.FirstOrDefaultAsync(c => c.AccountId == accountId);
+        //    //var kycAccount= await _context.KycDocument.FirstOrDefaultAsync(c => c.UserId == account.User.UserId);
+        //    var kycAccount = await _context.KycDocument.FirstOrDefaultAsync(c => c.UserId == account.UserId);
+
+        //    var isVerified = await IsVerifiedKycAsync(kycAccount.KYCId);
+
+
+        //    if (isVerified)
+        //    {
+        //        _context.Transaction.Add(transaction);
+        //        await _context.SaveChangesAsync();
+        //        return transaction;
+        //    }
+        //    else
+        //    {
+        //        throw new Exception("KYC is not verified, transaction cannot be made.");
+        //    }
+        //}
+
+
+
+        public async Task<Transaction> DepositTransactionAsync(Transaction transaction, Guid accountId)
+        {
+            var account = await _context.Accounts.FirstOrDefaultAsync(c => c.AccountId == accountId);
+
+            if (account is null)
+            {
+                throw new Exception($"Account with ID {accountId} not found.");
+            }
+
+            var kycAccount = await _context.KycDocument.FirstOrDefaultAsync(c => c.UserId == account.UserId);
+
+            if (kycAccount is null)
+            {
+                throw new Exception($"KYC document not found for user ID {account.User.UserId}.");
+            }
+
+            var isVerified = await IsVerifiedKycAsync(kycAccount.KYCId);
+
+            if (isVerified is true)
+            {
+                // Set the accountId for the transaction
+                transaction.AccountId = accountId;
+
+                _context.Transaction.Add(transaction);
+                await _context.SaveChangesAsync();
+                return transaction;
+            }
+            else
+            {
+                throw new Exception("KYC is not verified, transaction cannot be made.");
+            }
+        }
+
     }
 }

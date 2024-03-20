@@ -27,16 +27,6 @@ namespace BankingSystem.API.Models
         public string ? TransactionRemarks { get; set; }
 
 
-        //public Transaction(int transactionId, int accountId, TransactionType transactionType, double amount, DateTime transactionTime, string transactionRemarks)
-        //{
-        //    TransactionId = transactionId;
-        //    AccountId = accountId;            
-        //    TransactionType = transactionType;
-        //    Amount = amount;
-        //    TransactionTime = transactionTime;
-        //    TransactionRemarks = transactionRemarks;
-        //}
-
         public Transaction()
         { }
     }

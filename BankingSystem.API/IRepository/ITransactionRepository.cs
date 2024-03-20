@@ -1,4 +1,5 @@
-﻿using BankingSystem.API.Models;
+﻿using BankingSystem.API.DTO;
+using BankingSystem.API.Models;
 
 namespace BankingSystem.API.IRepository
 {
@@ -11,5 +12,9 @@ namespace BankingSystem.API.IRepository
         Task<bool> TransactionExistAsync(Guid transactionId);
 
         Task<Transaction?> GetTransactionFromAccountAsync(Guid accountId, Guid transactionId);
+
+        Task<bool> IsVerifiedKycAsync(Guid kycId);
+
+        Task<Transaction> DepositTransactionAsync(Transaction transaction, Guid accountId);
     }
 }
