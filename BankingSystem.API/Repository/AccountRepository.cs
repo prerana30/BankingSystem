@@ -28,6 +28,10 @@ namespace BankingSystem.API.Repository
         {
             return await _context.Accounts.Where(a => a.AccountNumber == accountNumber).FirstOrDefaultAsync();
         }
+        public async Task<Accounts?> GetAccountByUserIdAsync(Guid userId)
+        {
+            return await _context.Accounts.Where(a => a.UserId == userId).FirstOrDefaultAsync();
+        }
 
 
         public async Task<Accounts> AddAccounts(Accounts accounts)
@@ -45,17 +49,15 @@ namespace BankingSystem.API.Repository
             _context.SaveChangesAsync();
         }
 
-
-
         public async Task<Accounts> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> aDetails)
         {
             var existingAccount = await GetAccountAsync(accountId);
             if (existingAccount != null)
             {
-                var accountToPatch = new AccountDTO(existingAccount.Balance, existingAccount.AtmCardNum, existingAccount.AtmCardPin, existingAccount.AccountCreatedAt, existingAccount.AccountCreatedBy, existingAccount.AccountModifiedAt, existingAccount.AccountModifiedBy);
+                var accountToPatch = new AccountDTO(existingAccount.UserId,existingAccount.Balance, existingAccount.AtmCardPin, existingAccount.AccountCreatedAt, existingAccount.AccountCreatedBy, existingAccount.AccountModifiedAt, existingAccount.AccountModifiedBy);
                  aDetails.ApplyTo(accountToPatch);
                 existingAccount.Balance = accountToPatch.Balance;
-                existingAccount.AtmCardNum = accountToPatch.AtmCardNum;
+             
                 existingAccount.AtmCardPin = accountToPatch.AtmCardPin;
 /*                string hashedCardNum = BCrypt.Net.BCrypt.HashPassword(accountToPatch.AtmCardNum);
                 existingAccount.AtmCardNum = hashedCardNum;
