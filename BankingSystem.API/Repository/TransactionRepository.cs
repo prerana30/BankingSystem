@@ -95,6 +95,51 @@ namespace BankingSystem.API.Repository
             }
         }
 
+        public async Task<Transaction> WithdrawTransactionAsync(Transaction transaction, Guid accountId, int atmIdAtmCardPin)
+        {
+            var account = await _context.Accounts
+                .FirstOrDefaultAsync(c => c.AccountId == accountId);
 
+            if (account is null)
+            {
+                throw new Exception($"Account with ID {accountId} not found.");
+            }
+
+            var kycAccount = await _context.KycDocument
+                .FirstOrDefaultAsync(c => c.UserId == account.UserId);
+
+            if (kycAccount is null)
+            {
+                throw new Exception($"KYC document not found for user ID {account.User.UserId}.");
+            }
+
+            var atmPin = await _context.Accounts
+                .FirstOrDefaultAsync(c => c.AtmCardPin == atmIdAtmCardPin);
+
+            if (atmPin is null)
+            {
+                throw new Exception($"ATM Card Pin is not found or available for user ID {accountId}.");
+            }
+            
+            var isVerified = await IsVerifiedKycAsync(kycAccount.KYCId);
+
+            var totalBalance = await _context.Accounts
+                .FirstOrDefaultAsync(b => b.Balance == account.Balance);
+
+            if (isVerified is true)
+            {
+                // Set the accountId for the transaction
+                transaction.AccountId = accountId;
+
+                _context.Transaction.Add(transaction);
+                totalBalance.Balance -= (long)transaction.Amount;
+                await _context.SaveChangesAsync();
+                return transaction;
+            }
+            else
+            {
+                throw new Exception("KYC is not verified, transaction cannot be made.");
+            }
+        }
     }
 }

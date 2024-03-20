@@ -54,5 +54,15 @@ namespace BankingSystem.API.Controllers
             return Ok(depositAccount);
         }
 
+
+        [Route("api/transactions/withdraw")]
+        [HttpPost]
+        public async Task<ActionResult<Transaction>> WithdrawTransaction(WithdrawTransactionDTO transaction, Guid accountId, int atmIdAtmCardPin)
+        {
+            var withdrawAccount = await _transactionServices.WithdrawTransactionAsync(transaction, accountId, atmIdAtmCardPin);
+
+            return Ok(withdrawAccount);
+        }
+
     }
 }

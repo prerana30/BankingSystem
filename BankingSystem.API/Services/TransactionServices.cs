@@ -45,5 +45,11 @@ namespace BankingSystem.API.Services
             return await _transactionRepository.DepositTransactionAsync(transaction, accountId);
         }
 
+
+        public async Task<Transaction> WithdrawTransactionAsync(WithdrawTransactionDTO withdrawDto, Guid accountId, int atmIdAtmCardPin)
+        {
+            var transaction = _mapper.Map<Transaction>(withdrawDto);
+            return await _transactionRepository.WithdrawTransactionAsync(transaction, accountId, atmIdAtmCardPin);
+        }
     }
 }
