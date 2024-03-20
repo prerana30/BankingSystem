@@ -1,7 +1,5 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.IO;
 
 namespace BankingSystem.API.Models
 {
@@ -44,22 +42,39 @@ namespace BankingSystem.API.Models
 
         public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
 
-        public bool IsApproved { get; set; } = false; 
+        public bool IsApproved { get; set; } = false;
 
-        /*public KycDocument(int KYCId, int userId, string fatherName,
-                           string motherName, string grandFatherName,
-                           IFormFile UserImageFile, IFormFile CitizenshipImageFile,
-                           string permanentAddress)
+        public KycDocument(Guid kYCId, Guid userId, Users user, string fatherName, string motherName, string grandFatherName, IFormFile userImageFile, string userImagePath, IFormFile citizenshipImageFile, string citizenshipImagePath, string permanentAddress, DateTime uploadedAt, bool isApproved)
         {
-            KYCId = KYCId;
+            KYCId = kYCId;
             UserId = userId;
+            User = user;
             FatherName = fatherName;
             MotherName = motherName;
             GrandFatherName = grandFatherName;
-            UserImageFile = UserImageFile;
-            CitizenshipImageFile = CitizenshipImageFile;
+            UserImageFile = userImageFile;
+            UserImagePath = userImagePath;
+            CitizenshipImageFile = citizenshipImageFile;
+            CitizenshipImagePath = citizenshipImagePath;
             PermanentAddress = permanentAddress;
-        }*/
+            UploadedAt = uploadedAt;
+            IsApproved = isApproved;
+        }
+
+        public KycDocument(Guid kYCId, Guid userId, Users user, string fatherName, string motherName, string grandFatherName, IFormFile userImageFile, IFormFile citizenshipImageFile, string permanentAddress, DateTime uploadedAt, bool isApproved)
+        {
+            KYCId = kYCId;
+            UserId = userId;
+            User = user;
+            FatherName = fatherName;
+            MotherName = motherName;
+            GrandFatherName = grandFatherName;
+            UserImageFile = userImageFile;
+            CitizenshipImageFile = citizenshipImageFile;
+            PermanentAddress = permanentAddress;
+            UploadedAt = uploadedAt;
+            IsApproved = isApproved;
+        }
 
         public KycDocument() { }
     }

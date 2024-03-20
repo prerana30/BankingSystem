@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using BankingSystem.API.DTO;
+﻿using BankingSystem.API.DTO;
 using BankingSystem.API.Models;
 using BankingSystem.API.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,13 +36,12 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<KycDocument>> AddKycDocumentAsync(KycDocumentDTO kycDocumentDto)//, IFormFile? ImagePath, IFormFile? CitizenshipFile)
+        public async Task<ActionResult<KycDocument>> AddKycDocumentAsync(KycDocumentDTO kycDocumentDto)
         {
-            var kycDocument = await _kycService.AddKycDocumentAsync(kycDocumentDto);//, ImagePath, CitizenshipFile);
+            var kycDocument = await _kycService.AddKycDocumentAsync(kycDocumentDto);
             return Ok(kycDocument);
         }
         
-
         [HttpDelete("{KYCId}")]
         public async Task<IActionResult> DeleteKycDocument(Guid KYCId)
         {
