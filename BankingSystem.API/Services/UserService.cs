@@ -1,22 +1,23 @@
 ﻿using BankingSystem.API.DTO;
-using System.Text;
-using System.Security.Cryptography;
 using BankingSystem.API.IRepository;
 using BankingSystem.API.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using AutoMapper;
+using System.Text;
 
 namespace BankingSystem.API.Services
 {
     public class UserService
     {
         private readonly IUserRepository UserRepository;
+        private readonly AccountServices AccountServices;
 
         private readonly IMapper _mapper;
-        public UserService(IUserRepository userRepository, IMapper mapper)
+        public UserService(IUserRepository userRepository, IMapper mapper, AccountServices accountServices)
         {
             UserRepository = userRepository ?? throw new ArgumentOutOfRangeException(nameof(userRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            AccountServices = accountServices;
         }
 
         public async Task<Users?> GetUserAsync(Guid userId)
@@ -35,7 +36,7 @@ namespace BankingSystem.API.Services
             return await UserRepository.GetUsersAsync();
         }
 
-        public async Task<Users> AddUsers(UserDTO users)
+        public async Task<Users> RegisterUsers(UserDTO users)
         {
             var finalUser = _mapper.Map<Users>(users);
 
@@ -43,7 +44,18 @@ namespace BankingSystem.API.Services
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(users.Password);
             finalUser.Password = hashedPassword;
 
-            return await UserRepository.AddUsers(finalUser);
+            var SavedUser= await UserRepository.AddUsers(finalUser);
+
+            //if user is accountHolder, create account
+            if(SavedUser.UserType==Roles.AccountHolder)
+            {
+                var accountNumber = GenerateRandomAccountNumber(1);
+                var atmCardNum = GenerateRandomAccountNumber(2);
+
+                var accountDTO = new AccountDTO(SavedUser.UserId, accountNumber, 0, atmCardNum, 1232, DateTime.UtcNow, SavedUser.UserId, DateTime.UtcNow, SavedUser.UserId);
+                await AccountServices.AddAccounts(accountDTO);
+            }
+            return SavedUser;
         }
 
         public void DeleteUser(Guid userId)
@@ -84,12 +96,27 @@ namespace BankingSystem.API.Services
             return null;
         }
 
-        public string HashPassword(string password)
+        private static Random ran = new Random();
+        private long GenerateRandomAccountNumber(int num)
         {
-            using (SHA256 sha256 = SHA256.Create())
+            switch (num)
             {
-                byte[] hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+                case 1:
+                    var accountNumber = new StringBuilder("100001");
+                    while (accountNumber.Length < 16)
+                    {
+                        accountNumber.Append(ran.Next(10).ToString());
+                    }
+                    return long.Parse(accountNumber.ToString());
+                case 2:
+                    var atmCardNum = new StringBuilder("900009");
+                    while (atmCardNum.Length < 16)
+                    {
+                        atmCardNum.Append(ran.Next(10).ToString());
+                    }
+                    return long.Parse(atmCardNum.ToString());
+                default:
+                    return 0;
             }
         }
     }

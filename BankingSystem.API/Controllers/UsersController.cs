@@ -55,7 +55,7 @@ namespace BankingSystem.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Users>> AddUsers(UserDTO user)
         {
-            var users = await userService.AddUsers(user);
+            var users = await userService.RegisterUsers(user);
             if (users == null)
             {
                 return StatusCode(400, "User already exists.");

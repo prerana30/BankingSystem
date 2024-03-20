@@ -27,6 +27,11 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<KycDocument>().Ignore(k=> k.UserImageFile);
         modelBuilder.Entity<KycDocument>().Ignore(k => k.CitizenshipImageFile);
 
+
+        modelBuilder.Entity<Users>()
+        .HasIndex(u => u.Email)
+        .IsUnique();
+
         //define foreign key relations
 
         /*modelBuilder.Entity<Transaction>()

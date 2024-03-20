@@ -47,7 +47,7 @@ namespace BankingSystem.API.Controllers
             var accounts = await accountServices.AddAccounts(account);
             if (accounts == null)
             {
-                return StatusCode(400, "User already exists.");
+                return StatusCode(400, "Account already exists.");
             }
             return Ok(accounts);
         }

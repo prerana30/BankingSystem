@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BankingSystem.API.Models
 {
@@ -19,6 +18,11 @@ namespace BankingSystem.API.Models
         public string Email { get; set; }
         [Required]
         public string Password { get; set; }
+
+        /*[Required]
+        [MaxLength(10)]
+        public string PhoneNumber {  get; set; }*/
+
         public string Address { get; set; }
         public Roles UserType { get; set; }
         public DateTime DateOfBirth { get; set; }
