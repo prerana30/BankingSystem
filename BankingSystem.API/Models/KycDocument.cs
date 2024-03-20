@@ -31,20 +31,24 @@ namespace BankingSystem.API.Models
         public string GrandFatherName { get; set; }
 
         [Required]
+        public IFormFile UserImageFile { get; set; }
+
         public string UserImagePath { get; set; }
 
         [Required]
+        public IFormFile CitizenshipImageFile { get; set; }
+
         public string CitizenshipImagePath { get; set; }
 
         public string PermanentAddress { get; set; }
 
         public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
 
-        public bool IsApproved { get; set; }    
+        public bool IsApproved { get; set; } = false; 
 
         /*public KycDocument(int KYCId, int userId, string fatherName,
                            string motherName, string grandFatherName,
-                           IFormFile userImagePath, IFormFile citizenshipImagePath,
+                           IFormFile UserImageFile, IFormFile CitizenshipImageFile,
                            string permanentAddress)
         {
             KYCId = KYCId;
@@ -52,8 +56,8 @@ namespace BankingSystem.API.Models
             FatherName = fatherName;
             MotherName = motherName;
             GrandFatherName = grandFatherName;
-            UserImagePath = userImagePath;
-            CitizenshipImagePath = citizenshipImagePath;
+            UserImageFile = UserImageFile;
+            CitizenshipImageFile = CitizenshipImageFile;
             PermanentAddress = permanentAddress;
         }*/
 

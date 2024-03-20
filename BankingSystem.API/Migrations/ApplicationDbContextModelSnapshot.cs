@@ -71,6 +71,10 @@ namespace BankingSystem.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("CitizenshipImageFile")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("FatherName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -98,6 +102,10 @@ namespace BankingSystem.API.Migrations
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("UserImageFile")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("KYCId");
 
@@ -183,40 +191,40 @@ namespace BankingSystem.API.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("275fb55c-da3e-4920-9797-b31a6022bce6"),
+                            UserId = new Guid("2ce78094-f04b-4dc2-9cc1-ea66d29384de"),
                             Address = "Gothatar, Kathmandu",
-                            CreatedAt = new DateTime(2024, 3, 19, 8, 51, 5, 900, DateTimeKind.Utc).AddTicks(780),
+                            CreatedAt = new DateTime(2024, 3, 19, 9, 57, 28, 914, DateTimeKind.Utc).AddTicks(898),
                             DateOfBirth = new DateTime(2002, 8, 20, 16, 58, 25, 342, DateTimeKind.Utc),
                             Email = "subritiaryal13@gmail.com",
                             Fullname = "Subriti Aryal",
-                            ModifiedAt = new DateTime(2024, 3, 19, 8, 51, 5, 900, DateTimeKind.Utc).AddTicks(794),
-                            Password = "$2b$10$kSUbd5TDt3gcqv6Q2RGT6O3gf8.2WBiTswxFec2vgN.rchPmZT.Wi",
+                            ModifiedAt = new DateTime(2024, 3, 19, 9, 57, 28, 914, DateTimeKind.Utc).AddTicks(915),
+                            Password = "$2b$10$RNPCVI8DorJwtTv0GKnpN.ndArGyzXlKveHvSan38rHAFIqA34nH.",
                             UserType = 0,
                             Username = "subs"
                         },
                         new
                         {
-                            UserId = new Guid("f920b0f2-e640-4cdf-9790-2cd53e4fc082"),
+                            UserId = new Guid("efe8b5d1-d582-4d23-b1b4-8f27d8745721"),
                             Address = "Kathmandu",
-                            CreatedAt = new DateTime(2024, 3, 19, 8, 51, 5, 974, DateTimeKind.Utc).AddTicks(7033),
+                            CreatedAt = new DateTime(2024, 3, 19, 9, 57, 29, 9, DateTimeKind.Utc).AddTicks(1821),
                             DateOfBirth = new DateTime(2000, 3, 23, 16, 58, 25, 342, DateTimeKind.Utc),
                             Email = "teller@gmail.com",
                             Fullname = "Teller Person",
-                            ModifiedAt = new DateTime(2024, 3, 19, 8, 51, 5, 974, DateTimeKind.Utc).AddTicks(7048),
-                            Password = "$2b$10$zhBu0FoNHiHIERvL.YESq.sGEu4.Va4UspYTxX3V6JvnPyRCisOt6",
+                            ModifiedAt = new DateTime(2024, 3, 19, 9, 57, 29, 9, DateTimeKind.Utc).AddTicks(1840),
+                            Password = "$2b$10$b55xyuZVxOS9yaMGbDA1ducVX5IK9cT83teJHMvvFDY4FvJiltb9i",
                             UserType = 1,
                             Username = "admin"
                         },
                         new
                         {
-                            UserId = new Guid("6ac1bb7a-d697-43d8-bcc9-9f915d53e4c8"),
+                            UserId = new Guid("15385d22-8aaa-411e-889c-b6913d526cac"),
                             Address = "Kathmandu",
-                            CreatedAt = new DateTime(2024, 3, 19, 8, 51, 6, 76, DateTimeKind.Utc).AddTicks(5560),
+                            CreatedAt = new DateTime(2024, 3, 19, 9, 57, 29, 112, DateTimeKind.Utc).AddTicks(241),
                             DateOfBirth = new DateTime(2000, 3, 23, 16, 58, 25, 342, DateTimeKind.Utc),
                             Email = "accountUser@gmail.com",
                             Fullname = "Account Holder",
-                            ModifiedAt = new DateTime(2024, 3, 19, 8, 51, 6, 76, DateTimeKind.Utc).AddTicks(5577),
-                            Password = "$2b$10$n.oHXd8BRukdpIo2CxHOY.psOgGBATecrh8mpI6TtcXclkAKM/cai",
+                            ModifiedAt = new DateTime(2024, 3, 19, 9, 57, 29, 112, DateTimeKind.Utc).AddTicks(257),
+                            Password = "$2b$10$eSWdUO2KkFNF8wJRUpon9.BdhCj/NtOEw8WTbeF6MZadM9Ue7bNVq",
                             UserType = 0,
                             Username = "user"
                         });

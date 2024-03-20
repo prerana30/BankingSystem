@@ -40,9 +40,9 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<KycDocument>> AddKycDocumentAsync([FromBody] KycDocumentDTO kycDocumentDto)
+        public async Task<ActionResult<KycDocument>> AddKycDocumentAsync(KycDocumentDTO kycDocumentDto)//, IFormFile? ImagePath, IFormFile? CitizenshipFile)
         {
-            var kycDocument = await _kycService.AddKycDocumentAsync(kycDocumentDto);
+            var kycDocument = await _kycService.AddKycDocumentAsync(kycDocumentDto);//, ImagePath, CitizenshipFile);
             return Ok(kycDocument);
         }
         

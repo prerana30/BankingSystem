@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using RESTful_API__ASP.NET_Core.Repository;
 using BankingSystem.API.Utils;
+using System.Diagnostics;
 
 namespace BankingSystem.API.Services
 {
@@ -26,16 +27,25 @@ namespace BankingSystem.API.Services
             _firebaseStorageHelper = firebaseStorageHelper;
         }
 
-        public async Task<KycDocument> AddKycDocumentAsync(KycDocumentDTO kycDocumentDto, IFormFile userImageFile, IFormFile citizenshipImageFile)
+        public async Task<KycDocument> AddKycDocumentAsync(KycDocumentDTO kycDocumentDto, IFormFile? userImageFile, IFormFile? citizenshipImageFile)
         {
-            string userImagePath = await UploadFileToFirebaseStorage(userImageFile);
-            string citizenshipImagePath = await UploadFileToFirebaseStorage(citizenshipImageFile);
             var kycDocument = _mapper.Map<KycDocument>(kycDocumentDto);
-            kycDocument.UserImagePath = userImagePath;
-            kycDocument.CitizenshipImagePath = citizenshipImagePath;
-            var addedKycDocument = await _kycRepository.AddKycDocumentAsync(kycDocument);
-            return addedKycDocument; 
+
+            kycDocument.UserImagePath = await ValidateAndUploadFile(userImageFile);
+            kycDocument.CitizenshipImagePath = await ValidateAndUploadFile(citizenshipImageFile);
+
+            kycDocument.UserImagePath = await ValidateAndUploadFile(kycDocument.UserImageFile);
+            kycDocument.CitizenshipImagePath = await ValidateAndUploadFile(kycDocument.CitizenshipImageFile);
+            /*
+                        string UserImageFile = await UploadFileToFirebaseStorage(userImageFile);
+                        string CitizenshipImageFile = await UploadFileToFirebaseStorage(citizenshipImageFile);
+
+                        kycDocument.UserImageFile = UserImageFile;
+                        kycDocument.CitizenshipImageFile = CitizenshipImageFile;*/
+
+            return await _kycRepository.AddKycDocumentAsync(kycDocument);
         }
+
         private async Task<string> UploadFileToFirebaseStorage(IFormFile file)
         {
             try
@@ -71,6 +81,20 @@ namespace BankingSystem.API.Services
         public async Task<KycDocument> AddKycDocumentAsync(KycDocumentDTO kycDocumentDto)
         {
             var kycDocument = _mapper.Map<KycDocument>(kycDocumentDto);
+
+            /*string UserImageFile = await UploadFileToFirebaseStorage(kycDocument.UserImage);
+            string CitizenshipImageFile = await UploadFileToFirebaseStorage(kycDocument.CitizenshipImage);
+
+            kycDocument.UserImageFile = UserImageFile;
+            kycDocument.CitizenshipImageFile = CitizenshipImageFile;*/
+
+            kycDocument.UserImagePath = await ValidateAndUploadFile(kycDocument.UserImageFile);
+            kycDocument.CitizenshipImagePath = await ValidateAndUploadFile(kycDocument.CitizenshipImageFile);
+
+            if (kycDocument.UserImagePath != "" && kycDocument.CitizenshipImagePath != "") {
+                kycDocument.IsApproved = true;
+            }
+
             return await _kycRepository.AddKycDocumentAsync(kycDocument);
         }
 
@@ -89,6 +113,43 @@ namespace BankingSystem.API.Services
         {
             return await _kycRepository.UpdateKycDocumentAsync(KYCId, kycDetails);
         }
-    
+
+        public async Task<string> ValidateAndUploadFile(IFormFile fileInput)
+        {
+            var url = "";
+            if (fileInput != null)
+            {
+                if (fileInput.Length > 1.5 * 1024 * 1024) // 1.5MB
+                {
+                    throw new CannotUnloadAppDomainException("File size exceeds the limit");
+                }
+
+                string fileExtension = Path.GetExtension(fileInput.FileName);
+                if (fileExtension.ToLower() != ".png" && fileExtension.ToLower() != ".pdf")
+                {
+                    throw new CannotUnloadAppDomainException($"Invalid file type for {fileInput.FileName}");
+                }
+                else
+                {
+                    try
+                    {
+                        //storing image to firebase
+                        var firebaseStorageHelper = new FirebaseStorageHelper();
+                        var textInput = fileInput.FileName.Substring(fileInput.FileName.LastIndexOf("/") + 1);
+
+                        // Copy the contents of the uploaded file to a memory stream
+                        using var memoryStream = new MemoryStream();
+                        await fileInput.CopyToAsync(memoryStream);
+                        memoryStream.Seek(0, SeekOrigin.Begin);
+                        url = await firebaseStorageHelper.UploadFileAsync(textInput, memoryStream); // pass the stream to the Firebase storage helper method
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.TraceError("An error occurred: {0}", ex.Message);
+                    }
+                }
+            }
+            return url;
+        }
     }
 }
