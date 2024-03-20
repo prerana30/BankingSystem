@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BankingSystem.API.Migrations
 {
     /// <inheritdoc />
-    public partial class ForeignKeys : Migration
+    public partial class KYCDocument : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -72,6 +72,32 @@ namespace BankingSystem.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "KycDocument",
+                columns: table => new
+                {
+                    KYCId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    FatherName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    MotherName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    GrandFatherName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    UserImageFile = table.Column<string>(type: "text", nullable: false),
+                    CitizenshipImageFile = table.Column<string>(type: "text", nullable: false),
+                    PermanentAddress = table.Column<string>(type: "text", nullable: false),
+                    UploadedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsApproved = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_KycDocument", x => x.KYCId);
+                    table.ForeignKey(
+                        name: "FK_KycDocument_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Transaction",
                 columns: table => new
                 {
@@ -98,9 +124,9 @@ namespace BankingSystem.API.Migrations
                 columns: new[] { "UserId", "Address", "CreatedAt", "DateOfBirth", "Email", "Fullname", "ModifiedAt", "Password", "UserType", "Username" },
                 values: new object[,]
                 {
-                    { new Guid("10262b22-69d0-4126-a513-e887ae6dac61"), "Kathmandu", new DateTime(2024, 3, 19, 6, 57, 10, 602, DateTimeKind.Utc).AddTicks(682), new DateTime(2000, 3, 23, 16, 58, 25, 342, DateTimeKind.Utc), "accountUser@gmail.com", "Account Holder", new DateTime(2024, 3, 19, 6, 57, 10, 602, DateTimeKind.Utc).AddTicks(698), "$2b$10$.SfWGzq2faMIbJ4QO5uvteRCddoRHTnCSAM6afqHbLARL.WAmXoNi", 0, "user" },
-                    { new Guid("33101bf4-23cf-4d25-9d49-d1a3607945b3"), "Gothatar, Kathmandu", new DateTime(2024, 3, 19, 6, 57, 10, 137, DateTimeKind.Utc).AddTicks(6429), new DateTime(2002, 8, 20, 16, 58, 25, 342, DateTimeKind.Utc), "subritiaryal13@gmail.com", "Subriti Aryal", new DateTime(2024, 3, 19, 6, 57, 10, 137, DateTimeKind.Utc).AddTicks(6446), "$2b$10$LG.NXzRS.y/VIF0Fkxhg0emd3q4I5n.H6FjxaW8fQSdLrI8z3iG7K", 0, "subs" },
-                    { new Guid("e2a3d57f-0f34-4b71-a2f9-4c87777e6c2b"), "Kathmandu", new DateTime(2024, 3, 19, 6, 57, 10, 417, DateTimeKind.Utc).AddTicks(3035), new DateTime(2000, 3, 23, 16, 58, 25, 342, DateTimeKind.Utc), "teller@gmail.com", "Teller Person", new DateTime(2024, 3, 19, 6, 57, 10, 417, DateTimeKind.Utc).AddTicks(3062), "$2b$10$/x.zWa.Iv3Ri0UXzabb9TOzCRlWMQ0NRoyHp6hWsoQsSQWsU/.dMu", 1, "admin" }
+                    { new Guid("15385d22-8aaa-411e-889c-b6913d526cac"), "Kathmandu", new DateTime(2024, 3, 19, 9, 57, 29, 112, DateTimeKind.Utc).AddTicks(241), new DateTime(2000, 3, 23, 16, 58, 25, 342, DateTimeKind.Utc), "accountUser@gmail.com", "Account Holder", new DateTime(2024, 3, 19, 9, 57, 29, 112, DateTimeKind.Utc).AddTicks(257), "$2b$10$eSWdUO2KkFNF8wJRUpon9.BdhCj/NtOEw8WTbeF6MZadM9Ue7bNVq", 0, "user" },
+                    { new Guid("2ce78094-f04b-4dc2-9cc1-ea66d29384de"), "Gothatar, Kathmandu", new DateTime(2024, 3, 19, 9, 57, 28, 914, DateTimeKind.Utc).AddTicks(898), new DateTime(2002, 8, 20, 16, 58, 25, 342, DateTimeKind.Utc), "subritiaryal13@gmail.com", "Subriti Aryal", new DateTime(2024, 3, 19, 9, 57, 28, 914, DateTimeKind.Utc).AddTicks(915), "$2b$10$RNPCVI8DorJwtTv0GKnpN.ndArGyzXlKveHvSan38rHAFIqA34nH.", 0, "subs" },
+                    { new Guid("efe8b5d1-d582-4d23-b1b4-8f27d8745721"), "Kathmandu", new DateTime(2024, 3, 19, 9, 57, 29, 9, DateTimeKind.Utc).AddTicks(1821), new DateTime(2000, 3, 23, 16, 58, 25, 342, DateTimeKind.Utc), "teller@gmail.com", "Teller Person", new DateTime(2024, 3, 19, 9, 57, 29, 9, DateTimeKind.Utc).AddTicks(1840), "$2b$10$b55xyuZVxOS9yaMGbDA1ducVX5IK9cT83teJHMvvFDY4FvJiltb9i", 1, "admin" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -119,6 +145,11 @@ namespace BankingSystem.API.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_KycDocument_UserId",
+                table: "KycDocument",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Transaction_AccountId",
                 table: "Transaction",
                 column: "AccountId");
@@ -127,6 +158,9 @@ namespace BankingSystem.API.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "KycDocument");
+
             migrationBuilder.DropTable(
                 name: "Transaction");
 

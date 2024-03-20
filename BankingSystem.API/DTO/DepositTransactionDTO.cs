@@ -3,15 +3,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BankingSystem.API.DTO
 {
-    public class TransactionDTO
+    public class DepositTransactionDTO
     {
-        public TransactionType TransactionType { get; set; }
+        public TransactionType TransactionType = TransactionType.Deposit;
 
         public decimal Amount { get; set; }
 
-        public DateTime TransactionTime { get; set; }
-
         public string ? TransactionRemarks { get; set; }
+
+        public DateTime TransactionTime { get; set; }
 
     }
 }

@@ -12,6 +12,8 @@ public class ApplicationDbContext : DbContext
 
     //Define Databases
     public DbSet<Users> Users { get; set; }
+    //Define Kyc Database
+    public DbSet<KycDocument> KycDocument { get; set; }
 
     public DbSet<Accounts> Accounts { get; set; }
 
@@ -22,6 +24,8 @@ public class ApplicationDbContext : DbContext
         //seed database
 
         //ignore attributes
+        modelBuilder.Entity<KycDocument>().Ignore(k=> k.UserImageFile);
+        modelBuilder.Entity<KycDocument>().Ignore(k => k.CitizenshipImageFile);
 
         //define foreign key relations
 
@@ -107,4 +111,5 @@ public class ApplicationDbContext : DbContext
 
         base.OnModelCreating(modelBuilder);
     }
+
 }

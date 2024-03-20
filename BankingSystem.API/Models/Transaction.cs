@@ -19,23 +19,13 @@ namespace BankingSystem.API.Models
 
         [Required]
         [MaxLength(50)]
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
 
-        public DateTime TransactionTime { get; set; }= DateTime.UtcNow;
+        public DateTime TransactionTime { get; set; } = DateTime.UtcNow;
 
         [MaxLength(150)]
-        public string ? TransactionRemarks { get; set; }
+        public string? TransactionRemarks { get; set; }
 
-
-        //public Transaction(int transactionId, int accountId, TransactionType transactionType, double amount, DateTime transactionTime, string transactionRemarks)
-        //{
-        //    TransactionId = transactionId;
-        //    AccountId = accountId;            
-        //    TransactionType = transactionType;
-        //    Amount = amount;
-        //    TransactionTime = transactionTime;
-        //    TransactionRemarks = transactionRemarks;
-        //}
 
         public Transaction()
         { }
