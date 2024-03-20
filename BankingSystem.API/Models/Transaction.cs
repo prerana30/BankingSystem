@@ -21,10 +21,10 @@ namespace BankingSystem.API.Models
         [MaxLength(50)]
         public decimal Amount { get; set; }
 
-        public DateTime TransactionTime { get; set; }= DateTime.UtcNow;
+        public DateTime TransactionTime { get; set; } = DateTime.UtcNow;
 
         [MaxLength(150)]
-        public string ? TransactionRemarks { get; set; }
+        public string? TransactionRemarks { get; set; }
 
 
         public Transaction()

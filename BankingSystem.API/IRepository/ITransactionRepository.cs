@@ -15,7 +15,7 @@ namespace BankingSystem.API.IRepository
 
         Task<bool> IsVerifiedKycAsync(Guid kycId);
 
-        Task<Transaction> DepositTransactionAsync(Transaction transaction, Guid accountId);
+        Task<Transaction> DepositTransactionAsync(Transaction transaction, Guid accountId, Guid userId);
 
         Task<Transaction> WithdrawTransactionAsync(Transaction transaction, Guid accountId, int atmIdAtmCardPin);
     }

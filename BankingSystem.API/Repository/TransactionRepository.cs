@@ -56,7 +56,7 @@ namespace BankingSystem.API.Repository
 
 
 
-        public async Task<Transaction> DepositTransactionAsync(Transaction transaction, Guid accountId)
+        public async Task<Transaction> DepositTransactionAsync(Transaction transaction, Guid accountId, Guid userId)
         {
             var account = await _context.Accounts
                 .FirstOrDefaultAsync(c => c.AccountId == accountId);
@@ -74,12 +74,27 @@ namespace BankingSystem.API.Repository
                 throw new Exception($"KYC document not found for user ID {account.User.UserId}.");
             }
 
+            var teller = await _context.Users
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            if (teller is null)
+            {
+                throw new Exception($"Teller id- {accountId} is not found.");
+            }
+
+
+            bool isTeller = teller.UserType is Roles.TellerPerson;
+            if (!isTeller)
+            {
+                throw new Exception($"Teller id- {accountId} is not valid/available.");
+            }
+
             var isVerified = await IsVerifiedKycAsync(kycAccount.KYCId);
 
             var totalBalance = await _context.Accounts
                 .FirstOrDefaultAsync(b => b.Balance == account.Balance);
 
-            if (isVerified is true)
+            if (isVerified is true && isTeller)
             {
                 // Set the accountId for the transaction
                 transaction.AccountId = accountId;
@@ -120,7 +135,7 @@ namespace BankingSystem.API.Repository
             {
                 throw new Exception($"ATM Card Pin is not found or available for user ID {accountId}.");
             }
-            
+
             var isVerified = await IsVerifiedKycAsync(kycAccount.KYCId);
 
             var totalBalance = await _context.Accounts
@@ -128,7 +143,6 @@ namespace BankingSystem.API.Repository
 
             if (isVerified is true)
             {
-                // Set the accountId for the transaction
                 transaction.AccountId = accountId;
 
                 _context.Transaction.Add(transaction);

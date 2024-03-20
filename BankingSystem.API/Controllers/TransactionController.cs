@@ -39,7 +39,7 @@ namespace BankingSystem.API.Controllers
             {
                 return NotFound();
             }
-             _transactionServices.DeleteTransaction(accountId, transactionId);
+            _transactionServices.DeleteTransaction(accountId, transactionId);
 
             return NoContent();
         }
@@ -47,9 +47,9 @@ namespace BankingSystem.API.Controllers
 
         [Route("api/transactions/deposit")]
         [HttpPost]
-        public async Task<ActionResult<Transaction>> DepositTransaction(DepositTransactionDTO transaction, Guid accountId)
+        public async Task<ActionResult<Transaction>> DepositTransaction(DepositTransactionDTO transaction, Guid accountId, Guid tellerId)
         {
-            var depositAccount = await _transactionServices.DepositTransactionAsync(transaction, accountId);
+            var depositAccount = await _transactionServices.DepositTransactionAsync(transaction, accountId, tellerId);
 
             return Ok(depositAccount);
         }
