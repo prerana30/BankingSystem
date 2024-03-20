@@ -31,18 +31,18 @@ namespace BankingSystem.API.Controllers
         }
 
 
-        [Route("api/transactions")]
-        [HttpDelete]
-        public async Task<ActionResult> DeleteTransaction(Guid accountId, Guid transactionId)
-        {
-            if (!await _transactionServices.TransactionExistAsync(transactionId))
-            {
-                return NotFound();
-            }
-            _transactionServices.DeleteTransaction(accountId, transactionId);
+        //[Route("api/transactions")]
+        //[HttpDelete]
+        //public async Task<ActionResult> DeleteTransaction(Guid accountId, Guid transactionId)
+        //{
+        //    if (!await _transactionServices.TransactionExistAsync(transactionId))
+        //    {
+        //        return NotFound();
+        //    }
+        //    _transactionServices.DeleteTransaction(accountId, transactionId);
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
 
         [Route("api/transactions/deposit")]
@@ -57,9 +57,9 @@ namespace BankingSystem.API.Controllers
 
         [Route("api/transactions/withdraw")]
         [HttpPost]
-        public async Task<ActionResult<Transaction>> WithdrawTransaction(WithdrawTransactionDTO transaction, Guid accountId, int atmIdAtmCardPin)
+        public async Task<ActionResult<Transaction>> WithdrawTransaction(WithdrawTransactionDTO transaction, Guid accountId, int atmCardPin)
         {
-            var withdrawAccount = await _transactionServices.WithdrawTransactionAsync(transaction, accountId, atmIdAtmCardPin);
+            var withdrawAccount = await _transactionServices.WithdrawTransactionAsync(transaction, accountId, atmCardPin);
 
             return Ok(withdrawAccount);
         }
