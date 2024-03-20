@@ -1,7 +1,5 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.IO;
 
 namespace BankingSystem.API.Models
 {
@@ -31,31 +29,52 @@ namespace BankingSystem.API.Models
         public string GrandFatherName { get; set; }
 
         [Required]
+        public IFormFile UserImageFile { get; set; }
+
         public string UserImagePath { get; set; }
 
         [Required]
+        public IFormFile CitizenshipImageFile { get; set; }
+
         public string CitizenshipImagePath { get; set; }
 
         public string PermanentAddress { get; set; }
 
         public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
 
-        public bool IsApproved { get; set; }    
+        public bool IsApproved { get; set; } = false;
 
-        /*public KycDocument(int KYCId, int userId, string fatherName,
-                           string motherName, string grandFatherName,
-                           IFormFile userImagePath, IFormFile citizenshipImagePath,
-                           string permanentAddress)
+        public KycDocument(Guid kYCId, Guid userId, Users user, string fatherName, string motherName, string grandFatherName, IFormFile userImageFile, string userImagePath, IFormFile citizenshipImageFile, string citizenshipImagePath, string permanentAddress, DateTime uploadedAt, bool isApproved)
         {
-            KYCId = KYCId;
+            KYCId = kYCId;
             UserId = userId;
+            User = user;
             FatherName = fatherName;
             MotherName = motherName;
             GrandFatherName = grandFatherName;
+            UserImageFile = userImageFile;
             UserImagePath = userImagePath;
+            CitizenshipImageFile = citizenshipImageFile;
             CitizenshipImagePath = citizenshipImagePath;
             PermanentAddress = permanentAddress;
-        }*/
+            UploadedAt = uploadedAt;
+            IsApproved = isApproved;
+        }
+
+        public KycDocument(Guid kYCId, Guid userId, Users user, string fatherName, string motherName, string grandFatherName, IFormFile userImageFile, IFormFile citizenshipImageFile, string permanentAddress, DateTime uploadedAt, bool isApproved)
+        {
+            KYCId = kYCId;
+            UserId = userId;
+            User = user;
+            FatherName = fatherName;
+            MotherName = motherName;
+            GrandFatherName = grandFatherName;
+            UserImageFile = userImageFile;
+            CitizenshipImageFile = citizenshipImageFile;
+            PermanentAddress = permanentAddress;
+            UploadedAt = uploadedAt;
+            IsApproved = isApproved;
+        }
 
         public KycDocument() { }
     }

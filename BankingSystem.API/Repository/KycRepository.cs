@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using BankingSystem.API.Models;
 using BankingSystem.API.IRepository;
 using Microsoft.AspNetCore.JsonPatch;
@@ -37,13 +33,13 @@ namespace RESTful_API__ASP.NET_Core.Repository
                 existingKycDocument.PermanentAddress = updatedKycDocument.PermanentAddress;
                 existingKycDocument.UploadedAt = updatedKycDocument.UploadedAt;
 
-                if (updatedKycDocument.UserImagePath != null)
+                if (updatedKycDocument.UserImageFile != null)
                 {
-                    existingKycDocument.UserImagePath = updatedKycDocument.UserImagePath;
+                    existingKycDocument.UserImageFile = updatedKycDocument.UserImageFile;
                 }
-                if (updatedKycDocument.CitizenshipImagePath != null)
+                if (updatedKycDocument.CitizenshipImageFile != null)
                 {
-                    existingKycDocument.CitizenshipImagePath = updatedKycDocument.CitizenshipImagePath;
+                    existingKycDocument.CitizenshipImageFile = updatedKycDocument.CitizenshipImageFile;
                 }
 
                 await _context.SaveChangesAsync();

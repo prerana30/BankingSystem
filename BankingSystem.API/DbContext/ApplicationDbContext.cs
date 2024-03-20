@@ -24,8 +24,8 @@ public class ApplicationDbContext : DbContext
         //seed database
 
         //ignore attributes
-        modelBuilder.Entity<KycDocument>().Ignore(k=> k.UserImagePath);
-        modelBuilder.Entity<KycDocument>().Ignore(k => k.CitizenshipImagePath);
+        modelBuilder.Entity<KycDocument>().Ignore(k=> k.UserImageFile);
+        modelBuilder.Entity<KycDocument>().Ignore(k => k.CitizenshipImageFile);
 
         //define foreign key relations
 
