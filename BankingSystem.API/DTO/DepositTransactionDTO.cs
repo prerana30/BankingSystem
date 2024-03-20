@@ -7,7 +7,7 @@ namespace BankingSystem.API.DTO
     {
         public TransactionType TransactionType = TransactionType.Deposit;
 
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
 
         public string ? TransactionRemarks { get; set; }
 

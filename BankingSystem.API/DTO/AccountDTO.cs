@@ -5,11 +5,12 @@ namespace BankingSystem.API.DTO
 {
     public class AccountDTO
     {
+        public Guid UserId { get; set; }
+        
         [Required]
-        public long AccountNumber { get; set; }
-
-        public long Balance { get; set; }
-        public long AtmCardNum { get; set; }
+        //public long AccountNumber { get; set; }
+        public decimal Balance { get; set; }
+        //public long AtmCardNum { get; set; }
 
         [Required]
         
@@ -24,10 +25,10 @@ namespace BankingSystem.API.DTO
 
         public Guid AccountModifiedBy { get; set; }
 
-        public AccountDTO( long balance, long atmCardNum, int atmCardPin, DateTime accountCreatedAt, Guid accountCreatedBy, DateTime accountModifiedAt, Guid accountModifiedBy)
+        public AccountDTO( Guid userId, decimal balance, int atmCardPin, DateTime accountCreatedAt, Guid accountCreatedBy, DateTime accountModifiedAt, Guid accountModifiedBy)
         {
+            UserId = userId;
             Balance = balance;
-            AtmCardNum = atmCardNum;
             AtmCardPin = atmCardPin;
             AccountCreatedAt = accountCreatedAt;
             AccountCreatedBy = accountCreatedBy;
