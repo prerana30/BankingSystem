@@ -39,11 +39,17 @@ namespace BankingSystem.API.Services
             return await _transactionRepository.IsVerifiedKycAsync(kycId);
         }
 
-        public async Task<Transaction> DepositTransactionAsync(DepositTransactionDTO transactionDto, Guid accountId)
+        public async Task<Transaction> DepositTransactionAsync(DepositTransactionDTO transactionDto, Guid accountId, Guid userId)
         {
             var transaction = _mapper.Map<Transaction>(transactionDto);
-            return await _transactionRepository.DepositTransactionAsync(transaction, accountId);
+            return await _transactionRepository.DepositTransactionAsync(transaction, accountId, userId);
         }
 
+
+        public async Task<Transaction> WithdrawTransactionAsync(WithdrawTransactionDTO withdrawDto, Guid accountId, int atmIdAtmCardPin)
+        {
+            var transaction = _mapper.Map<Transaction>(withdrawDto);
+            return await _transactionRepository.WithdrawTransactionAsync(transaction, accountId, atmIdAtmCardPin);
+        }
     }
 }
