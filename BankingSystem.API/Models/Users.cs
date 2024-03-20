@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace BankingSystem.API.Models
 {
-    public class Users
+    public class Users : IdentityUser
     {
         [Key]
         public Guid UserId { get; set; } = Guid.NewGuid();
@@ -19,9 +20,9 @@ namespace BankingSystem.API.Models
         [Required]
         public string Password { get; set; }
 
-        /*[Required]
+        [Required]
         [MaxLength(10)]
-        public string PhoneNumber {  get; set; }*/
+        public string PhoneNumber { get; set; }
 
         public string Address { get; set; }
         public Roles UserType { get; set; }

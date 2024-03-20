@@ -70,6 +70,17 @@ public class ApplicationDbContext : DbContext
 
         DateTime dateOfBirth1 = DateTime.SpecifyKind(DateTime.ParseExact("2000-03-23T11:13:25.342Z", "yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture), DateTimeKind.Utc);
 
+        /*modelBuilder.Entity<Accounts>().HasData(new Accounts()
+        {
+            AccountId= Guid.NewGuid(),
+            AccountNumber= 1234627838293832,
+            AtmCardNum=18462873844833,
+            AtmCardPin=1242,
+            UserId= Guid.NewGuid(),
+            AccountCreatedAt = dateOfBirth1,    
+            
+        });*/
+
         modelBuilder.Entity<Users>()
             .HasData(
                 new Users()
@@ -80,6 +91,7 @@ public class ApplicationDbContext : DbContext
                     Address = "Gothatar, Kathmandu",
                     Email = "subritiaryal13@gmail.com",
                     Password = BCrypt.Net.BCrypt.HashPassword("Subriti123"),
+                    PhoneNumber="9843346520",
                     CreatedAt = DateTime.UtcNow.ToUniversalTime(),
                     DateOfBirth = dateOfBirth,
                     ModifiedAt = DateTime.UtcNow.ToUniversalTime(),
@@ -93,6 +105,7 @@ public class ApplicationDbContext : DbContext
                     Address = "Kathmandu",
                     Email = "teller@gmail.com",
                     Password = BCrypt.Net.BCrypt.HashPassword("Teller123"),
+                    PhoneNumber = "9826274833",
                     CreatedAt = DateTime.UtcNow.ToUniversalTime(),
                     DateOfBirth = dateOfBirth1,
                     ModifiedAt = DateTime.UtcNow.ToUniversalTime(),
@@ -106,6 +119,7 @@ public class ApplicationDbContext : DbContext
                     Address = "Kathmandu",
                     Email = "accountUser@gmail.com",
                     Password = BCrypt.Net.BCrypt.HashPassword("User123"),
+                    PhoneNumber = "9830274849",
                     CreatedAt = DateTime.UtcNow.ToUniversalTime(),
                     DateOfBirth = dateOfBirth1,
                     ModifiedAt = DateTime.UtcNow.ToUniversalTime(),

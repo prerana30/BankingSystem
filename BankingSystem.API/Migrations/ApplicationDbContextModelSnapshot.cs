@@ -71,7 +71,7 @@ namespace BankingSystem.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("CitizenshipImageFile")
+                    b.Property<string>("CitizenshipImagePath")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -103,7 +103,7 @@ namespace BankingSystem.API.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("UserImageFile")
+                    b.Property<string>("UserImagePath")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -150,8 +150,14 @@ namespace BankingSystem.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Address")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("CreatedAt")
@@ -164,16 +170,54 @@ namespace BankingSystem.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Fullname")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("text");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("text");
+
                     b.Property<string>("Password")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("UserName")
                         .HasColumnType("text");
 
                     b.Property<int>("UserType")
@@ -186,45 +230,75 @@ namespace BankingSystem.API.Migrations
 
                     b.HasKey("UserId");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("Users");
 
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("2ce78094-f04b-4dc2-9cc1-ea66d29384de"),
+                            UserId = new Guid("ed5db673-53ab-4ac3-a441-8f5b2ba93361"),
+                            AccessFailedCount = 0,
                             Address = "Gothatar, Kathmandu",
-                            CreatedAt = new DateTime(2024, 3, 19, 9, 57, 28, 914, DateTimeKind.Utc).AddTicks(898),
+                            ConcurrencyStamp = "ac43dbbe-42b7-4001-b588-3a7b1f3192b8",
+                            CreatedAt = new DateTime(2024, 3, 20, 9, 46, 57, 601, DateTimeKind.Utc).AddTicks(5958),
                             DateOfBirth = new DateTime(2002, 8, 20, 16, 58, 25, 342, DateTimeKind.Utc),
                             Email = "subritiaryal13@gmail.com",
+                            EmailConfirmed = false,
                             Fullname = "Subriti Aryal",
-                            ModifiedAt = new DateTime(2024, 3, 19, 9, 57, 28, 914, DateTimeKind.Utc).AddTicks(915),
-                            Password = "$2b$10$RNPCVI8DorJwtTv0GKnpN.ndArGyzXlKveHvSan38rHAFIqA34nH.",
+                            Id = "e1fe81c3-ad21-48dc-8b59-c01b8fa07cd2",
+                            LockoutEnabled = false,
+                            ModifiedAt = new DateTime(2024, 3, 20, 9, 46, 57, 601, DateTimeKind.Utc).AddTicks(6007),
+                            Password = "$2b$10$5v3kSWwbdSH7pFY426qCp.60B5EhF7ZtWdXRGulf44ItvpVem5JOK",
+                            PhoneNumber = "9843346520",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "173578a5-61f6-4e71-8a2a-226330912d96",
+                            TwoFactorEnabled = false,
                             UserType = 0,
                             Username = "subs"
                         },
                         new
                         {
-                            UserId = new Guid("efe8b5d1-d582-4d23-b1b4-8f27d8745721"),
+                            UserId = new Guid("eee3dcbb-5de0-4ea6-8e1c-4c219c253c86"),
+                            AccessFailedCount = 0,
                             Address = "Kathmandu",
-                            CreatedAt = new DateTime(2024, 3, 19, 9, 57, 29, 9, DateTimeKind.Utc).AddTicks(1821),
+                            ConcurrencyStamp = "0df0bd11-b855-4349-9332-e470cd335097",
+                            CreatedAt = new DateTime(2024, 3, 20, 9, 46, 57, 740, DateTimeKind.Utc).AddTicks(6099),
                             DateOfBirth = new DateTime(2000, 3, 23, 16, 58, 25, 342, DateTimeKind.Utc),
                             Email = "teller@gmail.com",
+                            EmailConfirmed = false,
                             Fullname = "Teller Person",
-                            ModifiedAt = new DateTime(2024, 3, 19, 9, 57, 29, 9, DateTimeKind.Utc).AddTicks(1840),
-                            Password = "$2b$10$b55xyuZVxOS9yaMGbDA1ducVX5IK9cT83teJHMvvFDY4FvJiltb9i",
+                            Id = "0dc4952a-9d27-4872-ada9-59320da0bd1a",
+                            LockoutEnabled = false,
+                            ModifiedAt = new DateTime(2024, 3, 20, 9, 46, 57, 740, DateTimeKind.Utc).AddTicks(6120),
+                            Password = "$2b$10$U.fpfdedWF9/TqRO3hblwu/2IzRvDIVksGnIBZjkA6PmfHMQcy3Ua",
+                            PhoneNumber = "9826274833",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "40493b87-7e7c-487a-93f1-197bbddecb4a",
+                            TwoFactorEnabled = false,
                             UserType = 1,
                             Username = "admin"
                         },
                         new
                         {
-                            UserId = new Guid("15385d22-8aaa-411e-889c-b6913d526cac"),
+                            UserId = new Guid("3e008792-1507-49d6-ae9b-db0280a69951"),
+                            AccessFailedCount = 0,
                             Address = "Kathmandu",
-                            CreatedAt = new DateTime(2024, 3, 19, 9, 57, 29, 112, DateTimeKind.Utc).AddTicks(241),
+                            ConcurrencyStamp = "17a92e6d-44ef-4885-9c4a-9e561c019e5b",
+                            CreatedAt = new DateTime(2024, 3, 20, 9, 46, 57, 914, DateTimeKind.Utc).AddTicks(431),
                             DateOfBirth = new DateTime(2000, 3, 23, 16, 58, 25, 342, DateTimeKind.Utc),
                             Email = "accountUser@gmail.com",
+                            EmailConfirmed = false,
                             Fullname = "Account Holder",
-                            ModifiedAt = new DateTime(2024, 3, 19, 9, 57, 29, 112, DateTimeKind.Utc).AddTicks(257),
-                            Password = "$2b$10$eSWdUO2KkFNF8wJRUpon9.BdhCj/NtOEw8WTbeF6MZadM9Ue7bNVq",
+                            Id = "9d16a167-a919-4bd0-bda9-5f452a3b589c",
+                            LockoutEnabled = false,
+                            ModifiedAt = new DateTime(2024, 3, 20, 9, 46, 57, 914, DateTimeKind.Utc).AddTicks(456),
+                            Password = "$2b$10$gXYfVW.8yCNdS.7tFFAwbuT2SnzIU0tjjYjSaytG9Z1sJ6/7EM4.i",
+                            PhoneNumber = "9830274849",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "c4ed2d74-21ce-45f5-b814-7b4772bf3a39",
+                            TwoFactorEnabled = false,
                             UserType = 0,
                             Username = "user"
                         });

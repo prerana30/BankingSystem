@@ -24,11 +24,12 @@ namespace BankingSystem.Test.UnitTests
             // Arrange
             var id = new Guid();
             var userRepositoryMock = new Mock<IUserRepository>();
+            var accountService= new Mock<AccountServices>();
             userRepositoryMock.Setup(repo => repo.GetUserAsync(id))
                 .ReturnsAsync(new Users { UserId = id, Username = "ishwor", Fullname = "Ishwor Shrestha", Address = "Pulchowk", Email = "ishwor@gmail.com" });
 
             var mapperMock = new Mock<IMapper>();
-            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object);
+            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object, accountService.Object);
 
             // Act
             var result = await userService.GetUserAsync(id);
@@ -51,6 +52,7 @@ namespace BankingSystem.Test.UnitTests
             var id1 = new Guid();
             var id2 = new Guid();
             var userRepositoryMock = new Mock<IUserRepository>();
+            var accountService = new Mock<AccountServices>();
             var expectedUsers = new List<Users>
             {
                 new Users { UserId = id1, Username = "ishwor", Fullname = "Ishwor Shrestha", Address = "Pulchowk", Email = "ishwor@gmail.com" },
@@ -58,7 +60,7 @@ namespace BankingSystem.Test.UnitTests
             };
             userRepositoryMock.Setup(repo => repo.GetUsersAsync()).ReturnsAsync(expectedUsers);
             var mapperMock = new Mock<IMapper>();
-            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object);
+            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object, accountService.Object);
 
             // Act
             var result = await userService.GetUsersAsync();
