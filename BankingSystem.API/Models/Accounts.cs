@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace BankingSystem.API.Models
 {
@@ -17,7 +18,7 @@ namespace BankingSystem.API.Models
         [Required]
         public long AccountNumber { get; set; }
 
-        public long Balance { get; set; }
+        public decimal Balance { get; set; }
         public long AtmCardNum { get; set; }
 
         [Required]
@@ -42,12 +43,11 @@ namespace BankingSystem.API.Models
         public Users ModifiedByUser { get; set; }
 
 
-        public Accounts(Guid accountId, Guid userId, long balance, long atmCardNum, int atmCardPin, DateTime accountCreatedAt, Guid accountCreatedBy, DateTime accountModifiedAt, Guid accountModifiedBy)
+        public Accounts(Guid accountId, Guid userId, decimal balance, int atmCardPin, DateTime accountCreatedAt, Guid accountCreatedBy, DateTime accountModifiedAt, Guid accountModifiedBy)
         {
             AccountId = accountId;
             UserId = userId;
             Balance = balance;
-            AtmCardNum = atmCardNum;
             AtmCardPin = atmCardPin;
             AccountCreatedAt = accountCreatedAt;
             AccountCreatedBy = accountCreatedBy;
@@ -58,7 +58,42 @@ namespace BankingSystem.API.Models
 
         public Accounts()
         {
+            AccountNumber = GenerateRandomAccountNumber(1);
+            AtmCardNum = GenerateRandomAccountNumber(2);
 
+        }
+
+        private static Random ran = new Random();
+
+        private long GenerateRandomAccountNumber(int num)
+        {
+            if(num == 1)
+            {
+
+            var builder = new StringBuilder("100001");
+
+            while (builder.Length < 16)
+            {
+                builder.Append(ran.Next(10).ToString());
+            }
+
+            return long.Parse(builder.ToString());
+            }
+            else if(num == 2)
+            {
+                var builder = new StringBuilder("900009");
+
+                while (builder.Length < 16)
+                {
+                    builder.Append(ran.Next(10).ToString());
+                }
+
+                return long.Parse(builder.ToString());
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }
