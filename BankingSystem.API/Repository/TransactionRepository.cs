@@ -141,6 +141,13 @@ namespace BankingSystem.API.Repository
             var totalBalance = await _context.Accounts
                 .FirstOrDefaultAsync(b => b.Balance == account.Balance);
 
+            var withdrawAmount = transaction.Amount;
+
+            if (account.Balance < transaction.Amount)
+            {
+                throw new Exception($"Insufficient balance for withdraw.");
+            }
+
             if (isVerified is true)
             {
                 transaction.AccountId = accountId;
