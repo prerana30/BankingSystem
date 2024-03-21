@@ -28,13 +28,13 @@ namespace BankingSystem.API.Models
         [MaxLength(50)]
         public string GrandFatherName { get; set; }
 
-        [Required]
-        public IFormFile UserImageFile { get; set; }
+       /* [Required]
+        public IFormFile UserImageFile { get; set; }*/
 
         public string UserImagePath { get; set; }
 
-        [Required]
-        public IFormFile CitizenshipImageFile { get; set; }
+       /* [Required]
+        public IFormFile CitizenshipImageFile { get; set; }*/
 
         public string CitizenshipImagePath { get; set; }
 
@@ -44,7 +44,7 @@ namespace BankingSystem.API.Models
 
         public bool IsApproved { get; set; } = false;
 
-        public KycDocument(Guid kYCId, Guid userId, Users user, string fatherName, string motherName, string grandFatherName, IFormFile userImageFile, string userImagePath, IFormFile citizenshipImageFile, string citizenshipImagePath, string permanentAddress, DateTime uploadedAt, bool isApproved)
+       /* public KycDocument(Guid kYCId, Guid userId, Users user, string fatherName, string motherName, string grandFatherName, IFormFile userImageFile, string userImagePath, IFormFile citizenshipImageFile, string citizenshipImagePath, string permanentAddress, DateTime uploadedAt, bool isApproved)
         {
             KYCId = kYCId;
             UserId = userId;
@@ -75,7 +75,7 @@ namespace BankingSystem.API.Models
             UploadedAt = uploadedAt;
             IsApproved = isApproved;
         }
-
+*/
         public KycDocument() { }
     }
 }
