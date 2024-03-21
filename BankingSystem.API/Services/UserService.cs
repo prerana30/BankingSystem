@@ -5,6 +5,11 @@ using Microsoft.AspNetCore.JsonPatch;
 using AutoMapper;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using System.Net;
+using System.Threading;
+using System;
+using System.Globalization;
+using System.Data;
 
 namespace BankingSystem.API.Services
 {
@@ -15,11 +20,16 @@ namespace BankingSystem.API.Services
 
         private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, AccountServices accountServices)
+        private readonly UserManager<Users> _userManager;
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+
+        public UserService(IUserRepository userRepository, IMapper mapper, AccountServices accountServices, UserManager<Users> userManager, RoleManager<IdentityRole<Guid>> roleManager)
         {
             UserRepository = userRepository ?? throw new ArgumentOutOfRangeException(nameof(userRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             AccountServices = accountServices;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public async Task<Users?> GetUserAsync(Guid Id)
@@ -59,6 +69,70 @@ namespace BankingSystem.API.Services
                 await AccountServices.AddAccounts(accountDTO);
             //}
             return SavedUser;
+        }
+
+        public async Task<Users> RegisterUser(UserDTO users)
+        {
+            var finalUser = _mapper.Map<Users>(users);
+
+            // Hash password using bcrypt
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(users.Password);
+            finalUser.PasswordHash = hashedPassword;
+
+            var emailDuplication = _userManager.FindByEmailAsync(users.Email);
+            if (emailDuplication.Result != null)
+            {
+                throw new Exception("Duplicate Email Address and UserName!");
+            }
+            
+            var user = new Users()
+            {
+                UserName = finalUser.UserName,
+                Fullname = finalUser.Fullname,
+                Email = finalUser.Email,
+                PhoneNumber = finalUser.PhoneNumber,
+                Address= finalUser.Address,
+                DateOfBirth= finalUser.DateOfBirth,
+                CreatedAt = DateTime.UtcNow,
+                ModifiedAt = DateTime.UtcNow,
+                
+                SecurityStamp = Guid.NewGuid().ToString(),
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+                TwoFactorEnabled = false,
+                LockoutEnabled = false,
+                AccessFailedCount = 0,
+            };
+            try
+            {
+                var result = await _userManager.CreateAsync(user, finalUser.PasswordHash);
+                if (result.Errors.Any())
+                {
+                    var description = result.Errors.Select(x => x.Description).First();
+                    throw new Exception(description);
+                }
+
+                //var SavedUser = await UserRepository.AddUsers(finalUser);
+                await _userManager.AddToRoleAsync(user, users.UserType);
+
+                if (users.UserType==UserRoles.AccountHolder)
+                {
+                var accountNumber = GenerateRandomAccountNumber(1);
+                var atmCardNum = GenerateRandomAccountNumber(2);
+                var atmCardPin = (int)GenerateRandomAccountNumber(3);
+
+                var accountDTO = new AccountDTO(user.Id, accountNumber, 0, atmCardNum, atmCardPin, DateTime.UtcNow, user.Id, DateTime.UtcNow, user.Id);
+                await AccountServices.AddAccounts(accountDTO);
+                }
+
+                return user;
+            }
+            catch (Exception e)
+            {
+                var errorMsg = $"Could not create user!, {e}";
+                Console.WriteLine(errorMsg);
+                throw new Exception(errorMsg);
+            }
         }
 
         public void DeleteUser(Guid Id)
