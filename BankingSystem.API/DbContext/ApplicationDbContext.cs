@@ -14,6 +14,7 @@ public class ApplicationDbContext : IdentityDbContext<Users, IdentityRole<Guid>,
 
     //Define Databases
     public DbSet<Users> Users { get; set; }
+    //public DbSet<UserInfo> UserInfo { get; set; }   
     //Define Kyc Database
     public DbSet<KycDocument> KycDocument { get; set; }
 

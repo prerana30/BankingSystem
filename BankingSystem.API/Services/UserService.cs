@@ -4,6 +4,7 @@ using BankingSystem.API.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using AutoMapper;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 
 namespace BankingSystem.API.Services
 {
@@ -13,6 +14,7 @@ namespace BankingSystem.API.Services
         private readonly AccountServices AccountServices;
 
         private readonly IMapper _mapper;
+
         public UserService(IUserRepository userRepository, IMapper mapper, AccountServices accountServices)
         {
             UserRepository = userRepository ?? throw new ArgumentOutOfRangeException(nameof(userRepository));
@@ -42,20 +44,20 @@ namespace BankingSystem.API.Services
 
             // Hash password using bcrypt
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(users.Password);
-            finalUser.Password = hashedPassword;
+            finalUser.PasswordHash = hashedPassword;
 
             var SavedUser= await UserRepository.AddUsers(finalUser);
 
             //if user is accountHolder, create account
-            if(SavedUser.UserType==UserRoles.AccountHolder)
-            {
+            //if(SavedUser.UserType==UserRoles.AccountHolder)
+            //{
                 var accountNumber = GenerateRandomAccountNumber(1);
                 var atmCardNum = GenerateRandomAccountNumber(2);
                 var atmCardPin = (int)GenerateRandomAccountNumber(3);
 
                 var accountDTO = new AccountDTO(SavedUser.Id, accountNumber, 0, atmCardNum, atmCardPin, DateTime.UtcNow, SavedUser.Id, DateTime.UtcNow, SavedUser.Id);
                 await AccountServices.AddAccounts(accountDTO);
-            }
+            //}
             return SavedUser;
         }
 
@@ -73,7 +75,7 @@ namespace BankingSystem.API.Services
         {
             var finalUser = _mapper.Map<Users>(users);
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(users.Password);
-            finalUser.Password = hashedPassword;
+            finalUser.PasswordHash = hashedPassword;
 
             return await UserRepository.UpdateUsersAsync(Id, finalUser);
         }
@@ -84,7 +86,7 @@ namespace BankingSystem.API.Services
             var existingUser = await UserRepository.GetUserByEmailAsync(email);
             if (existingUser != null)
             {
-                if (existingUser.Email.Equals(email) && BCrypt.Net.BCrypt.Verify(password, existingUser.Password))
+                if (existingUser.Email.Equals(email) && BCrypt.Net.BCrypt.Verify(password, existingUser.PasswordHash))
                 {
                     return existingUser;
                 }

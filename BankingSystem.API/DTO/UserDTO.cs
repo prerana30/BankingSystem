@@ -35,6 +35,16 @@ namespace BankingSystem.API.DTO
             DateOfBirth = dateOfBirth;
         }
 
+        public UserDTO(string username, string fullname, string email, string password, string address, DateTime dateOfBirth)
+        {
+            Username = username;
+            Fullname = fullname;
+            Email = email;
+            Password = password;
+            Address = address;
+            DateOfBirth = dateOfBirth;
+        }
+
         public UserDTO()
         {
 

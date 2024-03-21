@@ -26,7 +26,7 @@ namespace BankingSystem.Test.UnitTests
             var userRepositoryMock = new Mock<IUserRepository>();
             var accountService= new Mock<AccountServices>();
             userRepositoryMock.Setup(repo => repo.GetUserAsync(Id))
-                .ReturnsAsync(new Users {  Id= Id, Username = "ishwor", Fullname = "Ishwor Shrestha", Address = "Pulchowk", Email = "ishwor@gmail.com" });
+                .ReturnsAsync(new Users {  Id= Id, UserName = "ishwor", Fullname = "Ishwor Shrestha", Address = "Pulchowk", Email = "ishwor@gmail.com" });
 
             var mapperMock = new Mock<IMapper>();
             var userService = new UserService(userRepositoryMock.Object, mapperMock.Object, accountService.Object);
@@ -38,7 +38,7 @@ namespace BankingSystem.Test.UnitTests
             Assert.NotNull(result);
             Assert.Equal(Id, result.Id);
             Assert.Equal("Ishwor Shrestha", result.Fullname);
-            Assert.Equal("ishwor", result.Username);
+            Assert.Equal("ishwor", result.UserName);
         }
 
 
@@ -55,8 +55,8 @@ namespace BankingSystem.Test.UnitTests
             var accountService = new Mock<AccountServices>();
             var expectedUsers = new List<Users>
             {
-                new Users {  Id= id1, Username = "ishwor", Fullname = "Ishwor Shrestha", Address = "Pulchowk", Email = "ishwor@gmail.com" },
-                new Users {  Id= id2, Username = "ishwor2", Fullname = "Ishwor Shrestha 2", Address = "Pulchowk 2", Email = "ishwor2@gmail.com" }
+                new Users {  Id= id1, UserName = "ishwor", Fullname = "Ishwor Shrestha", Address = "Pulchowk", Email = "ishwor@gmail.com" },
+                new Users {  Id= id2, UserName = "ishwor2", Fullname = "Ishwor Shrestha 2", Address = "Pulchowk 2", Email = "ishwor2@gmail.com" }
             };
             userRepositoryMock.Setup(repo => repo.GetUsersAsync()).ReturnsAsync(expectedUsers);
             var mapperMock = new Mock<IMapper>();

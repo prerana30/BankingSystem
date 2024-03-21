@@ -1,6 +1,7 @@
 ﻿using BankingSystem.API.DTO;
 using BankingSystem.API.IRepository;
 using BankingSystem.API.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,7 @@ namespace RESTful_API__ASP.NET_Core.Repository
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _context;
+
         public UserRepository(ApplicationDbContext context)
         {
             _context = context ?? throw new ArgumentOutOfRangeException(nameof(context));
@@ -50,19 +52,19 @@ namespace RESTful_API__ASP.NET_Core.Repository
             if (existingUser != null)
             {
                 //transform user entity to usercreationDTO
-                var userToPatch = new UserDTO(existingUser.Username, existingUser.Fullname, existingUser.Email, existingUser.Password, existingUser.Address, existingUser.UserType, existingUser.DateOfBirth);
+                var userToPatch = new UserDTO(existingUser.UserName, existingUser.Fullname, existingUser.Email, existingUser.PasswordHash, existingUser.Address, /*existingUser.UserType,*/ existingUser.DateOfBirth);
 
                 patchDocument.ApplyTo(userToPatch);
 
-                existingUser.Username = userToPatch.Username;
+                existingUser.UserName = userToPatch.Username;
                 existingUser.Fullname = userToPatch.Fullname;
                 existingUser.Email = userToPatch.Email;
 
                 string hashedPassword = BCrypt.Net.BCrypt.HashPassword(userToPatch.Password);
 
-                existingUser.Password = hashedPassword;
+                existingUser.PasswordHash = hashedPassword;
                 existingUser.Address = userToPatch.Address;
-                existingUser.UserType = userToPatch.UserType;
+                //existingUser.UserType = userToPatch.UserType;
                 existingUser.DateOfBirth = userToPatch.DateOfBirth;
                 
                 //update modifiedAt DateTime
@@ -79,12 +81,12 @@ namespace RESTful_API__ASP.NET_Core.Repository
             var existingUser = await GetUserAsync(Id);
             if (existingUser != null)
             {
-                existingUser.Username = finalUser.Username;
+                existingUser.UserName = finalUser.UserName;
                 existingUser.Fullname = finalUser.Fullname;
                 existingUser.Email = finalUser.Email;
-                existingUser.Password = finalUser.Password;
+                existingUser.PasswordHash = finalUser.PasswordHash;
                 existingUser.Address = finalUser.Address;
-                existingUser.UserType = finalUser.UserType;
+                //existingUser.UserType = finalUser.UserType;
                 existingUser.DateOfBirth = finalUser.DateOfBirth;
 
                 //update modifiedAt DateTime

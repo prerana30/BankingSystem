@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace BankingSystem.API.Models
+﻿namespace BankingSystem.API.Models
 {
-    public class UserRoles : IdentityRole<Guid>
+    public static class UserRoles
     {
         public const string AccountHolder = "AccountHolder";
         public const string TellerPerson = "TellerPerson";

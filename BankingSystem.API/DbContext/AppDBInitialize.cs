@@ -1,11 +1,6 @@
-﻿using AutoMapper;
-using BankingSystem.API.Models;
-using Microsoft.AspNetCore.Builder;
+﻿using BankingSystem.API.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Globalization;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BankingSystem.API.DbContext
 {
@@ -41,36 +36,48 @@ namespace BankingSystem.API.DbContext
 
         private static async Task SeedUserAsync(UserManager<Users> userManager, string email, string username, string fullname, string address, string phoneNumber, string dateOfBirth, string role)
         {
-            var existingUser = await userManager.FindByEmailAsync(email);
-            if (existingUser == null)
+
+            try
             {
-                var newUser = new Users
+                var existingUser = await userManager.FindByEmailAsync(email);
+                if (existingUser == null)
                 {
-                    Username = username,
-                    Fullname = fullname,
-                    Email = email,
-                    PhoneNumber = phoneNumber,
-                    Address = address,
-                    DateOfBirth = DateTime.SpecifyKind(DateTime.ParseExact(dateOfBirth, "yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture), DateTimeKind.Utc),
-                    CreatedAt = DateTime.UtcNow,
-                    ModifiedAt = DateTime.UtcNow,
-                    SecurityStamp = Guid.NewGuid().ToString(),
-                    EmailConfirmed = true
-                };
+                    var newUser = new Users
+                    {
+                        //Username = username,
+                        UserName = username,
+                        Fullname = fullname,
+                        Email = email,
+                        PhoneNumber = phoneNumber,
+                        Address = address,
+                        DateOfBirth = DateTime.SpecifyKind(DateTime.ParseExact(dateOfBirth, "yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture), DateTimeKind.Utc),
+                        CreatedAt = DateTime.UtcNow,
+                        ModifiedAt = DateTime.UtcNow,
+                        SecurityStamp = Guid.NewGuid().ToString(),
+                        EmailConfirmed = true,
+                        PhoneNumberConfirmed = true,
+                        TwoFactorEnabled = false,
+                        LockoutEnabled = false,
+                        AccessFailedCount = 0,
+                        //Password = $"{username}123",
+                        //UserType = role
+                    };
 
-                var result = await userManager.CreateAsync(newUser, $"{username}123");
-                try
-                {
+                    var result = await userManager.CreateAsync(newUser, $"{username}123");
                     if (result.Succeeded)
-                        await userManager.AddToRoleAsync(newUser, role);
-                }
-                catch(Exception ex)
-                {
-                    Console.WriteLine(ex);
-                    throw new Exception(nameof(ex));
+                    {
 
+                        await userManager.AddToRoleAsync(newUser, role);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(nameof(ex));
+
             }
         }
     }
 }
+
