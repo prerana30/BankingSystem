@@ -35,7 +35,7 @@ namespace BankingSystem.API.Controllers
             return Ok(kycDocument);
         }
 
-        [HttpPost]
+      /*  [HttpPost]
         public async Task<ActionResult<KycDocument>> AddKycDocumentAsync(KycDocumentDTO kycDocumentDto)
         {
             var kycDocument = await _kycService.AddKycDocumentAsync(kycDocumentDto);
@@ -51,7 +51,7 @@ namespace BankingSystem.API.Controllers
                 return BadRequest("Update failed");
             }
             return Ok(updatedKycDocument);
-        }
+        }*/
 
     }
 }

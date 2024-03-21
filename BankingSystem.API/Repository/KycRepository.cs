@@ -19,14 +19,14 @@ namespace RESTful_API__ASP.NET_Core.Repository
 
         public async Task<KycDocument> AddKycDocumentAsync(KycDocument kycDocument)
         {
-            _context.KycDocument.Add(kycDocument);
+            _context.KycDocuments.Add(kycDocument);
             await _context.SaveChangesAsync();
             return kycDocument;
         }
         public async Task<KycDocument> UpdateKycDocumentAsync(Guid KYCId, KycDocument updatedKycDocument)
         {
             // Fetch the existing KYC document
-            var existingKycDocument = await _context.KycDocument.FindAsync(KYCId);
+            var existingKycDocument = await _context.KycDocuments.FindAsync(KYCId);
             if (existingKycDocument != null)
             {
                 existingKycDocument.FatherName = updatedKycDocument.FatherName;
@@ -52,17 +52,17 @@ namespace RESTful_API__ASP.NET_Core.Repository
         //no need for all KYC docs at once
         public async Task<IEnumerable<KycDocument>> GetKycDocumentAsync()
         {
-            return await _context.KycDocument.ToListAsync();
+            return await _context.KycDocuments.ToListAsync();
         }
 
         public async Task<KycDocument?> GetKYCIdAsync(Guid KYCId)
         {
-            return await _context.KycDocument.FindAsync(KYCId);
+            return await _context.KycDocuments.FindAsync(KYCId);
         }
 
         public async Task<KycDocument> GetKycByUserIdAsync(Guid userId)
         {
-            return await _context.KycDocument.Where(k => k.UserId == userId).FirstOrDefaultAsync();
+            return await _context.KycDocuments.Where(k => k.UserId == userId).FirstOrDefaultAsync();
         }
 
 

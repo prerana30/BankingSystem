@@ -16,22 +16,22 @@ namespace RESTful_API__ASP.NET_Core.Repository
         public async Task<Users?> GetUserAsync(Guid userId)
         {
             //returns only user detail
-            return await _context.Users.Where(u => u.UserId == userId).FirstOrDefaultAsync();
+            return await _context.SystemUser.Where(u => u.UserId == userId).FirstOrDefaultAsync();
         }
         public async Task<Users?> GetUserByEmailAsync(string email)
         {
             //returns only user detail
-            return await _context.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
+            return await _context.SystemUser.Where(u => u.Email == email).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Users>> GetUsersAsync()
         {
-            return await _context.Users.OrderBy(c => c.Fullname).ToListAsync();
+            return await _context.SystemUser.OrderBy(c => c.Fullname).ToListAsync();
         }
 
         public async Task<Users> AddUsers(Users users)
         {
-            var user = _context.Users.Add(users);
+            var user = _context.SystemUser.Add(users);
             await _context.SaveChangesAsync();
 
             return GetUserAsync(user.Entity.UserId).Result;
@@ -40,7 +40,7 @@ namespace RESTful_API__ASP.NET_Core.Repository
         public void DeleteUser(Guid userId)
         {
             var user = GetUserAsync(userId);
-            _context.Users.Remove(user.Result);
+            _context.SystemUser.Remove(user.Result);
             _context.SaveChangesAsync();
         }
 

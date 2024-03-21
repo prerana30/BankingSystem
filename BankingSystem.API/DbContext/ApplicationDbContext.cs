@@ -7,25 +7,25 @@ public class ApplicationDbContext : DbContext
     //Defining Constructor
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
-        Database.EnsureCreated();
+       // Database.EnsureCreated();
     }
 
     //Define Databases
-    public DbSet<Users> Users { get; set; }
+    public DbSet<Users> SystemUser { get; set; }
     //Define Kyc Database
-    public DbSet<KycDocument> KycDocument { get; set; }
+    public DbSet<KycDocument> KycDocuments { get; set; }
 
-    public DbSet<Accounts> Accounts { get; set; }
+    public DbSet<Accounts> Account { get; set; }
 
-    public DbSet<Transaction> Transaction { get; set; }
+    public DbSet<Transaction> Transactions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         //seed database
 
-        //ignore attributes
+        /*//ignore attributes
         modelBuilder.Entity<KycDocument>().Ignore(k=> k.UserImageFile);
-        modelBuilder.Entity<KycDocument>().Ignore(k => k.CitizenshipImageFile);
+        modelBuilder.Entity<KycDocument>().Ignore(k => k.CitizenshipImageFile);*/
 
         //define foreign key relations
 

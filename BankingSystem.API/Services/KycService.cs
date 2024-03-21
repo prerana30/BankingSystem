@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.JsonPatch;
 using AutoMapper;
 using BankingSystem.API.Utils;
 using System.Diagnostics;
-using BankingSystem.API.Migrations;
 
 namespace BankingSystem.API.Services
 {
@@ -37,7 +36,7 @@ namespace BankingSystem.API.Services
             return await _kycRepository.GetKycByUserIdAsync(userId);
         }
 
-        public async Task<KycDocument> AddKycDocumentAsync(KycDocumentDTO kycDocumentDto)
+       /* public async Task<KycDocument> AddKycDocumentAsync(KycDocumentDTO kycDocumentDto)
         {
             var kycDocument = _mapper.Map<KycDocument>(kycDocumentDto);
 
@@ -77,7 +76,7 @@ namespace BankingSystem.API.Services
             }
             return await _kycRepository.UpdateKycDocumentAsync(KYCId, existingKycDocument);
         }
-
+*/
         public async Task<string> ValidateAndUploadFile(IFormFile fileInput)
         {
             var url = "";

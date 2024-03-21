@@ -56,11 +56,11 @@ namespace BankingSystem.API.Services
             AccountRepository.DeleteAccount(accountId);
         }
 
-        public async Task<Accounts> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> patchDocument)
+      /*  public async Task<Accounts> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> patchDocument)
         {
             return await AccountRepository.PatchAccountDetails(accountId, patchDocument);
         }
-
+*/
         public async Task<Accounts> UpdateAccountsAsync(Guid accountId, AccountDTO accounts)
         {
             var finalAccount = _mapper.Map<Accounts>(accounts);
