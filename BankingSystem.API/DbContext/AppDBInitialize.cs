@@ -36,7 +36,6 @@ namespace BankingSystem.API.DbContext
 
         private static async Task SeedUserAsync(UserManager<Users> userManager, string email, string username, string fullname, string address, string phoneNumber, string dateOfBirth, string role)
         {
-
             try
             {
                 var existingUser = await userManager.FindByEmailAsync(email);
@@ -44,7 +43,6 @@ namespace BankingSystem.API.DbContext
                 {
                     var newUser = new Users
                     {
-                        //Username = username,
                         UserName = username,
                         Fullname = fullname,
                         Email = email,
@@ -59,14 +57,11 @@ namespace BankingSystem.API.DbContext
                         TwoFactorEnabled = false,
                         LockoutEnabled = false,
                         AccessFailedCount = 0,
-                        //Password = $"{username}123",
-                        //UserType = role
                     };
 
                     var result = await userManager.CreateAsync(newUser, $"{username}123");
                     if (result.Succeeded)
                     {
-
                         await userManager.AddToRoleAsync(newUser, role);
                     }
                 }
@@ -75,7 +70,6 @@ namespace BankingSystem.API.DbContext
             {
                 Console.WriteLine(ex);
                 throw new Exception(nameof(ex));
-
             }
         }
     }

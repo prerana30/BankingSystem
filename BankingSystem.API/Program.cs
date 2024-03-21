@@ -12,7 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-
 //Register ApplicationDbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -38,7 +37,6 @@ builder.Services.AddScoped<AccountServices>();
 
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<TransactionServices>();
-
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); //searches for all profiles automatically
 
@@ -67,8 +65,6 @@ app.UseAuthorization();
 app.UseAuthentication();
 
 app.MapControllers();
-
-//AppDBInitialize.SeedUsersAndUserRolesAsync(app).Wait();
 
 // Seed data during application startup
 using (var scope = app.Services.CreateScope())

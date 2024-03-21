@@ -11,7 +11,6 @@ namespace BankingSystem.API.IRepository
         Task<KycDocument> GetKycByUserIdAsync(Guid Id);
         Task<KycDocument> AddKycDocumentAsync(KycDocument kycDocument);
         Task<KycDocument> UpdateKycDocumentAsync(Guid KYCId, KycDocument kycDocument);
-        void DeleteKycDocumentAsync(Guid KYCId);
         public Task<KycDocument> UpdateKycDocumentAsync(Guid KYCId, JsonPatchDocument<KycDocumentDTO> kycDetails);
     }
 }

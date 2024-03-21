@@ -35,22 +35,15 @@ namespace BankingSystem.API.Controllers
             return Ok(kycDocument);
         }
 
-        [HttpPost]
+      /*  [HttpPost]
         public async Task<ActionResult<KycDocument>> AddKycDocumentAsync(KycDocumentDTO kycDocumentDto)
         {
             var kycDocument = await _kycService.AddKycDocumentAsync(kycDocumentDto);
             return Ok(kycDocument);
         }
-        
-        [HttpDelete("{KYCId}")]
-        public async Task<IActionResult> DeleteKycDocument(Guid KYCId)
-        {
-             _kycService.DeleteKycDocument(KYCId);
-            return NoContent();
-        }
 
         [HttpPut("{KYCId}")]
-        public async Task<ActionResult<KycDocument>> UpdateKycDocument(Guid KYCId, [FromBody] KycDocumentDTO kycDocumentDto)
+        public async Task<ActionResult<KycDocument>> UpdateKycDocument(Guid KYCId, KycDocumentDTO kycDocumentDto)
         {
             var updatedKycDocument = await _kycService.UpdateKycDocumentAsync(KYCId, kycDocumentDto);
             if (updatedKycDocument == null)
@@ -58,17 +51,7 @@ namespace BankingSystem.API.Controllers
                 return BadRequest("Update failed");
             }
             return Ok(updatedKycDocument);
-        }
+        }*/
 
-        [HttpPatch("{KYCId}")]
-        public async Task<ActionResult<KycDocument>> PatchKycDocument(Guid KYCId, [FromBody] JsonPatchDocument<KycDocumentDTO> patchDocument)
-        {
-            var patchedKycDocument = await _kycService.UpdateKycDocumentAsync(KYCId, patchDocument);
-            if (patchedKycDocument == null)
-            {
-                return NotFound();
-            }
-            return Ok(patchedKycDocument);
-        }
     }
 }

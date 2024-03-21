@@ -1,7 +1,5 @@
-﻿using BankingSystem.API.DTO;
-using BankingSystem.API.IRepository;
+﻿using BankingSystem.API.IRepository;
 using BankingSystem.API.Models;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 
 namespace BankingSystem.API.Repository
@@ -16,23 +14,27 @@ namespace BankingSystem.API.Repository
         public async Task<Accounts?> GetAccountAsync(Guid accountId)
         {
             //returns only account detail
-            return await _context.Accounts.Where(a => a.AccountId == accountId).FirstOrDefaultAsync();
+            return await _context.Account.Where(a => a.AccountId == accountId).FirstOrDefaultAsync();
         }
         public async Task<IEnumerable<Accounts>> GetAccountsAsync()
         {
             //return await _context.Users.OrderBy(c => c.Name).ToListAsync();
-            return await _context.Accounts.OrderBy(a => a.AccountNumber).ToListAsync();
+            return await _context.Account.OrderBy(a => a.AccountNumber).ToListAsync();
         }
 
         async Task<Accounts?> GetAccountByAccountNumberAsync(long accountNumber)
         {
-            return await _context.Accounts.Where(a => a.AccountNumber == accountNumber).FirstOrDefaultAsync();
+            return await _context.Account.Where(a => a.AccountNumber == accountNumber).FirstOrDefaultAsync();
+        }
+        public async Task<Accounts?> GetAccountByUserIdAsync(Guid userId)
+        {
+            return await _context.Account.Where(a => a.UserId == userId).FirstOrDefaultAsync();
         }
 
 
         public async Task<Accounts> AddAccounts(Accounts accounts)
         {
-            var account = _context.Accounts.Add(accounts);
+            var account = _context.Account.Add(accounts);
             await _context.SaveChangesAsync();
 
             return GetAccountAsync(account.Entity.AccountId).Result;
@@ -41,37 +43,35 @@ namespace BankingSystem.API.Repository
         public void DeleteAccount(Guid accountId)
         {
             var account = GetAccountAsync(accountId);
-            _context.Accounts.Remove(account.Result);
+            _context.Account.Remove(account.Result);
             _context.SaveChangesAsync();
         }
 
+        /* public async Task<Accounts> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> aDetails)
+         {
+             var existingAccount = await GetAccountAsync(accountId);
+             if (existingAccount != null)
+             {
+                 var accountToPatch = new AccountDTO(existingAccount.UserId,existingAccount.Balance, existingAccount.AtmCardPin, existingAccount.CreatedAt, existingAccount.CreatedBy, existingAccount.ModifiedAt, existingAccount.ModifiedBy);
+                  aDetails.ApplyTo(accountToPatch);
+                 existingAccount.Balance = accountToPatch.Balance;
 
-
-        public async Task<Accounts> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> aDetails)
-        {
-            var existingAccount = await GetAccountAsync(accountId);
-            if (existingAccount != null)
-            {
-                var accountToPatch = new AccountDTO(existingAccount.Balance, existingAccount.AtmCardNum, existingAccount.AtmCardPin, existingAccount.AccountCreatedAt, existingAccount.AccountCreatedBy, existingAccount.AccountModifiedAt, existingAccount.AccountModifiedBy);
-                 aDetails.ApplyTo(accountToPatch);
-                existingAccount.Balance = accountToPatch.Balance;
-                existingAccount.AtmCardNum = accountToPatch.AtmCardNum;
-                existingAccount.AtmCardPin = accountToPatch.AtmCardPin;
-/*                string hashedCardNum = BCrypt.Net.BCrypt.HashPassword(accountToPatch.AtmCardNum);
-                existingAccount.AtmCardNum = hashedCardNum;
-                string hashedCardPin = BCrypt.Net.BCrypt.HashPassword(accountToPatch.AtmCardPin);
-                existingAccount.AtmCardNum = hashedCardPin;*/
-               
+                 existingAccount.AtmCardPin = accountToPatch.AtmCardPin;
+ *//*                string hashedCardNum = BCrypt.Net.BCrypt.HashPassword(accountToPatch.AtmCardNum);
+                 existingAccount.AtmCardNum = hashedCardNum;
+                 string hashedCardPin = BCrypt.Net.BCrypt.HashPassword(accountToPatch.AtmCardPin);
+                 existingAccount.AtmCardNum = hashedCardPin;*//*
 
 
 
-                _context.SaveChanges();
-                return existingAccount;
-            }
-            return null;
-        }
 
-        
+                 _context.SaveChanges();
+                 return existingAccount;
+             }
+             return null;
+         }
+
+         */
         //{
         //     existingUser = await GetUserAsync(  Id);
         //    if (existingUser != null)
@@ -129,10 +129,3 @@ namespace BankingSystem.API.Repository
         }
     }
 }
-
-
-
-
-
-
-

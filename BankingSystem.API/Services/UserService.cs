@@ -21,15 +21,13 @@ namespace BankingSystem.API.Services
         private readonly IMapper _mapper;
 
         private readonly UserManager<Users> _userManager;
-        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, AccountServices accountServices, UserManager<Users> userManager, RoleManager<IdentityRole<Guid>> roleManager)
+        public UserService(IUserRepository userRepository, IMapper mapper, AccountServices accountServices, UserManager<Users> userManager)
         {
             UserRepository = userRepository ?? throw new ArgumentOutOfRangeException(nameof(userRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             AccountServices = accountServices;
             _userManager = userManager;
-            _roleManager = roleManager;
         }
 
         public async Task<Users?> GetUserAsync(Guid Id)

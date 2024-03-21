@@ -3,12 +3,14 @@ using BankingSystem.API.Models;
 using BankingSystem.API.IRepository;
 using Microsoft.AspNetCore.JsonPatch;
 using BankingSystem.API.DTO;
+using AutoMapper;
 
 namespace RESTful_API__ASP.NET_Core.Repository
 {
     public class KycRepository : IKycRepository
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
         public KycRepository(ApplicationDbContext context)
         {
@@ -17,14 +19,14 @@ namespace RESTful_API__ASP.NET_Core.Repository
 
         public async Task<KycDocument> AddKycDocumentAsync(KycDocument kycDocument)
         {
-            _context.KycDocument.Add(kycDocument);
+            _context.KycDocuments.Add(kycDocument);
             await _context.SaveChangesAsync();
             return kycDocument;
         }
-
         public async Task<KycDocument> UpdateKycDocumentAsync(Guid KYCId, KycDocument updatedKycDocument)
         {
-            var existingKycDocument = await _context.KycDocument.FindAsync(KYCId);
+            // Fetch the existing KYC document
+            var existingKycDocument = await _context.KycDocuments.FindAsync(KYCId);
             if (existingKycDocument != null)
             {
                 existingKycDocument.FatherName = updatedKycDocument.FatherName;
@@ -33,46 +35,36 @@ namespace RESTful_API__ASP.NET_Core.Repository
                 existingKycDocument.PermanentAddress = updatedKycDocument.PermanentAddress;
                 existingKycDocument.UploadedAt = updatedKycDocument.UploadedAt;
 
-                /*if (updatedKycDocument.UserImageFile != null)
+                if (updatedKycDocument.UserImagePath != null)
                 {
-                    existingKycDocument.UserImageFile = updatedKycDocument.UserImageFile;
+                    existingKycDocument.UserImagePath = updatedKycDocument.UserImagePath;
                 }
-                if (updatedKycDocument.CitizenshipImageFile != null)
+                if (updatedKycDocument.CitizenshipImagePath != null)
                 {
-                    existingKycDocument.CitizenshipImageFile = updatedKycDocument.CitizenshipImageFile;
-                }*/
+                    existingKycDocument.CitizenshipImagePath = updatedKycDocument.CitizenshipImagePath;
+                }
 
                 await _context.SaveChangesAsync();
-                return existingKycDocument;
             }
-            return null;
+            return existingKycDocument;
         }
 
         //no need for all KYC docs at once
         public async Task<IEnumerable<KycDocument>> GetKycDocumentAsync()
         {
-            return await _context.KycDocument.ToListAsync();
+            return await _context.KycDocuments.ToListAsync();
         }
 
         public async Task<KycDocument?> GetKYCIdAsync(Guid KYCId)
         {
-            return await _context.KycDocument.FindAsync(KYCId);
+            return await _context.KycDocuments.FindAsync(KYCId);
         }
 
-        public async Task<KycDocument> GetKycByUserIdAsync(Guid Id)
+        public async Task<KycDocument> GetKycByUserIdAsync(Guid userId)
         {
-            return await _context.KycDocument.Where(k => k.Id == Id).FirstOrDefaultAsync();
+            return await _context.KycDocuments.Where(k => k.UserId == userId).FirstOrDefaultAsync();
         }
 
-        public async void DeleteKycDocumentAsync(Guid KYCId)
-        {
-            var kycDocument = await GetKYCIdAsync(KYCId);
-            if (kycDocument != null)
-            {
-                _context.KycDocument.Remove(kycDocument);
-                await  _context.SaveChangesAsync();
-            }
-        }
 
         public async Task<KycDocument> UpdateKycDocumentAsync(Guid KYCId, JsonPatchDocument<KycDocumentDTO> kycDetails)
         {
@@ -82,19 +74,12 @@ namespace RESTful_API__ASP.NET_Core.Repository
                 return null;
             }
 
-            var kycDocumentDTO = new KycDocumentDTO();
-            kycDetails.ApplyTo(kycDocumentDTO);
-            if (kycDocumentDTO.FatherName != null)
-            {
-                kycDocument.FatherName = kycDocumentDTO.FatherName;
-            }
-            if (kycDocumentDTO.MotherName != null)
-            {
-                kycDocument.MotherName = kycDocumentDTO.MotherName;
-            }
+            var kycDocumentDto = new KycDocumentDTO();
+            kycDetails.ApplyTo(kycDocumentDto);
 
-            await _context.SaveChangesAsync();
-            return kycDocument;
+            _mapper.Map(kycDocumentDto, kycDocument);
+
+            return await AddKycDocumentAsync(kycDocument);
         }
     }
 }

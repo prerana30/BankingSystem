@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BankingSystem.API.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialMigrationIdentity : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -78,26 +78,26 @@ namespace BankingSystem.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Accounts",
+                name: "Account",
                 columns: table => new
                 {
                     AccountId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     AccountNumber = table.Column<long>(type: "bigint", nullable: false),
-                    Balance = table.Column<long>(type: "bigint", nullable: false),
+                    Balance = table.Column<decimal>(type: "numeric", nullable: false),
                     AtmCardNum = table.Column<long>(type: "bigint", nullable: false),
                     AtmCardPin = table.Column<int>(type: "integer", nullable: false),
-                    AccountCreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    AccountCreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
-                    AccountModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    AccountModifiedBy = table.Column<Guid>(type: "uuid", nullable: false)
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    ModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Accounts", x => x.AccountId);
+                    table.PrimaryKey("PK_Account", x => x.AccountId);
                     table.ForeignKey(
-                        name: "FK_Accounts_AspNetUsers_Id",
-                        column: x => x.Id,
+                        name: "FK_Account_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -189,11 +189,11 @@ namespace BankingSystem.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "KycDocument",
+                name: "KycDocuments",
                 columns: table => new
                 {
                     KYCId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     FatherName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     MotherName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     GrandFatherName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
@@ -205,41 +205,41 @@ namespace BankingSystem.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_KycDocument", x => x.KYCId);
+                    table.PrimaryKey("PK_KycDocuments", x => x.KYCId);
                     table.ForeignKey(
-                        name: "FK_KycDocument_AspNetUsers_Id",
-                        column: x => x.Id,
+                        name: "FK_KycDocuments_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Transaction",
+                name: "Transactions",
                 columns: table => new
                 {
                     TransactionId = table.Column<Guid>(type: "uuid", nullable: false),
                     AccountId = table.Column<Guid>(type: "uuid", nullable: false),
                     TransactionType = table.Column<int>(type: "integer", nullable: false),
-                    Amount = table.Column<double>(type: "double precision", maxLength: 50, nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric", maxLength: 50, nullable: false),
                     TransactionTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     TransactionRemarks = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transaction", x => x.TransactionId);
+                    table.PrimaryKey("PK_Transactions", x => x.TransactionId);
                     table.ForeignKey(
-                        name: "FK_Transaction_Accounts_AccountId",
+                        name: "FK_Transactions_Account_AccountId",
                         column: x => x.AccountId,
-                        principalTable: "Accounts",
+                        principalTable: "Account",
                         principalColumn: "AccountId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Accounts_Id",
-                table: "Accounts",
-                column: "Id");
+                name: "IX_Account_UserId",
+                table: "Account",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -273,25 +273,19 @@ namespace BankingSystem.API.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_Email",
-                table: "AspNetUsers",
-                column: "Email",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_KycDocument_Id",
-                table: "KycDocument",
-                column: "Id");
+                name: "IX_KycDocuments_UserId",
+                table: "KycDocuments",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transaction_AccountId",
-                table: "Transaction",
+                name: "IX_Transactions_AccountId",
+                table: "Transactions",
                 column: "AccountId");
         }
 
@@ -314,16 +308,16 @@ namespace BankingSystem.API.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "KycDocument");
+                name: "KycDocuments");
 
             migrationBuilder.DropTable(
-                name: "Transaction");
+                name: "Transactions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Accounts");
+                name: "Account");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

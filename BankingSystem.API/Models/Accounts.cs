@@ -1,56 +1,35 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace BankingSystem.API.Models
 {
     public class Accounts
     {
         [Key]
-        public Guid AccountId { get; set; } = Guid.NewGuid();
+        public Guid AccountId { get; set; }
         [Required]
-        public Guid Id { get; set; }
+        public Guid UserId { get; set; }
 
         // Navigation property
-        [ForeignKey("Id")]
+        [ForeignKey("UserId")]
         public Users User { get; set; }
 
         [Required]
         public long AccountNumber { get; set; }
 
-        public long Balance { get; set; }
+        public decimal Balance { get; set; }
         public long AtmCardNum { get; set; }
 
         [Required]
-        
+
         public int AtmCardPin { get; set; }
 
-        public DateTime AccountCreatedAt { get; set; } = DateTime.UtcNow;
-        
         [Required]
-        public Guid AccountCreatedBy { get; set; }
+        public Guid CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public DateTime AccountModifiedAt { get; set; } = DateTime.UtcNow;
-
-        public Guid AccountModifiedBy { get; set; }
-
-
-        public Accounts(Guid accountId, Guid id, long balance, long atmCardNum, int atmCardPin, DateTime accountCreatedAt, Guid accountCreatedBy, DateTime accountModifiedAt, Guid accountModifiedBy)
-        {
-            AccountId = accountId;
-            Id = id;
-            Balance = balance;
-            AtmCardNum = atmCardNum;
-            AtmCardPin = atmCardPin;
-            AccountCreatedAt = accountCreatedAt;
-            AccountCreatedBy = accountCreatedBy;
-            AccountModifiedAt = accountModifiedAt;
-            AccountModifiedBy = accountModifiedBy;
-    
-        }
-
-        public Accounts()
-        {
-
-        }
+        public Guid? ModifiedBy { get; set; }
+        public DateTime? ModifiedAt { get; set; }
     }
 }

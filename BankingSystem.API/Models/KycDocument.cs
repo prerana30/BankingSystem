@@ -10,10 +10,10 @@ namespace BankingSystem.API.Models
         public Guid KYCId { get; set; }
 
         [Required]
-        public Guid Id { get; set; }
+        public Guid UserId { get; set; }
 
         // Navigation property
-        [ForeignKey("Id")]
+        [ForeignKey("UserId")]
         public Users User { get; set; }
 
         [Required]
@@ -41,7 +41,7 @@ namespace BankingSystem.API.Models
         public KycDocument(Guid kYCId, Guid id, Users user, string fatherName, string motherName, string grandFatherName, string userImagePath, string citizenshipImagePath, string permanentAddress, DateTime uploadedAt, bool isApproved)
         {
             KYCId = kYCId;
-            Id = id;
+            UserId = id;
             User = user;
             FatherName = fatherName;
             MotherName = motherName;

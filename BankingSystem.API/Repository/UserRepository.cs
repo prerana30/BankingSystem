@@ -18,31 +18,31 @@ namespace RESTful_API__ASP.NET_Core.Repository
         public async Task<Users?> GetUserAsync(Guid Id)
         {
             //returns only user detail
-            return await _context.Users.Where(u => u.Id == Id).FirstOrDefaultAsync();
+            return await _context.SystemUser.Where(u => u.Id == Id).FirstOrDefaultAsync();
         }
         public async Task<Users?> GetUserByEmailAsync(string email)
         {
             //returns only user detail
-            return await _context.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
+            return await _context.SystemUser.Where(u => u.Email == email).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Users>> GetUsersAsync()
         {
-            return await _context.Users.OrderBy(c => c.Fullname).ToListAsync();
+            return await _context.SystemUser.OrderBy(c => c.Fullname).ToListAsync();
         }
 
         public async Task<Users> AddUsers(Users users)
         {
-            var user = _context.Users.Add(users);
+            var user = _context.SystemUser.Add(users);
             await _context.SaveChangesAsync();
 
             return GetUserAsync(user.Entity.Id).Result;
         }
 
-        public void DeleteUser(Guid Id)
+        public void DeleteUser(Guid userId)
         {
-            var user = GetUserAsync(Id);
-            _context.Users.Remove(user.Result);
+            var user = GetUserAsync(userId);
+            _context.SystemUser.Remove(user.Result);
             _context.SaveChangesAsync();
         }
 

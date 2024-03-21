@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using BankingSystem.API.DTO;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System.Net;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace BankingSystem.Test.UnitTests
@@ -25,11 +26,12 @@ namespace BankingSystem.Test.UnitTests
             var  Id= new Guid();
             var userRepositoryMock = new Mock<IUserRepository>();
             var accountService= new Mock<AccountServices>();
+            var userManager = new Mock<UserManager<Users>>();
             userRepositoryMock.Setup(repo => repo.GetUserAsync(Id))
                 .ReturnsAsync(new Users {  Id= Id, UserName = "ishwor", Fullname = "Ishwor Shrestha", Address = "Pulchowk", Email = "ishwor@gmail.com" });
 
             var mapperMock = new Mock<IMapper>();
-            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object, accountService.Object);
+            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object, accountService.Object, userManager.Object);
 
             // Act
             var result = await userService.GetUserAsync(Id);
@@ -60,7 +62,8 @@ namespace BankingSystem.Test.UnitTests
             };
             userRepositoryMock.Setup(repo => repo.GetUsersAsync()).ReturnsAsync(expectedUsers);
             var mapperMock = new Mock<IMapper>();
-            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object, accountService.Object);
+            var userManager = new Mock<UserManager<Users>>();
+            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object, accountService.Object, userManager.Object);
 
             // Act
             var result = await userService.GetUsersAsync();

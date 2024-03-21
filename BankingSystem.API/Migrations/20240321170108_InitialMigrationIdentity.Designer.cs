@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BankingSystem.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240321094428_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20240321170108_InitialMigrationIdentity")]
+    partial class InitialMigrationIdentity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,18 +30,6 @@ namespace BankingSystem.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("AccountCreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("AccountCreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("AccountModifiedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("AccountModifiedBy")
-                        .HasColumnType("uuid");
-
                     b.Property<long>("AccountNumber")
                         .HasColumnType("bigint");
 
@@ -51,17 +39,29 @@ namespace BankingSystem.API.Migrations
                     b.Property<int>("AtmCardPin")
                         .HasColumnType("integer");
 
-                    b.Property<long>("Balance")
-                        .HasColumnType("bigint");
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("numeric");
 
-                    b.Property<Guid>("Id")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("AccountId");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("Accounts");
+                    b.ToTable("Account");
                 });
 
             modelBuilder.Entity("BankingSystem.API.Models.KycDocument", b =>
@@ -84,9 +84,6 @@ namespace BankingSystem.API.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
                     b.Property<bool>("IsApproved")
                         .HasColumnType("boolean");
 
@@ -102,15 +99,18 @@ namespace BankingSystem.API.Migrations
                     b.Property<DateTime>("UploadedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("UserImagePath")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("KYCId");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("KycDocument");
+                    b.ToTable("KycDocuments");
                 });
 
             modelBuilder.Entity("BankingSystem.API.Models.Transaction", b =>
@@ -122,9 +122,9 @@ namespace BankingSystem.API.Migrations
                     b.Property<Guid>("AccountId")
                         .HasColumnType("uuid");
 
-                    b.Property<double>("Amount")
+                    b.Property<decimal>("Amount")
                         .HasMaxLength(50)
-                        .HasColumnType("double precision");
+                        .HasColumnType("numeric");
 
                     b.Property<string>("TransactionRemarks")
                         .HasMaxLength(150)
@@ -140,7 +140,7 @@ namespace BankingSystem.API.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Transaction");
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("BankingSystem.API.Models.Users", b =>
@@ -215,9 +215,6 @@ namespace BankingSystem.API.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -363,7 +360,7 @@ namespace BankingSystem.API.Migrations
                 {
                     b.HasOne("BankingSystem.API.Models.Users", "User")
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -374,7 +371,7 @@ namespace BankingSystem.API.Migrations
                 {
                     b.HasOne("BankingSystem.API.Models.Users", "User")
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

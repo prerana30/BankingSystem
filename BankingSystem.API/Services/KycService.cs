@@ -36,7 +36,7 @@ namespace BankingSystem.API.Services
             return await _kycRepository.GetKycByUserIdAsync(Id);
         }
 
-        public async Task<KycDocument> AddKycDocumentAsync(KycDocumentDTO kycDocumentDto)
+       /* public async Task<KycDocument> AddKycDocumentAsync(KycDocumentDTO kycDocumentDto)
         {
             var kycDocument = _mapper.Map<KycDocument>(kycDocumentDto);
 
@@ -50,22 +50,33 @@ namespace BankingSystem.API.Services
             return await _kycRepository.AddKycDocumentAsync(kycDocument);
         }
 
-        public async Task<KycDocument> UpdateKycDocumentAsync(Guid KYCId, KycDocumentDTO kycDocumentDto)
+        public async Task<KycDocument> UpdateKycDocumentAsync(Guid KYCId, KycDocumentDTO updatedKycDocumentDto)
         {
-            var kycDocument = _mapper.Map<KycDocument>(kycDocumentDto);
-            return await _kycRepository.UpdateKycDocumentAsync(KYCId, kycDocument);
-        }
+            var updatedKycDocument = _mapper.Map<KycDocument>(updatedKycDocumentDto);
+            updatedKycDocument.UserImagePath = await ValidateAndUploadFile(updatedKycDocument.UserImageFile);
+            updatedKycDocument.CitizenshipImagePath = await ValidateAndUploadFile(updatedKycDocument.CitizenshipImageFile);
 
-        public void DeleteKycDocument(Guid KYCId)
-        {
-            _kycRepository.DeleteKycDocumentAsync(KYCId);
-        }
 
-        public async Task<KycDocument> UpdateKycDocumentAsync(Guid KYCId, JsonPatchDocument<KycDocumentDTO> kycDetails)
-        {
-            return await _kycRepository.UpdateKycDocumentAsync(KYCId, kycDetails);
-        }
+            var existingKycDocument = await _kycRepository.GetKYCIdAsync(KYCId);
+            if (existingKycDocument == null)
+            {
+                return null;
+            }
+            existingKycDocument.FatherName = updatedKycDocument.FatherName;
+            existingKycDocument.MotherName = updatedKycDocument.MotherName;
+            existingKycDocument.GrandFatherName = updatedKycDocument.GrandFatherName;
+            existingKycDocument.PermanentAddress = updatedKycDocument.PermanentAddress;
+            existingKycDocument.UploadedAt = updatedKycDocument.UploadedAt;
+            existingKycDocument.UserImagePath = updatedKycDocument.UserImagePath;
+            existingKycDocument.CitizenshipImagePath = updatedKycDocument.CitizenshipImagePath;
 
+            if (existingKycDocument.UserImagePath != "" && updatedKycDocument.CitizenshipImagePath != "")
+            {
+                updatedKycDocument.IsApproved = true;
+            }
+            return await _kycRepository.UpdateKycDocumentAsync(KYCId, existingKycDocument);
+        }
+*/
         public async Task<string> ValidateAndUploadFile(IFormFile fileInput)
         {
             var url = "";
@@ -84,7 +95,6 @@ namespace BankingSystem.API.Services
                 {
                     try
                     {
-                        //storing image to firebase
                         var textInput = fileInput.FileName.Substring(fileInput.FileName.LastIndexOf("/") + 1);
 
                         // Copy the contents of the uploaded file to a memory stream
