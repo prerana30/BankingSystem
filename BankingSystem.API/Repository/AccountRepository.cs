@@ -73,7 +73,7 @@ namespace BankingSystem.API.Repository
 
         
         //{
-        //     existingUser = await GetUserAsync(userId);
+        //     existingUser = await GetUserAsync(  Id);
         //    if (existingUser != null)
         //    {
         //        //transform user entity to usercreationDTO

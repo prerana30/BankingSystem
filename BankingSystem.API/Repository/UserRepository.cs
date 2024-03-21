@@ -13,10 +13,10 @@ namespace RESTful_API__ASP.NET_Core.Repository
         {
             _context = context ?? throw new ArgumentOutOfRangeException(nameof(context));
         }
-        public async Task<Users?> GetUserAsync(Guid userId)
+        public async Task<Users?> GetUserAsync(Guid Id)
         {
             //returns only user detail
-            return await _context.Users.Where(u => u.UserId == userId).FirstOrDefaultAsync();
+            return await _context.Users.Where(u => u.Id == Id).FirstOrDefaultAsync();
         }
         public async Task<Users?> GetUserByEmailAsync(string email)
         {
@@ -34,19 +34,19 @@ namespace RESTful_API__ASP.NET_Core.Repository
             var user = _context.Users.Add(users);
             await _context.SaveChangesAsync();
 
-            return GetUserAsync(user.Entity.UserId).Result;
+            return GetUserAsync(user.Entity.Id).Result;
         }
 
-        public void DeleteUser(Guid userId)
+        public void DeleteUser(Guid Id)
         {
-            var user = GetUserAsync(userId);
+            var user = GetUserAsync(Id);
             _context.Users.Remove(user.Result);
             _context.SaveChangesAsync();
         }
 
-        public async Task<Users> PatchUserDetails(Guid userId, JsonPatchDocument<UserDTO> patchDocument)
+        public async Task<Users> PatchUserDetails(Guid Id, JsonPatchDocument<UserDTO> patchDocument)
         {
-            var existingUser = await GetUserAsync(userId);
+            var existingUser = await GetUserAsync(Id);
             if (existingUser != null)
             {
                 //transform user entity to usercreationDTO
@@ -74,9 +74,9 @@ namespace RESTful_API__ASP.NET_Core.Repository
             return null;
         }
 
-        public async Task<Users> UpdateUsersAsync(Guid userId, Users finalUser)
+        public async Task<Users> UpdateUsersAsync(Guid Id, Users finalUser)
         {
-            var existingUser = await GetUserAsync(userId);
+            var existingUser = await GetUserAsync(Id);
             if (existingUser != null)
             {
                 existingUser.Username = finalUser.Username;

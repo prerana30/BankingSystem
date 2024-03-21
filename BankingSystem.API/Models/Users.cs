@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
 
 namespace BankingSystem.API.Models
 {
-    public class Users : IdentityUser
-    {
-        [Key]
-        public Guid UserId { get; set; } = Guid.NewGuid();
+    public class Users : IdentityUser<Guid>
+    { 
         [Required]
         [MaxLength(50)]
         public string Username { get; set; }
@@ -25,16 +25,15 @@ namespace BankingSystem.API.Models
         public string PhoneNumber { get; set; }
 
         public string Address { get; set; }
-        public Roles UserType { get; set; }
+        public string UserType { get; set; }
         public DateTime DateOfBirth { get; set; }
 
         public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
 
         public DateTime? ModifiedAt { get; set; } = DateTime.UtcNow;
 
-        public Users(Guid userId, string username, string fullname, string email, string password, string address, Roles userType, DateTime dateOfBirth, DateTime createdAt, DateTime modifiedAt)
+        public Users(string username, string fullname, string email, string password, string address, string userType, DateTime dateOfBirth, DateTime createdAt, DateTime modifiedAt)
         {
-            UserId = userId;
             Username = username;
             Fullname = fullname;
             Email = email;

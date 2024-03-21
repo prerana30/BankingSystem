@@ -8,10 +8,10 @@ namespace BankingSystem.API.Models
         [Key]
         public Guid AccountId { get; set; } = Guid.NewGuid();
         [Required]
-        public Guid UserId { get; set; }
+        public Guid Id { get; set; }
 
         // Navigation property
-        [ForeignKey("UserId")]
+        [ForeignKey("Id")]
         public Users User { get; set; }
 
         [Required]
@@ -29,23 +29,15 @@ namespace BankingSystem.API.Models
         [Required]
         public Guid AccountCreatedBy { get; set; }
 
-        // Navigation property
-        [ForeignKey("AccountCreatedBy")]
-        public Users CreatedByUser { get; set; }
-
         public DateTime AccountModifiedAt { get; set; } = DateTime.UtcNow;
 
         public Guid AccountModifiedBy { get; set; }
 
-        // Navigation property
-        [ForeignKey("AccountModifiedBy")]
-        public Users ModifiedByUser { get; set; }
 
-
-        public Accounts(Guid accountId, Guid userId, long balance, long atmCardNum, int atmCardPin, DateTime accountCreatedAt, Guid accountCreatedBy, DateTime accountModifiedAt, Guid accountModifiedBy)
+        public Accounts(Guid accountId, Guid id, long balance, long atmCardNum, int atmCardPin, DateTime accountCreatedAt, Guid accountCreatedBy, DateTime accountModifiedAt, Guid accountModifiedBy)
         {
             AccountId = accountId;
-            UserId = userId;
+            Id = id;
             Balance = balance;
             AtmCardNum = atmCardNum;
             AtmCardPin = atmCardPin;

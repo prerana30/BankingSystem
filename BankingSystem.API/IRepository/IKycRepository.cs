@@ -8,7 +8,7 @@ namespace BankingSystem.API.IRepository
     {
         Task<IEnumerable<KycDocument>> GetKycDocumentAsync();
         Task<KycDocument?> GetKYCIdAsync(Guid KYCId);
-        Task<KycDocument> GetKycByUserIdAsync(Guid userId);
+        Task<KycDocument> GetKycByUserIdAsync(Guid Id);
         Task<KycDocument> AddKycDocumentAsync(KycDocument kycDocument);
         Task<KycDocument> UpdateKycDocumentAsync(Guid KYCId, KycDocument kycDocument);
         void DeleteKycDocumentAsync(Guid KYCId);

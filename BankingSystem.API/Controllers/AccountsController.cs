@@ -70,7 +70,7 @@ namespace BankingSystem.API.Controllers
             return Ok(newAccount);
         }
 
-        [HttpPatch("{userId}")]
+        [HttpPatch("{Id}")]
         public async Task<ActionResult<Accounts>> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> patchDocument)
         {
             var account = await accountServices.PatchAccountDetails(accountId, patchDocument);

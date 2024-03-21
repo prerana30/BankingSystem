@@ -1,13 +1,15 @@
 ﻿using BankingSystem.API.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<Users, IdentityRole<Guid>, Guid>
 {
     //Defining Constructor
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
-        Database.EnsureCreated();
+        //Database.EnsureCreated();
     }
 
     //Define Databases
@@ -24,13 +26,15 @@ public class ApplicationDbContext : DbContext
         //seed database
 
         //ignore attributes
-        modelBuilder.Entity<KycDocument>().Ignore(k=> k.UserImageFile);
-        modelBuilder.Entity<KycDocument>().Ignore(k => k.CitizenshipImageFile);
+       /* modelBuilder.Entity<KycDocument>().Ignore(k=> k.UserImageFile);
+        modelBuilder.Entity<KycDocument>().Ignore(k => k.CitizenshipImageFile);*/
 
 
         modelBuilder.Entity<Users>()
         .HasIndex(u => u.Email)
         .IsUnique();
+
+        modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
 
         //define foreign key relations
 
@@ -76,16 +80,16 @@ public class ApplicationDbContext : DbContext
             AccountNumber= 1234627838293832,
             AtmCardNum=18462873844833,
             AtmCardPin=1242,
-            UserId= Guid.NewGuid(),
+            Id= Guid.NewGuid(),
             AccountCreatedAt = dateOfBirth1,    
             
         });*/
-
+/*
         modelBuilder.Entity<Users>()
             .HasData(
                 new Users()
                 {
-                    UserId = Guid.NewGuid(),
+                     Id= Guid.NewGuid(),
                     Username = "subs",
                     Fullname = "Subriti Aryal",
                     Address = "Gothatar, Kathmandu",
@@ -95,11 +99,11 @@ public class ApplicationDbContext : DbContext
                     CreatedAt = DateTime.UtcNow.ToUniversalTime(),
                     DateOfBirth = dateOfBirth,
                     ModifiedAt = DateTime.UtcNow.ToUniversalTime(),
-                    UserType = Roles.AccountHolder
+                    UserType = UserRoles.AccountHolder
                 },
                 new Users()
                 {
-                    UserId = Guid.NewGuid(),
+                     Id= Guid.NewGuid(),
                     Username = "admin",
                     Fullname = "Teller Person",
                     Address = "Kathmandu",
@@ -109,11 +113,11 @@ public class ApplicationDbContext : DbContext
                     CreatedAt = DateTime.UtcNow.ToUniversalTime(),
                     DateOfBirth = dateOfBirth1,
                     ModifiedAt = DateTime.UtcNow.ToUniversalTime(),
-                    UserType = Roles.TellerPerson
+                    UserType = UserRoles.TellerPerson
                 },
                 new Users()
                 {
-                    UserId = Guid.NewGuid(),
+                     Id= Guid.NewGuid(),
                     Username = "user",
                     Fullname = "Account Holder",
                     Address = "Kathmandu",
@@ -123,10 +127,10 @@ public class ApplicationDbContext : DbContext
                     CreatedAt = DateTime.UtcNow.ToUniversalTime(),
                     DateOfBirth = dateOfBirth1,
                     ModifiedAt = DateTime.UtcNow.ToUniversalTime(),
-                    UserType = Roles.AccountHolder
+                    UserType = UserRoles.AccountHolder
                 }
             );
-
+*/
         base.OnModelCreating(modelBuilder);
     }
 

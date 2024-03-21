@@ -20,10 +20,10 @@ namespace BankingSystem.API.Services
             AccountServices = accountServices;
         }
 
-        public async Task<Users?> GetUserAsync(Guid userId)
+        public async Task<Users?> GetUserAsync(Guid Id)
         {
             //returns only user detail
-            return await UserRepository.GetUserAsync(userId);
+            return await UserRepository.GetUserAsync(Id);
         }
         public async Task<Users?> GetUserByEmailAsync(string email)
         {
@@ -47,34 +47,35 @@ namespace BankingSystem.API.Services
             var SavedUser= await UserRepository.AddUsers(finalUser);
 
             //if user is accountHolder, create account
-            if(SavedUser.UserType==Roles.AccountHolder)
+            if(SavedUser.UserType==UserRoles.AccountHolder)
             {
                 var accountNumber = GenerateRandomAccountNumber(1);
                 var atmCardNum = GenerateRandomAccountNumber(2);
+                var atmCardPin = (int)GenerateRandomAccountNumber(3);
 
-                var accountDTO = new AccountDTO(SavedUser.UserId, accountNumber, 0, atmCardNum, 1232, DateTime.UtcNow, SavedUser.UserId, DateTime.UtcNow, SavedUser.UserId);
+                var accountDTO = new AccountDTO(SavedUser.Id, accountNumber, 0, atmCardNum, atmCardPin, DateTime.UtcNow, SavedUser.Id, DateTime.UtcNow, SavedUser.Id);
                 await AccountServices.AddAccounts(accountDTO);
             }
             return SavedUser;
         }
 
-        public void DeleteUser(Guid userId)
+        public void DeleteUser(Guid Id)
         {
-            UserRepository.DeleteUser(userId);
+            UserRepository.DeleteUser(Id);
         }
 
-        public async Task<Users> PatchUserDetails(Guid userId, JsonPatchDocument<UserDTO> patchDocument)
+        public async Task<Users> PatchUserDetails(Guid Id, JsonPatchDocument<UserDTO> patchDocument)
         {
-            return await UserRepository.PatchUserDetails(userId, patchDocument);
+            return await UserRepository.PatchUserDetails(Id, patchDocument);
         }
 
-        public async Task<Users> UpdateUsersAsync(Guid userId, UserDTO users)
+        public async Task<Users> UpdateUsersAsync(Guid Id, UserDTO users)
         {
             var finalUser = _mapper.Map<Users>(users);
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(users.Password);
             finalUser.Password = hashedPassword;
 
-            return await UserRepository.UpdateUsersAsync(userId, finalUser);
+            return await UserRepository.UpdateUsersAsync(Id, finalUser);
         }
 
         public async Task<Users> LoginUser(string email, string password)
@@ -115,6 +116,13 @@ namespace BankingSystem.API.Services
                         atmCardNum.Append(ran.Next(10).ToString());
                     }
                     return long.Parse(atmCardNum.ToString());
+                case 3:
+                    var atmCardPin = new StringBuilder("0");
+                    while (atmCardPin.Length < 6)
+                    {
+                        atmCardPin.Append(ran.Next(10).ToString());
+                    }
+                    return long.Parse(atmCardPin.ToString());
                 default:
                     return 0;
             }

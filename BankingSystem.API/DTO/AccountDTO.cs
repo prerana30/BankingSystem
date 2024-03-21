@@ -3,7 +3,7 @@ namespace BankingSystem.API.DTO
 {
     public class AccountDTO
     {
-        public Guid UserId { get; set; }
+        public Guid   Id { get; set; }
         [Required]
         public long AccountNumber { get; set; }
         public long Balance { get; set; }
@@ -27,9 +27,9 @@ namespace BankingSystem.API.DTO
 
         }
 
-        public AccountDTO(Guid userId, long accountNumber, long balance, long atmCardNum, int atmCardPin, DateTime accountCreatedAt, Guid accountCreatedBy, DateTime accountModifiedAt, Guid accountModifiedBy)
+        public AccountDTO(Guid id, long accountNumber, long balance, long atmCardNum, int atmCardPin, DateTime accountCreatedAt, Guid accountCreatedBy, DateTime accountModifiedAt, Guid accountModifiedBy)
         {
-            UserId = userId;
+            Id = id;
             AccountNumber = accountNumber;
             AtmCardNum = atmCardNum;
             Balance = balance;

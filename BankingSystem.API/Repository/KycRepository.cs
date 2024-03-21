@@ -33,14 +33,14 @@ namespace RESTful_API__ASP.NET_Core.Repository
                 existingKycDocument.PermanentAddress = updatedKycDocument.PermanentAddress;
                 existingKycDocument.UploadedAt = updatedKycDocument.UploadedAt;
 
-                if (updatedKycDocument.UserImageFile != null)
+                /*if (updatedKycDocument.UserImageFile != null)
                 {
                     existingKycDocument.UserImageFile = updatedKycDocument.UserImageFile;
                 }
                 if (updatedKycDocument.CitizenshipImageFile != null)
                 {
                     existingKycDocument.CitizenshipImageFile = updatedKycDocument.CitizenshipImageFile;
-                }
+                }*/
 
                 await _context.SaveChangesAsync();
                 return existingKycDocument;
@@ -59,9 +59,9 @@ namespace RESTful_API__ASP.NET_Core.Repository
             return await _context.KycDocument.FindAsync(KYCId);
         }
 
-        public async Task<KycDocument> GetKycByUserIdAsync(Guid userId)
+        public async Task<KycDocument> GetKycByUserIdAsync(Guid Id)
         {
-            return await _context.KycDocument.Where(k => k.UserId == userId).FirstOrDefaultAsync();
+            return await _context.KycDocument.Where(k => k.Id == Id).FirstOrDefaultAsync();
         }
 
         public async void DeleteKycDocumentAsync(Guid KYCId)
