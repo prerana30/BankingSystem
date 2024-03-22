@@ -1,18 +1,22 @@
-﻿using BankingSystem.API.DTO;
-using BankingSystem.API.IRepository;
+﻿using BankingSystem.API.IRepository;
 using BankingSystem.API.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace BankingSystem.API.Repository
 {
     public class TransactionRepository : ITransactionRepository
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<Users> _userManager;
+        private RoleManager<IdentityRole<Guid>> _roleManager;
 
-
-        public TransactionRepository(ApplicationDbContext context)
+        public TransactionRepository(ApplicationDbContext context, UserManager<Users> userManager, RoleManager<IdentityRole<Guid>> roleManager)
         {
             _context = context ?? throw new ArgumentOutOfRangeException(nameof(context));
+            _userManager = userManager;
+            _roleManager= roleManager;
         }
 
 
@@ -71,22 +75,29 @@ namespace BankingSystem.API.Repository
 
             if (kycAccount is null)
             {
-                throw new Exception($"KYC document not found for user ID {account.User.UserId}.");
+                throw new Exception($"KYC document not found for user ID {account.User.Id}.");
             }
 
             var teller = await _context.SystemUser
-                .FirstOrDefaultAsync(c => c.UserId == userId);
+                .FirstOrDefaultAsync(c => c.Id == userId);
 
             if (teller is null)
             {
-                throw new Exception($"Teller id- {accountId} is not found.");
+                throw new Exception($"Teller id- {userId} is not found.");
             }
 
-
-            bool isTeller = teller.UserType is Roles.TellerPerson;
+            /*bool isTeller = teller.UserType is Roles.TellerPerson;
             if (!isTeller)
             {
                 throw new Exception($"Teller id- {accountId} is not valid/available.");
+            }*/
+
+            // Check if the user has the TellerPerson role
+            bool isTeller = await _userManager.IsInRoleAsync(teller, UserRoles.TellerPerson);
+
+            if (!isTeller)
+            {
+                throw new Exception($"Teller id {userId} is not a valid/available.");
             }
 
             var isVerified = await IsVerifiedKycAsync(kycAccount.KYCId);
@@ -117,7 +128,7 @@ namespace BankingSystem.API.Repository
 
             if (account is null)
             {
-                throw new Exception($"Account with ID {accountId} not found.");
+                throw new Exception($"Account with  Id{accountId} not found.");
             }
 
             var kycAccount = await _context.KycDocuments
@@ -125,7 +136,7 @@ namespace BankingSystem.API.Repository
 
             if (kycAccount is null)
             {
-                throw new Exception($"KYC document not found for user ID {account.User.UserId}.");
+                throw new Exception($"KYC document not found for user  Id{account.User.Id}.");
             }
 
             var atmPin = await _context.Account

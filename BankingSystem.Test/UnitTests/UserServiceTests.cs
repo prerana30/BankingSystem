@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using BankingSystem.API.DTO;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System.Net;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace BankingSystem.Test.UnitTests
@@ -22,22 +23,26 @@ namespace BankingSystem.Test.UnitTests
         public async Task GetUserAsync_ReturnsUser()
         {
             // Arrange
-            var id = new Guid();
+            var  Id= new Guid();
             var userRepositoryMock = new Mock<IUserRepository>();
-            userRepositoryMock.Setup(repo => repo.GetUserAsync(id))
-                .ReturnsAsync(new Users { UserId = id, Username = "ishwor", Fullname = "Ishwor Shrestha", Address = "Pulchowk", Email = "ishwor@gmail.com" });
+            var accountService= new Mock<AccountServices>();
+            var userManager = new Mock<UserManager<Users>>();
+            userRepositoryMock.Setup(repo => repo.GetUserAsync(Id))
+                .ReturnsAsync(new Users {  Id= Id, UserName = "ishwor", Fullname = "Ishwor Shrestha", Address = "Pulchowk", Email = "ishwor@gmail.com" });
 
             var mapperMock = new Mock<IMapper>();
-            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object);
+            var signInManager = new Mock<SignInManager<Users>>();
+
+            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object, accountService.Object, userManager.Object, signInManager.Object);
 
             // Act
-            var result = await userService.GetUserAsync(id);
+            var result = await userService.GetUserAsync(Id);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(id, result.UserId);
+            Assert.Equal(Id, result.Id);
             Assert.Equal("Ishwor Shrestha", result.Fullname);
-            Assert.Equal("ishwor", result.Username);
+            Assert.Equal("ishwor", result.UserName);
         }
 
 
@@ -51,14 +56,19 @@ namespace BankingSystem.Test.UnitTests
             var id1 = new Guid();
             var id2 = new Guid();
             var userRepositoryMock = new Mock<IUserRepository>();
+            var accountService = new Mock<AccountServices>();
             var expectedUsers = new List<Users>
             {
-                new Users { UserId = id1, Username = "ishwor", Fullname = "Ishwor Shrestha", Address = "Pulchowk", Email = "ishwor@gmail.com" },
-                new Users { UserId = id2, Username = "ishwor2", Fullname = "Ishwor Shrestha 2", Address = "Pulchowk 2", Email = "ishwor2@gmail.com" }
+                new Users {  Id= id1, UserName = "ishwor", Fullname = "Ishwor Shrestha", Address = "Pulchowk", Email = "ishwor@gmail.com" },
+                new Users {  Id= id2, UserName = "ishwor2", Fullname = "Ishwor Shrestha 2", Address = "Pulchowk 2", Email = "ishwor2@gmail.com" }
             };
             userRepositoryMock.Setup(repo => repo.GetUsersAsync()).ReturnsAsync(expectedUsers);
             var mapperMock = new Mock<IMapper>();
-            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object);
+            var userManager = new Mock<UserManager<Users>>();
+            var signInManager = new Mock<SignInManager<Users>>();
+
+            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object, accountService.Object, userManager.Object, signInManager.Object);
+
 
             // Act
             var result = await userService.GetUsersAsync();
@@ -85,7 +95,7 @@ namespace BankingSystem.Test.UnitTests
         //        Email = "emailValue",
         //        Password = "passwordValue",
         //        Address = "addressValue",
-        //        UserType = Roles.AccountHolder, // or whichever role you want
+        //        UserType = UserRoles.AccountHolder, // or whichever role you want
         //        DateOfBirth = DateTime.Parse("2000-01-01"), // example date of birth
         //        CreatedAt = DateTime.Now // or whichever creation date you want
         //    };
@@ -93,13 +103,13 @@ namespace BankingSystem.Test.UnitTests
         //    // Define the expected user after mapping and hashing
         //    var expectedUser = new Users
         //    {
-        //        UserId = 1,
+        //         Id= 1,
         //        Username = "usernameValue",
         //        Fullname = "fullnameValue",
         //        Email = "emailValue",
         //        Password = "passwordValue",
         //        Address = "addressValue",
-        //        UserType = Roles.AccountHolder, // or whichever role you want
+        //        UserType = UserRoles.AccountHolder, // or whichever role you want
         //        DateOfBirth = DateTime.Parse("2000-01-01"), // example date of birth
         //        CreatedAt = DateTime.Now // or whichever creation date you want
         //    };
@@ -116,7 +126,7 @@ namespace BankingSystem.Test.UnitTests
         //    // Assert
         //    Assert.NotNull(result);
         //    //Assert.Equal(expectedUser, result);
-        //    Assert.Equal(expectedUser.UserId, result.UserId);
+        //    Assert.Equal(expectedUser.Id, result.Id);
         //    Assert.Equal(expectedUser.Username, result.Username);
         //    Assert.Equal(expectedUser.Fullname, result.Fullname);
         //    Assert.Equal(expectedUser.Email, result.Email);

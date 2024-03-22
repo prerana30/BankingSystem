@@ -1,10 +1,7 @@
-﻿
-using BankingSystem.API.DTO;
+﻿using BankingSystem.API.DTO;
 using BankingSystem.API.IRepository;
 using BankingSystem.API.Models;
 using Microsoft.AspNetCore.JsonPatch;
-using System.Text;
-using System.Security.Cryptography;
 using AutoMapper;
 using RESTful_API__ASP.NET_Core.Repository;
 
