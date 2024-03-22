@@ -27,7 +27,7 @@ namespace BankingSystem.API.Models
 
         public DateTime? ModifiedAt { get; set; } = DateTime.UtcNow;
 
-        public Users(Guid userId, string username, string fullname, string email, string password, string address, Roles userType, DateTime dateOfBirth, DateTime createdAt, DateTime modifiedAt)
+       /* public Users(Guid userId, string username, string fullname, string email, string password, string address, Roles userType, DateTime dateOfBirth, DateTime createdAt, DateTime modifiedAt)
         {
             UserId = userId;
             Username = username;
@@ -39,11 +39,11 @@ namespace BankingSystem.API.Models
             DateOfBirth = dateOfBirth;
             CreatedAt = createdAt;
             ModifiedAt = modifiedAt;
-        }
+        }*/
 
-        public Users()
+       /* public Users()
         {
 
-        }
+        }*/
     }
 }

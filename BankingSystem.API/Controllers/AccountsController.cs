@@ -92,7 +92,7 @@ namespace BankingSystem.API.Controllers
             return Ok(newAccount);
         }
 
-        [HttpPatch("{userId}")]
+       /* [HttpPatch("{userId}")]
         public async Task<ActionResult<Accounts>> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> patchDocument)
         {
             var account = await accountServices.PatchAccountDetails(accountId, patchDocument);
@@ -109,7 +109,7 @@ namespace BankingSystem.API.Controllers
                 NotFound();
             }
             return Ok(account);
-        }
+        }*/
 
     }
 }

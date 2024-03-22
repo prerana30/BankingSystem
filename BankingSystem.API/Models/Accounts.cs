@@ -7,7 +7,7 @@ namespace BankingSystem.API.Models
     public class Accounts
     {
         [Key]
-        public Guid AccountId { get; set; } = Guid.NewGuid();
+        public Guid AccountId { get; set; }
         [Required]
         public Guid UserId { get; set; }
 

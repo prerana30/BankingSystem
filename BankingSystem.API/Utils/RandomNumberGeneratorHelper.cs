@@ -1,4 +1,6 @@
-﻿namespace BankingSystem.API.Utils
+﻿using System.Text;
+
+namespace BankingSystem.API.Utils
 {
     public static class RandomNumberGeneratorHelper
     {

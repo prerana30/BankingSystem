@@ -19,7 +19,7 @@ namespace BankingSystem.API.Repository
 
         public async Task<IEnumerable<Transaction>> GetTransactionsOfAccountAsync(Guid accountId)
         {
-            return await _context.Transaction
+            return await _context.Transactions
                 .Where(p => p.AccountId == accountId)
                 .ToArrayAsync();
         }
@@ -27,7 +27,7 @@ namespace BankingSystem.API.Repository
 
         public async Task<Transaction?> GetTransactionFromAccountAsync(Guid accountId, Guid transactionId)
         {
-            return await _context.Transaction
+            return await _context.Transactions
                 .Where(p => p.AccountId == accountId && p.TransactionId == transactionId)
                 .FirstOrDefaultAsync();
         }
@@ -37,7 +37,7 @@ namespace BankingSystem.API.Repository
             var delTransaction = await GetTransactionFromAccountAsync(accountId, transactionId);
             if (delTransaction != null)
             {
-                _context.Transaction.Remove(delTransaction);
+                _context.Transactions.Remove(delTransaction);
                 await _context.SaveChangesAsync();
             }
         }
@@ -45,20 +45,20 @@ namespace BankingSystem.API.Repository
 
         public async Task<bool> TransactionExistAsync(Guid transactionId)
         {
-            return await _context.Transaction.AnyAsync(c => c.TransactionId == transactionId);
+            return await _context.Transactions.AnyAsync(c => c.TransactionId == transactionId);
         }
 
 
         public async Task<bool> IsVerifiedKycAsync(Guid kycId)
         {
-            return await _context.KycDocument.AnyAsync(c => c.KYCId == kycId);
+            return await _context.KycDocuments.AnyAsync(c => c.KYCId == kycId);
         }
 
 
 
         public async Task<Transaction> DepositTransactionAsync(Transaction transaction, Guid accountId, Guid userId)
         {
-            var account = await _context.Accounts
+            var account = await _context.Account
                 .FirstOrDefaultAsync(c => c.AccountId == accountId);
 
             if (account is null)
@@ -66,7 +66,7 @@ namespace BankingSystem.API.Repository
                 throw new Exception($"Account with ID {accountId} not found.");
             }
 
-            var kycAccount = await _context.KycDocument
+            var kycAccount = await _context.KycDocuments
                 .FirstOrDefaultAsync(c => c.UserId == account.UserId);
 
             if (kycAccount is null)
@@ -74,7 +74,7 @@ namespace BankingSystem.API.Repository
                 throw new Exception($"KYC document not found for user ID {account.User.UserId}.");
             }
 
-            var teller = await _context.Users
+            var teller = await _context.SystemUser
                 .FirstOrDefaultAsync(c => c.UserId == userId);
 
             if (teller is null)
@@ -91,7 +91,7 @@ namespace BankingSystem.API.Repository
 
             var isVerified = await IsVerifiedKycAsync(kycAccount.KYCId);
 
-            var totalBalance = await _context.Accounts
+            var totalBalance = await _context.Account
                 .FirstOrDefaultAsync(b => b.Balance == account.Balance);
 
             if (isVerified is true && isTeller)
@@ -99,7 +99,7 @@ namespace BankingSystem.API.Repository
                 // Set the accountId for the transaction
                 transaction.AccountId = accountId;
 
-                _context.Transaction.Add(transaction);
+                _context.Transactions.Add(transaction);
                 totalBalance.Balance += (long)transaction.Amount;
                 await _context.SaveChangesAsync();
                 return transaction;
@@ -112,7 +112,7 @@ namespace BankingSystem.API.Repository
 
         public async Task<Transaction> WithdrawTransactionAsync(Transaction transaction, Guid accountId, int atmIdAtmCardPin)
         {
-            var account = await _context.Accounts
+            var account = await _context.Account
                 .FirstOrDefaultAsync(c => c.AccountId == accountId);
 
             if (account is null)
@@ -120,7 +120,7 @@ namespace BankingSystem.API.Repository
                 throw new Exception($"Account with ID {accountId} not found.");
             }
 
-            var kycAccount = await _context.KycDocument
+            var kycAccount = await _context.KycDocuments
                 .FirstOrDefaultAsync(c => c.UserId == account.UserId);
 
             if (kycAccount is null)
@@ -128,7 +128,7 @@ namespace BankingSystem.API.Repository
                 throw new Exception($"KYC document not found for user ID {account.User.UserId}.");
             }
 
-            var atmPin = await _context.Accounts
+            var atmPin = await _context.Account
                 .FirstOrDefaultAsync(c => c.AtmCardPin == atmIdAtmCardPin);
 
             if (atmPin is null)
@@ -138,7 +138,7 @@ namespace BankingSystem.API.Repository
 
             var isVerified = await IsVerifiedKycAsync(kycAccount.KYCId);
 
-            var totalBalance = await _context.Accounts
+            var totalBalance = await _context.Account
                 .FirstOrDefaultAsync(b => b.Balance == account.Balance);
 
             var withdrawAmount = transaction.Amount;
@@ -152,7 +152,7 @@ namespace BankingSystem.API.Repository
             {
                 transaction.AccountId = accountId;
 
-                _context.Transaction.Add(transaction);
+                _context.Transactions.Add(transaction);
                 totalBalance.Balance -= (long)transaction.Amount;
                 await _context.SaveChangesAsync();
                 return transaction;
