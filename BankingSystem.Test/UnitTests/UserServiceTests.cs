@@ -31,7 +31,9 @@ namespace BankingSystem.Test.UnitTests
                 .ReturnsAsync(new Users {  Id= Id, UserName = "ishwor", Fullname = "Ishwor Shrestha", Address = "Pulchowk", Email = "ishwor@gmail.com" });
 
             var mapperMock = new Mock<IMapper>();
-            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object, accountService.Object, userManager.Object);
+            var signInManager = new Mock<SignInManager<Users>>();
+
+            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object, accountService.Object, userManager.Object, signInManager.Object);
 
             // Act
             var result = await userService.GetUserAsync(Id);
@@ -63,7 +65,10 @@ namespace BankingSystem.Test.UnitTests
             userRepositoryMock.Setup(repo => repo.GetUsersAsync()).ReturnsAsync(expectedUsers);
             var mapperMock = new Mock<IMapper>();
             var userManager = new Mock<UserManager<Users>>();
-            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object, accountService.Object, userManager.Object);
+            var signInManager = new Mock<SignInManager<Users>>();
+
+            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object, accountService.Object, userManager.Object, signInManager.Object);
+
 
             // Act
             var result = await userService.GetUsersAsync();
