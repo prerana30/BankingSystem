@@ -1,11 +1,7 @@
 ﻿using BankingSystem.API.DTO;
-using BankingSystem.API.IRepository;
-using BankingSystem.API.Repository;
 using BankingSystem.API.Models;
 using BankingSystem.API.Services;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using RESTful_API__ASP.NET_Core.Repository;
 
 namespace BankingSystem.API.Controllers
 {
@@ -58,7 +54,7 @@ namespace BankingSystem.API.Controllers
                 return NotFound("User not found");
             }
 
-            var userId = user.UserId;
+            var userId = user.Id;
 
             var checkAccount = await accountServices.GetAccountByUserIdAsync(userId);
             if (checkAccount != null)
@@ -68,7 +64,7 @@ namespace BankingSystem.API.Controllers
             var accounts = await accountServices.AddAccounts(account);
             if (accounts == null)
             {
-                return StatusCode(400, "User already exists.");
+                return StatusCode(400, "Account already exists.");
             }
             return Ok(accounts);
 
@@ -92,24 +88,24 @@ namespace BankingSystem.API.Controllers
             return Ok(newAccount);
         }
 
-       /* [HttpPatch("{userId}")]
-        public async Task<ActionResult<Accounts>> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> patchDocument)
-        {
-            var account = await accountServices.PatchAccountDetails(accountId, patchDocument);
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            if (!TryValidateModel(account))
-            {
-                return BadRequest(ModelState);
-            }
-            if (account == null)
-            {
-                NotFound();
-            }
-            return Ok(account);
-        }*/
+        /* [HttpPatch("{userId}")]
+         public async Task<ActionResult<Accounts>> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> patchDocument)
+         {
+             var account = await accountServices.PatchAccountDetails(accountId, patchDocument);
+             if (!ModelState.IsValid)
+             {
+                 return BadRequest(ModelState);
+             }
+             if (!TryValidateModel(account))
+             {
+                 return BadRequest(ModelState);
+             }
+             if (account == null)
+             {
+                 NotFound();
+             }
+             return Ok(account);
+         }*/
 
     }
 }

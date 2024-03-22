@@ -41,9 +41,9 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<Users>> Login(string email, string password)
+        public async Task<ActionResult<Users>> Login(string username, string password)
         {
-            var user = await userService.LoginUser(email, password);
+            var user = await userService.Login(username, password);
             if (user == null)
             {
                 // return NotFound("Email or Password is incorrect.");
@@ -55,7 +55,7 @@ namespace BankingSystem.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Users>> AddUsers(UserDTO user)
         {
-            var users = await userService.AddUsers(user);
+            var users = await userService.RegisterUser(user);
             if (users == null)
             {
                 return StatusCode(400, "User already exists.");
@@ -63,17 +63,17 @@ namespace BankingSystem.API.Controllers
             return Ok(users);
         }
 
-        [HttpDelete("{userId}")]
-        public ActionResult DeleteUser(Guid userId)
+        [HttpDelete("{Id}")]
+        public ActionResult DeleteUser(Guid Id)
         {
-            userService.DeleteUser(userId);
+            userService.DeleteUser(Id);
             return NoContent();
         }
 
-        [HttpPut("{userId}")]
-        public async Task<ActionResult<Users>> UpdateUsers(Guid userId, UserDTO user)
+        [HttpPut("{Id}")]
+        public async Task<ActionResult<Users>> UpdateUsers(Guid Id, UserDTO user)
         {
-            var newUser = await userService.UpdateUsersAsync(userId, user);
+            var newUser = await userService.UpdateUsersAsync(Id, user);
             if (newUser == null)
             {
                 return BadRequest("Update failed");
@@ -81,10 +81,10 @@ namespace BankingSystem.API.Controllers
             return Ok(newUser);
         }
 
-        [HttpPatch("{userId}")]
-        public async Task<ActionResult<Users>> PatchUserDetails(Guid userId, JsonPatchDocument<UserDTO> patchDocument)
+        [HttpPatch("{Id}")]
+        public async Task<ActionResult<Users>> PatchUserDetails(Guid Id, JsonPatchDocument<UserDTO> patchDocument)
         {
-            var user = await userService.PatchUserDetails(userId, patchDocument);
+            var user = await userService.PatchUserDetails(Id, patchDocument);
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

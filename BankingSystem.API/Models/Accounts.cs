@@ -31,7 +31,5 @@ namespace BankingSystem.API.Models
 
         public Guid? ModifiedBy { get; set; }
         public DateTime? ModifiedAt { get; set; }
-
-
     }
 }
