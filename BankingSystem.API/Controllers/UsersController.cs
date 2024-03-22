@@ -41,9 +41,9 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<Users>> Login(string email, string password)
+        public async Task<ActionResult<Users>> Login(string username, string password)
         {
-            var user = await userService.LoginUser(email, password);
+            var user = await userService.Login(username, password);
             if (user == null)
             {
                 // return NotFound("Email or Password is incorrect.");

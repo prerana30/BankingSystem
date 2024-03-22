@@ -1,14 +1,10 @@
-﻿using BankingSystem.API.DTO;
+﻿using AutoMapper;
+using BankingSystem.API.DTO;
 using BankingSystem.API.IRepository;
 using BankingSystem.API.Models;
-using Microsoft.AspNetCore.JsonPatch;
-using AutoMapper;
-using System.Text;
+using BankingSystem.API.Utils;
 using Microsoft.AspNetCore.Identity;
-using System.Net;
-using System.Threading;
-using System;
-using System.Globalization;
+using Microsoft.AspNetCore.JsonPatch;
 using System.Data;
 
 namespace BankingSystem.API.Services
@@ -21,13 +17,15 @@ namespace BankingSystem.API.Services
         private readonly IMapper _mapper;
 
         private readonly UserManager<Users> _userManager;
+        private readonly SignInManager<Users> _signInManager;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, AccountServices accountServices, UserManager<Users> userManager)
+        public UserService(IUserRepository userRepository, IMapper mapper, AccountServices accountServices, UserManager<Users> userManager, SignInManager<Users> signInManager)
         {
             UserRepository = userRepository ?? throw new ArgumentOutOfRangeException(nameof(userRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             AccountServices = accountServices;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         public async Task<Users?> GetUserAsync(Guid Id)
@@ -46,54 +44,29 @@ namespace BankingSystem.API.Services
             return await UserRepository.GetUsersAsync();
         }
 
-        public async Task<Users> RegisterUsers(UserDTO users)
-        {
-            var finalUser = _mapper.Map<Users>(users);
-
-            // Hash password using bcrypt
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(users.Password);
-            finalUser.PasswordHash = hashedPassword;
-
-            var SavedUser= await UserRepository.AddUsers(finalUser);
-
-            //if user is accountHolder, create account
-            //if(SavedUser.UserType==UserRoles.AccountHolder)
-            //{
-                var accountNumber = GenerateRandomAccountNumber(1);
-                var atmCardNum = GenerateRandomAccountNumber(2);
-                var atmCardPin = (int)GenerateRandomAccountNumber(3);
-
-                var accountDTO = new AccountDTO(SavedUser.Id, accountNumber, 0, atmCardNum, atmCardPin, DateTime.UtcNow, SavedUser.Id, DateTime.UtcNow, SavedUser.Id);
-                await AccountServices.AddAccounts(accountDTO);
-            //}
-            return SavedUser;
-        }
-
         public async Task<Users> RegisterUser(UserDTO users)
         {
             var finalUser = _mapper.Map<Users>(users);
 
-            // Hash password using bcrypt
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(users.Password);
-            finalUser.PasswordHash = hashedPassword;
+            finalUser.PasswordHash = users.Password;
 
             var emailDuplication = _userManager.FindByEmailAsync(users.Email);
             if (emailDuplication.Result != null)
             {
                 throw new Exception("Duplicate Email Address and UserName!");
             }
-            
+
             var user = new Users()
             {
                 UserName = finalUser.UserName,
                 Fullname = finalUser.Fullname,
                 Email = finalUser.Email,
                 PhoneNumber = finalUser.PhoneNumber,
-                Address= finalUser.Address,
-                DateOfBirth= finalUser.DateOfBirth,
+                Address = finalUser.Address,
+                DateOfBirth = finalUser.DateOfBirth,
                 CreatedAt = DateTime.UtcNow,
                 ModifiedAt = DateTime.UtcNow,
-                
+
                 SecurityStamp = Guid.NewGuid().ToString(),
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
@@ -110,19 +83,17 @@ namespace BankingSystem.API.Services
                     throw new Exception(description);
                 }
 
-                //var SavedUser = await UserRepository.AddUsers(finalUser);
                 await _userManager.AddToRoleAsync(user, users.UserType);
 
-                if (users.UserType==UserRoles.AccountHolder)
+                if (users.UserType == UserRoles.AccountHolder)
                 {
-                var accountNumber = GenerateRandomAccountNumber(1);
-                var atmCardNum = GenerateRandomAccountNumber(2);
-                var atmCardPin = (int)GenerateRandomAccountNumber(3);
+                    var accountNumber = RandomNumberGeneratorHelper.GenerateRandomNumber(1);
+                    var atmCardNum = RandomNumberGeneratorHelper.GenerateRandomNumber(2);
+                    var atmCardPin = (int)RandomNumberGeneratorHelper.GenerateRandomNumber(3);
 
-                var accountDTO = new AccountDTO(user.Id, accountNumber, 0, atmCardNum, atmCardPin, DateTime.UtcNow, user.Id, DateTime.UtcNow, user.Id);
-                await AccountServices.AddAccounts(accountDTO);
+                    var accountDTO = new AccountDTO(user.Id, accountNumber, 0, atmCardNum, atmCardPin, DateTime.UtcNow, user.Id, DateTime.UtcNow, user.Id);
+                    await AccountServices.AddAccounts(accountDTO);
                 }
-
                 return user;
             }
             catch (Exception e)
@@ -152,53 +123,34 @@ namespace BankingSystem.API.Services
             return await UserRepository.UpdateUsersAsync(Id, finalUser);
         }
 
-        public async Task<Users> LoginUser(string email, string password)
+        public async Task<Users> Login(string username, string password)
         {
-            // Retrieve the hashed password for the given username/email from your user database
-            var existingUser = await UserRepository.GetUserByEmailAsync(email);
-            if (existingUser != null)
+            try
             {
-                if (existingUser.Email.Equals(email) && BCrypt.Net.BCrypt.Verify(password, existingUser.PasswordHash))
+                var result = await _signInManager.PasswordSignInAsync(username, password, true, lockoutOnFailure: false);
+
+                if (result.Succeeded)
                 {
+                    // User is successfully logged in, retrieve the user from the database
+                    var existingUser = await _userManager.FindByNameAsync(username);
                     return existingUser;
+                }
+                else if (result.IsLockedOut)
+                {
+                    // Handle locked-out user
+                    throw new Exception("User account is locked out.");
                 }
                 else
                 {
-                    // Passwords don't match
-                    return null;
+                    // Handle failed login attempt
+                    throw new Exception("Invalid login attempt.");
                 }
             }
-            return null;
-        }
-
-        private static Random ran = new Random();
-        private long GenerateRandomAccountNumber(int num)
-        {
-            switch (num)
+            catch (Exception e)
             {
-                case 1:
-                    var accountNumber = new StringBuilder("100001");
-                    while (accountNumber.Length < 16)
-                    {
-                        accountNumber.Append(ran.Next(10).ToString());
-                    }
-                    return long.Parse(accountNumber.ToString());
-                case 2:
-                    var atmCardNum = new StringBuilder("900009");
-                    while (atmCardNum.Length < 16)
-                    {
-                        atmCardNum.Append(ran.Next(10).ToString());
-                    }
-                    return long.Parse(atmCardNum.ToString());
-                case 3:
-                    var atmCardPin = new StringBuilder("0");
-                    while (atmCardPin.Length < 6)
-                    {
-                        atmCardPin.Append(ran.Next(10).ToString());
-                    }
-                    return long.Parse(atmCardPin.ToString());
-                default:
-                    return 0;
+                // Log and re-throw the exception
+                Console.WriteLine($"Error occurred during user login: {e}");
+                throw;
             }
         }
     }
