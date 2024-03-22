@@ -7,7 +7,7 @@ public class ApplicationDbContext : DbContext
     //Defining Constructor
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
-        Database.EnsureCreated();
+       
     }
 
     //Define Databases
