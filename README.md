@@ -15,5 +15,5 @@ Welcome to the Bank System Project repository! This project aims to develop a co
 | :--------------:|:---------------:|:------------------:|
 | C#              | AWS EC2 			  | Firebase           |
 | .NET Core       | AWS S3 	        | Render             |
-| .NET 			      | AWS RDS   	    | Visual Studio      |
+| ASP.NET 			      | AWS RDS   	    | Visual Studio      |
 | PostgreSQL      | AWS Lambda     	| GitHub, GitBook, Trello |                   |
