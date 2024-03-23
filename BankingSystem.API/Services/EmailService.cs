@@ -1,14 +1,6 @@
 ﻿using BankingSystem.API.Models;
-using System;
 using System.Net;
 using System.Net.Mail;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using AutoMapper;
-using BankingSystem.API.IRepository;
-
-
-
 
 namespace BankingSystem.API.Services
 {
@@ -21,14 +13,12 @@ namespace BankingSystem.API.Services
             configuration = _configuration;
         }
 
-
-
-
         //public EmailService(IConfiguration configuration , )
         //{
         //     Email = configuration["EmailSettings:SenderEmail"];
         //     configuration["EmailSettings:SenderPassword"];
         //}
+
         public async Task SendEmailAsync(Email email)
         {
             var senderEmail = configuration["EmailSettings:SenderEmail"];
@@ -36,14 +26,14 @@ namespace BankingSystem.API.Services
             var smtpClient = new SmtpClient("smtp.gmail.com")
             {
                 Port = 587,
-                Credentials = new NetworkCredential(senderEmail,senderPassword),
+                Credentials = new NetworkCredential(senderEmail, senderPassword),
                 EnableSsl = true
             };
 
             var mailMessage = new MailMessage
             {
                 From = new MailAddress(senderEmail),
-                Subject =email.MailSubject,
+                Subject = email.MailSubject,
                 Body = email.MailBody,
                 IsBodyHtml = true
             };

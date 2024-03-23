@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
+using BankingSystem.API.Data.Repository.IRepository;
 using BankingSystem.API.DTO;
-using BankingSystem.API.IRepository;
 using BankingSystem.API.Models;
+using BankingSystem.API.Services.IServices;
 using BankingSystem.API.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
@@ -10,7 +11,7 @@ using System.Data;
 
 namespace BankingSystem.API.Services
 {
-    public class UserService
+    public class UserService: IUserService
     {
         private readonly IUserRepository UserRepository;
         private readonly AccountServices AccountServices;
@@ -19,14 +20,16 @@ namespace BankingSystem.API.Services
 
         private readonly UserManager<Users> _userManager;
         private readonly SignInManager<Users> _signInManager;
+        private readonly IPasswordHasher<Users> _passwordHasher;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, AccountServices accountServices, UserManager<Users> userManager, SignInManager<Users> signInManager)
+        public UserService(IUserRepository userRepository, IMapper mapper, AccountServices accountServices, UserManager<Users> userManager, SignInManager<Users> signInManager, IPasswordHasher<Users> passwordHasher)
         {
             UserRepository = userRepository ?? throw new ArgumentOutOfRangeException(nameof(userRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             AccountServices = accountServices;
             _userManager = userManager;
             _signInManager = signInManager;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<Users?> GetUserAsync(Guid Id)
@@ -40,12 +43,20 @@ namespace BankingSystem.API.Services
             return await _userManager.FindByEmailAsync(email);
         }
 
-        public async Task<IEnumerable<Users>> GetUsersAsync()
+        public async Task<IEnumerable<UserInfoDisplayDTO>> GetUsersAsync()
         {
-            return await _userManager.Users.ToListAsync();
+            var users= await _userManager.Users.ToListAsync();
+            var userDTOs = new List<UserInfoDisplayDTO>();
+
+            foreach (var user in users)
+            {
+                var userDTO = await AddRoleForDisplay(user);
+                userDTOs.Add(userDTO);
+            }
+            return userDTOs;
         }
 
-        public async Task<Users> RegisterUser(UserDTO users)
+        public async Task<UserInfoDisplayDTO> RegisterUser(UserCreationDTO users)
         {
             var finalUser = _mapper.Map<Users>(users);
 
@@ -111,7 +122,7 @@ namespace BankingSystem.API.Services
                     }
                     await AccountServices.AddAccounts(accountDTO);
                 }
-                return user;
+                return await AddRoleForDisplay(user);
             }
             catch (Exception e)
             {
@@ -126,20 +137,31 @@ namespace BankingSystem.API.Services
             UserRepository.DeleteUser(Id);
         }
 
-        public async Task<Users> PatchUserDetails(Guid Id, JsonPatchDocument<UserDTO> patchDocument)
+        public async Task<UserInfoDisplayDTO> PatchUserDetails(Guid Id, JsonPatchDocument<UserCreationDTO> patchDocument)
         {
-            return await UserRepository.PatchUserDetails(Id, patchDocument);
+            var user= await UserRepository.PatchUserDetails(Id, patchDocument);
+            return await AddRoleForDisplay(user);
         }
 
-        public async Task<Users> UpdateUsersAsync(Guid Id, UserDTO users)
+        public async Task<UserInfoDisplayDTO> UpdateUsersAsync(Guid Id, UserUpdateDTO users)
         {
             var finalUser = _mapper.Map<Users>(users);
             finalUser.PasswordHash = users.Password;
 
-            return await UserRepository.UpdateUsersAsync(Id, finalUser);
+            var existingUser = await GetUserAsync(Id);
+            //if password is not same as in the database; update it
+            if (!string.IsNullOrEmpty(finalUser.PasswordHash) && _passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash, users.Password) != PasswordVerificationResult.Success)
+            {
+                // Hash the new password
+                var newPasswordHash = _passwordHasher.HashPassword(existingUser, users.Password);
+                finalUser.PasswordHash = newPasswordHash;
+            }
+
+            var user = await UserRepository.UpdateUsersAsync(Id, finalUser);
+            return await AddRoleForDisplay(user);
         }
 
-        public async Task<Users> Login(string username, string password)
+        public async Task<UserInfoDisplayDTO> Login(string username, string password)
         {
             try
             {
@@ -149,12 +171,7 @@ namespace BankingSystem.API.Services
                 {
                     // User is successfully logged in, retrieve the user from the database
                     var existingUser = await _userManager.FindByNameAsync(username);
-                    return existingUser;
-                }
-                else if (result.IsLockedOut)
-                {
-                    // Handle locked-out user
-                    throw new Exception("User account is locked out.");
+                    return await AddRoleForDisplay(existingUser);
                 }
                 else
                 {
@@ -168,6 +185,15 @@ namespace BankingSystem.API.Services
                 Console.WriteLine($"Error occurred during user login: {e}");
                 throw;
             }
+        }
+
+        public async Task<UserInfoDisplayDTO> AddRoleForDisplay(Users user)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            var userType = roles.FirstOrDefault(); // Assuming a user can have only one role
+            var userDTO = _mapper.Map<UserInfoDisplayDTO>(user);
+            userDTO.UserType = userType;
+            return userDTO;
         }
     }
 }

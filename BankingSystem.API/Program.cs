@@ -1,12 +1,12 @@
-using BankingSystem.API.DbContext;
-using BankingSystem.API.IRepository;
+using BankingSystem.API.Data.DbContext;
+using BankingSystem.API.Data.Repository;
+using BankingSystem.API.Data.Repository.IRepository;
 using BankingSystem.API.Models;
-using BankingSystem.API.Repository;
 using BankingSystem.API.Services;
+using BankingSystem.API.Utilities;
 using BankingSystem.API.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using RESTful_API__ASP.NET_Core.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
