@@ -34,6 +34,8 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<AccountServices>();
 
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+
+builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<TransactionServices>();
 
 
