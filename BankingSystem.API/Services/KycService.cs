@@ -31,17 +31,17 @@ namespace BankingSystem.API.Services
             return await _kycRepository.GetKYCIdAsync(KYCId);
         }
 
-        public async Task<KycDocument> GetKycByUserIdAsync(Guid userId)
+        public async Task<KycDocument> GetKycByUserIdAsync(Guid Id)
         {
-            return await _kycRepository.GetKycByUserIdAsync(userId);
+            return await _kycRepository.GetKycByUserIdAsync(Id);
         }
 
        /* public async Task<KycDocument> AddKycDocumentAsync(KycDocumentDTO kycDocumentDto)
         {
             var kycDocument = _mapper.Map<KycDocument>(kycDocumentDto);
 
-            kycDocument.UserImagePath = await ValidateAndUploadFile(kycDocument.UserImageFile);
-            kycDocument.CitizenshipImagePath = await ValidateAndUploadFile(kycDocument.CitizenshipImageFile);
+            kycDocument.UserImagePath = await ValidateAndUploadFile(kycDocumentDto.UserImageFile);
+            kycDocument.CitizenshipImagePath = await ValidateAndUploadFile(kycDocumentDto.CitizenshipImageFile);
 
             if (kycDocument.UserImagePath != "" && kycDocument.CitizenshipImagePath != "") {
                 kycDocument.IsApproved = true;

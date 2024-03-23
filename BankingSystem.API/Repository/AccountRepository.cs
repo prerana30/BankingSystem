@@ -1,7 +1,5 @@
-﻿using BankingSystem.API.DTO;
-using BankingSystem.API.IRepository;
+﻿using BankingSystem.API.IRepository;
 using BankingSystem.API.Models;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 
 namespace BankingSystem.API.Repository
@@ -49,33 +47,33 @@ namespace BankingSystem.API.Repository
             _context.SaveChangesAsync();
         }
 
-       /* public async Task<Accounts> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> aDetails)
-        {
-            var existingAccount = await GetAccountAsync(accountId);
-            if (existingAccount != null)
-            {
-                var accountToPatch = new AccountDTO(existingAccount.UserId,existingAccount.Balance, existingAccount.AtmCardPin, existingAccount.CreatedAt, existingAccount.CreatedBy, existingAccount.ModifiedAt, existingAccount.ModifiedBy);
-                 aDetails.ApplyTo(accountToPatch);
-                existingAccount.Balance = accountToPatch.Balance;
-             
-                existingAccount.AtmCardPin = accountToPatch.AtmCardPin;
-*//*                string hashedCardNum = BCrypt.Net.BCrypt.HashPassword(accountToPatch.AtmCardNum);
-                existingAccount.AtmCardNum = hashedCardNum;
-                string hashedCardPin = BCrypt.Net.BCrypt.HashPassword(accountToPatch.AtmCardPin);
-                existingAccount.AtmCardNum = hashedCardPin;*//*
-               
+        /* public async Task<Accounts> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> aDetails)
+         {
+             var existingAccount = await GetAccountAsync(accountId);
+             if (existingAccount != null)
+             {
+                 var accountToPatch = new AccountDTO(existingAccount.UserId,existingAccount.Balance, existingAccount.AtmCardPin, existingAccount.CreatedAt, existingAccount.CreatedBy, existingAccount.ModifiedAt, existingAccount.ModifiedBy);
+                  aDetails.ApplyTo(accountToPatch);
+                 existingAccount.Balance = accountToPatch.Balance;
+
+                 existingAccount.AtmCardPin = accountToPatch.AtmCardPin;
+ *//*                string hashedCardNum = BCrypt.Net.BCrypt.HashPassword(accountToPatch.AtmCardNum);
+                 existingAccount.AtmCardNum = hashedCardNum;
+                 string hashedCardPin = BCrypt.Net.BCrypt.HashPassword(accountToPatch.AtmCardPin);
+                 existingAccount.AtmCardNum = hashedCardPin;*//*
 
 
 
-                _context.SaveChanges();
-                return existingAccount;
-            }
-            return null;
-        }
 
-        */
+                 _context.SaveChanges();
+                 return existingAccount;
+             }
+             return null;
+         }
+
+         */
         //{
-        //     existingUser = await GetUserAsync(userId);
+        //     existingUser = await GetUserAsync(  Id);
         //    if (existingUser != null)
         //    {
         //        //transform user entity to usercreationDTO
@@ -131,10 +129,3 @@ namespace BankingSystem.API.Repository
         }
     }
 }
-
-
-
-
-
-
-

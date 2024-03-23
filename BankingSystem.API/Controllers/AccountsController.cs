@@ -1,11 +1,8 @@
 ﻿using BankingSystem.API.DTO;
-using BankingSystem.API.IRepository;
-using BankingSystem.API.Repository;
 using BankingSystem.API.Models;
 using BankingSystem.API.Services;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using RESTful_API__ASP.NET_Core.Repository;
+
 
 namespace BankingSystem.API.Controllers
 {
@@ -16,11 +13,13 @@ namespace BankingSystem.API.Controllers
     {
         private readonly AccountServices accountServices;
         private readonly UserService userServices;
+        private readonly EmailService emailService;
 
-        public AccountsController(AccountServices AccountServices, UserService UserService)
+        public AccountsController(AccountServices AccountServices, UserService UserService, EmailService _emailService)
         {
             accountServices = AccountServices ?? throw new ArgumentOutOfRangeException(nameof(AccountServices));
             userServices = UserService ?? throw new ArgumentOutOfRangeException(nameof(UserService));
+            emailService = _emailService;
 
         }
 
@@ -58,8 +57,12 @@ namespace BankingSystem.API.Controllers
                 return NotFound("User not found");
             }
 
+<<<<<<< HEAD
 
             var userId = user.UserId;
+=======
+            var userId = user.Id;
+>>>>>>> c9515923c7f2aef77a48c0553fe8d43457c1cbf9
 
             var checkAccount = await accountServices.GetAccountByUserIdAsync(userId);
             if (checkAccount != null)
@@ -69,8 +72,15 @@ namespace BankingSystem.API.Controllers
             var accounts = await accountServices.AddAccounts(userId);
             if (accounts == null)
             {
-                return StatusCode(400, "User already exists.");
+                return StatusCode(400, "Account already exists.");
             }
+
+            var Email = new Email();
+            Email.MailSubject = "Account Registered";
+            Email.MailBody = "Your account has been made.";
+            Email.ReceiverEmail = email;
+            
+           await emailService.SendEmailAsync(Email);
             return Ok(accounts);
 
         }
@@ -93,24 +103,35 @@ namespace BankingSystem.API.Controllers
             return Ok(newAccount);
         }
 
-       /* [HttpPatch("{userId}")]
-        public async Task<ActionResult<Accounts>> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> patchDocument)
+        /* [HttpPatch("{userId}")]
+         public async Task<ActionResult<Accounts>> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> patchDocument)
+         {
+             var account = await accountServices.PatchAccountDetails(accountId, patchDocument);
+             if (!ModelState.IsValid)
+             {
+                 return BadRequest(ModelState);
+             }
+             if (!TryValidateModel(account))
+             {
+                 return BadRequest(ModelState);
+             }
+             if (account == null)
+             {
+                 NotFound();
+             }
+             return Ok(account);
+         }*/
+        /*Route("api/send-email")]
+        [HttpPost]
+        public Task SendEmail()
         {
-            var account = await accountServices.PatchAccountDetails(accountId, patchDocument);
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            if (!TryValidateModel(account))
-            {
-                return BadRequest(ModelState);
-            }
-            if (account == null)
-            {
-                NotFound();
-            }
-            return Ok(account);
-        }*/
+            var Email = new Email();
+            Email.MailSubject = "Account Registered";
+            Email.MailBody = "Your account has been made.";
+            Email.SenderEmail = "aanisharai.aloi@gmail.com";
+            return  emailService.SendEmailAsync(Email);
+            
 
+        }*/
     }
 }
