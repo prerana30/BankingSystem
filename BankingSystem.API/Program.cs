@@ -36,6 +36,8 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<AccountServices>();
 
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+
+builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<TransactionServices>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); //searches for all profiles automatically
@@ -76,7 +78,7 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.Migrate();
 
     // Seed users and roles
-    AppDBInitialize.SeedUsersAndUserRolesAsync(app).Wait();
+    AppDBInitialize.SeedConstantsAsync(app).Wait();
 }
 
 app.Run();
