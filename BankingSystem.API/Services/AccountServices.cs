@@ -4,12 +4,10 @@ using BankingSystem.API.IRepository;
 using BankingSystem.API.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using RESTful_API__ASP.NET_Core.Repository;
-<<<<<<< HEAD
 using BankingSystem.API.Utils;
 
-=======
 using BankingSystem.API.Services;
->>>>>>> c9515923c7f2aef77a48c0553fe8d43457c1cbf9
+
 
 
 namespace BankingSystem.API.Services
@@ -84,7 +82,6 @@ namespace BankingSystem.API.Services
             var finalAccount = _mapper.Map<Accounts>(accounts);
             // finalAccount.AccountNumber = AccountNumberGenerator.GenerateAccountNumber();
             return await AccountRepository.AddAccounts(finalAccount);
->>>>>>> c9515923c7f2aef77a48c0553fe8d43457c1cbf9
         }
 
         public void DeleteAccount(Guid accountId)

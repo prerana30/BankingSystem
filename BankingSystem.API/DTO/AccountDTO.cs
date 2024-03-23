@@ -5,21 +5,15 @@ namespace BankingSystem.API.DTO
     {
         public Guid UserId { get; set; }
         
-<<<<<<< HEAD
-        //public long AccountNumber { get; set; }
-=======
+
         [Required]
         public long AccountNumber { get; set; }
->>>>>>> c9515923c7f2aef77a48c0553fe8d43457c1cbf9
+
         public decimal Balance { get; set; }
         public long AtmCardNum { get; set; }
 
-<<<<<<< HEAD
         public int AtmCardPin { get; set; }
 
-=======
-        [Required]
-        public int AtmCardPin { get; set; }
         public DateTime AccountCreatedAt { get; set; } = DateTime.UtcNow;
         [Required]
         public Guid AccountCreatedBy { get; set; }
@@ -37,7 +31,7 @@ namespace BankingSystem.API.DTO
             AccountModifiedBy = accountModifiedBy;
 
         }
->>>>>>> c9515923c7f2aef77a48c0553fe8d43457c1cbf9
+
 
         public AccountDTO(Guid id, long accountNumber, long balance, long atmCardNum, int atmCardPin, DateTime accountCreatedAt, Guid accountCreatedBy, DateTime accountModifiedAt, Guid accountModifiedBy)
         {
