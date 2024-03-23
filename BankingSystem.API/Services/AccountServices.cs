@@ -1,11 +1,10 @@
-﻿using BankingSystem.API.DTO;
+﻿using AutoMapper;
+using BankingSystem.API.DTO;
 using BankingSystem.API.IRepository;
 using BankingSystem.API.Models;
 using Microsoft.AspNetCore.JsonPatch;
-using AutoMapper;
 using RESTful_API__ASP.NET_Core.Repository;
 using BankingSystem.API.Services;
-
 
 
 namespace BankingSystem.API.Services
@@ -37,7 +36,7 @@ namespace BankingSystem.API.Services
         public async Task<Accounts?> GetAccountByAccountNumberAsync(long accountNumber)
         {
             return await AccountRepository.GetAccountByAccountNumberAsync(accountNumber);
-        }  
+        }
 
         public async Task<Accounts?> GetAccountByUserIdAsync(Guid userId)
         {
@@ -74,11 +73,11 @@ namespace BankingSystem.API.Services
             AccountRepository.DeleteAccount(accountId);
         }
 
-      /*  public async Task<Accounts> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> patchDocument)
-        {
-            return await AccountRepository.PatchAccountDetails(accountId, patchDocument);
-        }
-*/
+        /*  public async Task<Accounts> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> patchDocument)
+          {
+              return await AccountRepository.PatchAccountDetails(accountId, patchDocument);
+          }
+  */
         public async Task<Accounts> UpdateAccountsAsync(Guid accountId, AccountDTO accounts)
         {
             var finalAccount = _mapper.Map<Accounts>(accounts);

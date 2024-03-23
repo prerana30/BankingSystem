@@ -21,10 +21,10 @@ namespace BankingSystem.API.DTO
         [MaxLength(10)]
         public string PhoneNumber { get; set; }
         public string Address { get; set; }
-        public string UserType { get; set; }
+        public UserRoles UserType { get; set; }
         public DateTime DateOfBirth { get; set; }
 
-        public UserDTO( string username, string fullname, string email, string password, string address, string userType, DateTime dateOfBirth)
+        public UserDTO( string username, string fullname, string email, string password, string address, UserRoles userType, DateTime dateOfBirth)
         {
             Username = username;
             Fullname = fullname;
