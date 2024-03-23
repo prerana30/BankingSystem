@@ -58,6 +58,7 @@ namespace BankingSystem.API.Controllers
                 return NotFound("User not found");
             }
 
+
             var userId = user.UserId;
 
             var checkAccount = await accountServices.GetAccountByUserIdAsync(userId);
@@ -65,7 +66,7 @@ namespace BankingSystem.API.Controllers
             {
                 return StatusCode(400, "User already has an account.");
             }
-            var accounts = await accountServices.AddAccounts(account);
+            var accounts = await accountServices.AddAccounts(userId);
             if (accounts == null)
             {
                 return StatusCode(400, "User already exists.");

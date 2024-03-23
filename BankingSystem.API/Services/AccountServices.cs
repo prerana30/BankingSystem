@@ -7,6 +7,7 @@ using System.Text;
 using System.Security.Cryptography;
 using AutoMapper;
 using RESTful_API__ASP.NET_Core.Repository;
+using BankingSystem.API.Utils;
 
 
 
@@ -45,10 +46,17 @@ namespace BankingSystem.API.Services
         }
 
 
-        public async Task<Accounts> AddAccounts(AccountDTO accounts)
+        public async Task<Accounts> AddAccounts(Guid userId)
         {
-            var finalAccount = _mapper.Map<Accounts>(accounts);
-            return await AccountRepository.AddAccounts(finalAccount);
+            var final = new Accounts()
+            {
+                UserId = userId,
+                AtmCardNum = RandomNumberGeneratorHelper.GenerateRandomNumber(2),
+                AccountNumber = RandomNumberGeneratorHelper.GenerateRandomNumber(1),
+                AtmCardPin = (int)RandomNumberGeneratorHelper.GenerateRandomNumber(3)
+            };
+          
+            return await AccountRepository.AddAccounts(final);
         }
 
         public void DeleteAccount(Guid accountId)
