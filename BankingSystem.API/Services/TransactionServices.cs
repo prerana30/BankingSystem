@@ -1,15 +1,12 @@
 ﻿using AutoMapper;
+using BankingSystem.API.Data.Repository.IRepository;
 using BankingSystem.API.DTO;
-using BankingSystem.API.IRepository;
 using BankingSystem.API.Models;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.EntityFrameworkCore;
-using RESTful_API__ASP.NET_Core.Repository;
-using System.Text;
+using BankingSystem.API.Services.IServices;
 
 namespace BankingSystem.API.Services
 {
-    public class TransactionServices
+    public class TransactionServices: ITransactionService
     {
         private readonly ITransactionRepository _transactionRepository;
         private readonly IMapper _mapper;
@@ -44,7 +41,6 @@ namespace BankingSystem.API.Services
             var transaction = _mapper.Map<Transaction>(transactionDto);
             return await _transactionRepository.DepositTransactionAsync(transaction, accountId, userId);
         }
-
 
         public async Task<Transaction> WithdrawTransactionAsync(WithdrawTransactionDTO withdrawDto, Guid accountId, int atmIdAtmCardPin)
         {

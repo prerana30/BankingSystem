@@ -1,0 +1,15 @@
+﻿using BankingSystem.API.Models;
+
+namespace BankingSystem.API.DTO
+{
+    public class TransactionDTO
+    {
+        public TransactionType TransactionType { get; set; }
+
+        public decimal Amount { get; set; }
+
+        public DateTime TransactionTime { get; set; }
+
+        public string ? TransactionRemarks { get; set; }
+    }
+}

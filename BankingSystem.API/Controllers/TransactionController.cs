@@ -2,7 +2,6 @@
 using BankingSystem.API.Models;
 using BankingSystem.API.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Principal;
 
 namespace BankingSystem.API.Controllers
 {
@@ -30,21 +29,6 @@ namespace BankingSystem.API.Controllers
             return Ok(await _transactionServices.GetTransactionsOfAccountAsync(accountId));
         }
 
-
-        //[Route("api/transactions")]
-        //[HttpDelete]
-        //public async Task<ActionResult> DeleteTransaction(Guid accountId, Guid transactionId)
-        //{
-        //    if (!await _transactionServices.TransactionExistAsync(transactionId))
-        //    {
-        //        return NotFound();
-        //    }
-        //    _transactionServices.DeleteTransaction(accountId, transactionId);
-
-        //    return NoContent();
-        //}
-
-
         [Route("api/transactions/deposit")]
         [HttpPost]
         public async Task<ActionResult<Transaction>> DepositTransaction(DepositTransactionDTO transaction, Guid accountId, Guid tellerId)
@@ -54,7 +38,6 @@ namespace BankingSystem.API.Controllers
             return Ok(depositAccount);
         }
 
-
         [Route("api/transactions/withdraw")]
         [HttpPost]
         public async Task<ActionResult<Transaction>> WithdrawTransaction(WithdrawTransactionDTO transaction, Guid accountId, int atmCardPin)
@@ -63,6 +46,5 @@ namespace BankingSystem.API.Controllers
 
             return Ok(withdrawAccount);
         }
-
     }
 }

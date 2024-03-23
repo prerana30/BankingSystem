@@ -1,14 +1,14 @@
-﻿using BankingSystem.API.DTO;
-using BankingSystem.API.IRepository;
+﻿using AutoMapper;
+using BankingSystem.API.Data.Repository.IRepository;
+using BankingSystem.API.DTO;
 using BankingSystem.API.Models;
-using Microsoft.AspNetCore.JsonPatch;
-using AutoMapper;
+using BankingSystem.API.Services.IServices;
 using BankingSystem.API.Utils;
 using System.Diagnostics;
 
 namespace BankingSystem.API.Services
 {
-    public class KycService
+    public class KycService: IKYCService
     {
         private readonly IKycRepository _kycRepository;
         private readonly IMapper _mapper;
@@ -36,14 +36,15 @@ namespace BankingSystem.API.Services
             return await _kycRepository.GetKycByUserIdAsync(Id);
         }
 
-       /* public async Task<KycDocument> AddKycDocumentAsync(KycDocumentDTO kycDocumentDto)
+        public async Task<KycDocument> AddKycDocumentAsync(KycDocumentDTO kycDocumentDto)
         {
             var kycDocument = _mapper.Map<KycDocument>(kycDocumentDto);
 
             kycDocument.UserImagePath = await ValidateAndUploadFile(kycDocumentDto.UserImageFile);
             kycDocument.CitizenshipImagePath = await ValidateAndUploadFile(kycDocumentDto.CitizenshipImageFile);
 
-            if (kycDocument.UserImagePath != "" && kycDocument.CitizenshipImagePath != "") {
+            if (kycDocument.UserImagePath != "" && kycDocument.CitizenshipImagePath != "")
+            {
                 kycDocument.IsApproved = true;
             }
 
@@ -53,8 +54,8 @@ namespace BankingSystem.API.Services
         public async Task<KycDocument> UpdateKycDocumentAsync(Guid KYCId, KycDocumentDTO updatedKycDocumentDto)
         {
             var updatedKycDocument = _mapper.Map<KycDocument>(updatedKycDocumentDto);
-            updatedKycDocument.UserImagePath = await ValidateAndUploadFile(updatedKycDocument.UserImageFile);
-            updatedKycDocument.CitizenshipImagePath = await ValidateAndUploadFile(updatedKycDocument.CitizenshipImageFile);
+            updatedKycDocument.UserImagePath = await ValidateAndUploadFile(updatedKycDocumentDto.UserImageFile);
+            updatedKycDocument.CitizenshipImagePath = await ValidateAndUploadFile(updatedKycDocumentDto.CitizenshipImageFile);
 
 
             var existingKycDocument = await _kycRepository.GetKYCIdAsync(KYCId);
@@ -76,7 +77,7 @@ namespace BankingSystem.API.Services
             }
             return await _kycRepository.UpdateKycDocumentAsync(KYCId, existingKycDocument);
         }
-*/
+
         public async Task<string> ValidateAndUploadFile(IFormFile fileInput)
         {
             var url = "";
