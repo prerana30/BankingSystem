@@ -93,7 +93,7 @@ namespace BankingSystem.API.Repository
             }*/
 
             // Check if the user has the TellerPerson role
-            bool isTeller = await _userManager.IsInRoleAsync(teller, UserRoles.TellerPerson);
+            bool isTeller = await _userManager.IsInRoleAsync(teller, UserRoles.TellerPerson.ToString());
 
             if (!isTeller)
             {

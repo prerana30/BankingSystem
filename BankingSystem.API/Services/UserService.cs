@@ -5,6 +5,7 @@ using BankingSystem.API.Models;
 using BankingSystem.API.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
 
 namespace BankingSystem.API.Services
@@ -36,12 +37,12 @@ namespace BankingSystem.API.Services
         public async Task<Users?> GetUserByEmailAsync(string email)
         {
             //returns only user detail
-            return await UserRepository.GetUserByEmailAsync(email);
+            return await _userManager.FindByEmailAsync(email);
         }
 
         public async Task<IEnumerable<Users>> GetUsersAsync()
         {
-            return await UserRepository.GetUsersAsync();
+            return await _userManager.Users.ToListAsync();
         }
 
         public async Task<Users> RegisterUser(UserDTO users)
@@ -53,7 +54,13 @@ namespace BankingSystem.API.Services
             var emailDuplication = _userManager.FindByEmailAsync(users.Email);
             if (emailDuplication.Result != null)
             {
-                throw new Exception("Duplicate Email Address and UserName!");
+                throw new Exception("Duplicate Email Address!");
+            }
+
+            var usernameDuplication = _userManager.FindByNameAsync(users.Username);
+            if (usernameDuplication.Result != null)
+            {
+                throw new Exception("Duplicate UserName!");
             }
 
             var user = new Users()
@@ -83,15 +90,25 @@ namespace BankingSystem.API.Services
                     throw new Exception(description);
                 }
 
-                await _userManager.AddToRoleAsync(user, users.UserType);
-
-                if (users.UserType == UserRoles.AccountHolder)
+                if (users.UserType == UserRoles.TellerPerson)
                 {
+                    await _userManager.AddToRoleAsync(user, UserRoles.TellerPerson.ToString());
+                }
+                else
+                {
+                    await _userManager.AddToRoleAsync(user, UserRoles.AccountHolder.ToString());
+
                     var accountNumber = RandomNumberGeneratorHelper.GenerateRandomNumber(1);
                     var atmCardNum = RandomNumberGeneratorHelper.GenerateRandomNumber(2);
                     var atmCardPin = (int)RandomNumberGeneratorHelper.GenerateRandomNumber(3);
 
                     var accountDTO = new AccountDTO(user.Id, accountNumber, 0, atmCardNum, atmCardPin, DateTime.UtcNow, user.Id, DateTime.UtcNow, user.Id);
+
+                    var checkAccount = await AccountServices.GetAccountByUserIdAsync(user.Id);
+                    if (checkAccount != null)
+                    {
+                        throw new Exception("User already has an account.");
+                    }
                     await AccountServices.AddAccounts(accountDTO);
                 }
                 return user;
@@ -117,8 +134,7 @@ namespace BankingSystem.API.Services
         public async Task<Users> UpdateUsersAsync(Guid Id, UserDTO users)
         {
             var finalUser = _mapper.Map<Users>(users);
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(users.Password);
-            finalUser.PasswordHash = hashedPassword;
+            finalUser.PasswordHash = users.Password;
 
             return await UserRepository.UpdateUsersAsync(Id, finalUser);
         }
