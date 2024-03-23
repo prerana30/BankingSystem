@@ -1,16 +1,14 @@
-﻿using BankingSystem.API.DTO;
-using BankingSystem.API.IRepository;
+﻿using AutoMapper;
+using BankingSystem.API.Data.Repository.IRepository;
+using BankingSystem.API.DTO;
 using BankingSystem.API.Models;
-using Microsoft.AspNetCore.JsonPatch;
-using AutoMapper;
-using RESTful_API__ASP.NET_Core.Repository;
-using BankingSystem.API.Services;
+using BankingSystem.API.Services.IServices;
 
 
 
 namespace BankingSystem.API.Services
 {
-    public class AccountServices
+    public class AccountServices: IAccountService
     {
         private readonly IAccountRepository AccountRepository;
         private readonly EmailService _emailService;
@@ -25,10 +23,8 @@ namespace BankingSystem.API.Services
 
         public async Task<Accounts?> GetAccountAsync(Guid accountId)
         {
-            //returns only user detail
             return await AccountRepository.GetAccountAsync(accountId);
         }
-
 
         public async Task<IEnumerable<Accounts>> GetAccountsAsync()
         {
@@ -37,7 +33,7 @@ namespace BankingSystem.API.Services
         public async Task<Accounts?> GetAccountByAccountNumberAsync(long accountNumber)
         {
             return await AccountRepository.GetAccountByAccountNumberAsync(accountNumber);
-        }  
+        }
 
         public async Task<Accounts?> GetAccountByUserIdAsync(Guid userId)
         {
@@ -49,6 +45,19 @@ namespace BankingSystem.API.Services
               var finalAccount = _mapper.Map<Accounts>(userDTO);
               var addedAccount = await AccountRepository.AddAccounts(finalAccount);
 
+<<<<<<< HEAD
+        public async Task<Accounts> AddAccounts(Guid userId)
+        {
+            var final = new Accounts()
+            {
+                UserId = userId,
+                AtmCardNum = RandomNumberGeneratorHelper.GenerateRandomNumber(2),
+                AccountNumber = RandomNumberGeneratorHelper.GenerateRandomNumber(1),
+                AtmCardPin = (int)RandomNumberGeneratorHelper.GenerateRandomNumber(3)
+            };
+          
+            return await AccountRepository.AddAccounts(final);
+=======
               // Send email after adding the account
               var email = new Email
               {
@@ -74,17 +83,9 @@ namespace BankingSystem.API.Services
             AccountRepository.DeleteAccount(accountId);
         }
 
-      /*  public async Task<Accounts> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> patchDocument)
-        {
-            return await AccountRepository.PatchAccountDetails(accountId, patchDocument);
-        }
-*/
         public async Task<Accounts> UpdateAccountsAsync(Guid accountId, AccountDTO accounts)
         {
             var finalAccount = _mapper.Map<Accounts>(accounts);
-            //string hashedPassword = BCrypt.Net.BCrypt.HashPassword(users.Password);
-            //final.Password = hashedPassword;
-
             return await AccountRepository.UpdateAccountsAsync(accountId, finalAccount);
         }
     }

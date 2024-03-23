@@ -20,13 +20,13 @@ namespace BankingSystem.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Users>>> GetUsers()
         {
-            if (await userService.GetUsersAsync() == null)
+            var users = await userService.GetUsersAsync();
+            if (users == null)
             {
                 var list = new List<Users>();
                 return list;
             }
-
-            return Ok(await userService.GetUsersAsync());
+            return Ok(users);
         }
 
         [HttpGet("{id}")]
@@ -53,7 +53,7 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Users>> AddUsers(UserDTO user)
+        public async Task<ActionResult<Users>> AddUsers(UserCreationDTO user)
         {
             var users = await userService.RegisterUser(user);
             if (users == null)
@@ -71,7 +71,7 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpPut("{Id}")]
-        public async Task<ActionResult<Users>> UpdateUsers(Guid Id, UserDTO user)
+        public async Task<ActionResult<Users>> UpdateUsers(Guid Id, UserUpdateDTO user)
         {
             var newUser = await userService.UpdateUsersAsync(Id, user);
             if (newUser == null)
@@ -82,7 +82,7 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpPatch("{Id}")]
-        public async Task<ActionResult<Users>> PatchUserDetails(Guid Id, JsonPatchDocument<UserDTO> patchDocument)
+        public async Task<ActionResult<Users>> PatchUserDetails(Guid Id, JsonPatchDocument<UserCreationDTO> patchDocument)
         {
             var user = await userService.PatchUserDetails(Id, patchDocument);
             if (!ModelState.IsValid)
