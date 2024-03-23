@@ -17,12 +17,7 @@ namespace BankingSystem.API.Data.DbContext
                 await SeedRoleAsync(roleManager, UserRoles.AccountHolder.ToString());
                 await SeedRoleAsync(roleManager, UserRoles.TellerPerson.ToString());
 
-                // Seed Users
-                await SeedUserAsync(userManager, "admin@gmail.com", "admin", "Teller Person", "Kathmandu", "9826274833", "2002-08-20T11:13:25.342Z", UserRoles.TellerPerson.ToString());
-                await SeedUserAsync(userManager, "subritiaryal13@gmail.com", "subs", "Subriti Aryal", "Gothatar, Kathmandu", "9843346520", "2002-08-20T11:13:25.342Z", UserRoles.AccountHolder.ToString());
-                await SeedUserAsync(userManager, "accountUser@gmail.com", "user", "Account Holder", "Kathmandu", "9830274849", "2000-03-23T11:13:25.342Z", UserRoles.AccountHolder.ToString());
-
-                // Save Changes
+          
                // Save Changes
                 var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 await context.SaveChangesAsync();
