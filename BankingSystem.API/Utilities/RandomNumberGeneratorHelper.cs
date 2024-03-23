@@ -28,11 +28,13 @@ namespace BankingSystem.API.Utils
                     return long.Parse(atmCardNum.ToString());
 
                 case 3:
-                    var atmCardPin = new StringBuilder("0");
-                    while (atmCardPin.Length < 6)
+
+                    var atmCardPin = new StringBuilder();
+                    while(atmCardPin.Length < 4)
                     {
-                        atmCardPin.Append(ran.Next(10).ToString());
+                        atmCardPin.Append(ran.Next(4).ToString());
                     }
+
                     return long.Parse(atmCardPin.ToString());
 
                 default:

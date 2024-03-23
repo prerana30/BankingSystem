@@ -5,6 +5,7 @@ using BankingSystem.API.Models;
 using BankingSystem.API.Services.IServices;
 
 
+
 namespace BankingSystem.API.Services
 {
     public class AccountServices: IAccountService
@@ -44,6 +45,19 @@ namespace BankingSystem.API.Services
               var finalAccount = _mapper.Map<Accounts>(userDTO);
               var addedAccount = await AccountRepository.AddAccounts(finalAccount);
 
+<<<<<<< HEAD
+        public async Task<Accounts> AddAccounts(Guid userId)
+        {
+            var final = new Accounts()
+            {
+                UserId = userId,
+                AtmCardNum = RandomNumberGeneratorHelper.GenerateRandomNumber(2),
+                AccountNumber = RandomNumberGeneratorHelper.GenerateRandomNumber(1),
+                AtmCardPin = (int)RandomNumberGeneratorHelper.GenerateRandomNumber(3)
+            };
+          
+            return await AccountRepository.AddAccounts(final);
+=======
               // Send email after adding the account
               var email = new Email
               {
