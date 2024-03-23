@@ -5,7 +5,7 @@ namespace BankingSystem.API.DTO
     public class KycDocumentDTO
     {
         [Required]
-        public Guid   Id { get; set; }
+        public Guid UserId { get; set; }
 
         [Required]
         [MaxLength(50)]

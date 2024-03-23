@@ -23,10 +23,10 @@ namespace BankingSystem.API.Controllers
             return Ok(KycDocument);
         }
 
-        [HttpGet("{KYCId}")]
-        public async Task<ActionResult<KycDocument>> GetKycDocument(Guid KYCId)
+        [HttpGet("by{KycId}")]
+        public async Task<ActionResult<KycDocument>> GetKycDocument(Guid KycId)
         {
-            var kycDocument = await _kycService.GetKycDocumentAsync(KYCId);
+            var kycDocument = await _kycService.GetKycDocumentAsync(KycId);
             if (kycDocument == null)
             {
                 return NotFound();
@@ -52,10 +52,10 @@ namespace BankingSystem.API.Controllers
             return Ok(kycDocument);
         }
 
-        [HttpPut("{KYCId}")]
-        public async Task<ActionResult<KycDocument>> UpdateKycDocument(Guid KYCId, KycDocumentDTO kycDocumentDto)
+        [HttpPut("{KycId}")]
+        public async Task<ActionResult<KycDocument>> UpdateKycDocument(Guid KycId, KycDocumentDTO kycDocumentDto)
         {
-            var updatedKycDocument = await _kycService.UpdateKycDocumentAsync(KYCId, kycDocumentDto);
+            var updatedKycDocument = await _kycService.UpdateKycDocumentAsync(KycId, kycDocumentDto);
             if (updatedKycDocument == null)
             {
                 return BadRequest("Update failed");

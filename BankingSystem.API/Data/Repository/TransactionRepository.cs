@@ -122,7 +122,7 @@ namespace BankingSystem.API.Data.Repository
 
             if (account is null)
             {
-                throw new Exception($"Account with  Id{accountId} not found.");
+                throw new Exception($"Account with Id {accountId} not found.");
             }
 
             var kycAccount = await _context.KycDocuments
@@ -130,7 +130,7 @@ namespace BankingSystem.API.Data.Repository
 
             if (kycAccount is null)
             {
-                throw new Exception($"KYC document not found for user  Id{account.User.Id}.");
+                throw new Exception($"KYC document not found for user Id {account.User.Id}.");
             }
 
             var atmPin = await _context.Account
