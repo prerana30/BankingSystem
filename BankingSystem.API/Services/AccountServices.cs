@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
+using BankingSystem.API.Data.Repository.IRepository;
 using BankingSystem.API.DTO;
-using BankingSystem.API.IRepository;
 using BankingSystem.API.Models;
+using BankingSystem.API.Services.IServices;
 
 
 
 namespace BankingSystem.API.Services
 {
-    public class AccountServices
+    public class AccountServices: IAccountService
     {
         private readonly IAccountRepository AccountRepository;
 
@@ -20,10 +21,8 @@ namespace BankingSystem.API.Services
 
         public async Task<Accounts?> GetAccountAsync(Guid accountId)
         {
-            //returns only user detail
             return await AccountRepository.GetAccountAsync(accountId);
         }
-
 
         public async Task<IEnumerable<Accounts>> GetAccountsAsync()
         {
@@ -39,7 +38,6 @@ namespace BankingSystem.API.Services
             return await AccountRepository.GetAccountByUserIdAsync(userId);
         }
 
-
         public async Task<Accounts> AddAccounts(AccountDTO accounts)
         {
             var finalAccount = _mapper.Map<Accounts>(accounts);
@@ -51,17 +49,9 @@ namespace BankingSystem.API.Services
             AccountRepository.DeleteAccount(accountId);
         }
 
-        /*  public async Task<Accounts> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> patchDocument)
-          {
-              return await AccountRepository.PatchAccountDetails(accountId, patchDocument);
-          }
-  */
         public async Task<Accounts> UpdateAccountsAsync(Guid accountId, AccountDTO accounts)
         {
             var finalAccount = _mapper.Map<Accounts>(accounts);
-            //string hashedPassword = BCrypt.Net.BCrypt.HashPassword(users.Password);
-            //final.Password = hashedPassword;
-
             return await AccountRepository.UpdateAccountsAsync(accountId, finalAccount);
         }
     }

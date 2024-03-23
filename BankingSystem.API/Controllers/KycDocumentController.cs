@@ -1,7 +1,6 @@
 ﻿using BankingSystem.API.DTO;
 using BankingSystem.API.Models;
 using BankingSystem.API.Services;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BankingSystem.API.Controllers
@@ -35,7 +34,18 @@ namespace BankingSystem.API.Controllers
             return Ok(kycDocument);
         }
 
-      /*  [HttpPost]
+        [HttpGet("{UserId}")]
+        public async Task<ActionResult<KycDocument>> GetKycDocumentByUserId(Guid UserId)
+        {
+            var kycDocument = await _kycService.GetKycByUserIdAsync(UserId);
+            if (kycDocument == null)
+            {
+                return NotFound();
+            }
+            return Ok(kycDocument);
+        }
+
+        [HttpPost]
         public async Task<ActionResult<KycDocument>> AddKycDocumentAsync(KycDocumentDTO kycDocumentDto)
         {
             var kycDocument = await _kycService.AddKycDocumentAsync(kycDocumentDto);
@@ -51,7 +61,6 @@ namespace BankingSystem.API.Controllers
                 return BadRequest("Update failed");
             }
             return Ok(updatedKycDocument);
-        }*/
-
+        }
     }
 }
