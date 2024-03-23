@@ -90,10 +90,14 @@ namespace BankingSystem.API.Services
                     throw new Exception(description);
                 }
 
-                await _userManager.AddToRoleAsync(user, users.UserType);
-
-                if (users.UserType == UserRoles.AccountHolder)
+                if (users.UserType == UserRoles.TellerPerson)
                 {
+                    await _userManager.AddToRoleAsync(user, UserRoles.TellerPerson.ToString());
+                }
+                else
+                {
+                    await _userManager.AddToRoleAsync(user, UserRoles.AccountHolder.ToString());
+
                     var accountNumber = RandomNumberGeneratorHelper.GenerateRandomNumber(1);
                     var atmCardNum = RandomNumberGeneratorHelper.GenerateRandomNumber(2);
                     var atmCardPin = (int)RandomNumberGeneratorHelper.GenerateRandomNumber(3);
