@@ -3,6 +3,7 @@ using BankingSystem.API.Models;
 using BankingSystem.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace BankingSystem.API.Controllers
 {
 
@@ -12,11 +13,13 @@ namespace BankingSystem.API.Controllers
     {
         private readonly AccountServices accountServices;
         private readonly UserService userServices;
+        private readonly EmailService emailService;
 
-        public AccountsController(AccountServices AccountServices, UserService UserService)
+        public AccountsController(AccountServices AccountServices, UserService UserService, EmailService _emailService)
         {
             accountServices = AccountServices ?? throw new ArgumentOutOfRangeException(nameof(AccountServices));
             userServices = UserService ?? throw new ArgumentOutOfRangeException(nameof(UserService));
+            emailService = _emailService;
 
         }
 
@@ -66,6 +69,13 @@ namespace BankingSystem.API.Controllers
             {
                 return StatusCode(400, "Account already exists.");
             }
+
+            var Email = new Email();
+            Email.MailSubject = "Account Registered";
+            Email.MailBody = "Your account has been made.";
+            Email.ReceiverEmail = email;
+            
+           await emailService.SendEmailAsync(Email);
             return Ok(accounts);
 
         }
@@ -106,6 +116,17 @@ namespace BankingSystem.API.Controllers
              }
              return Ok(account);
          }*/
+        /*Route("api/send-email")]
+        [HttpPost]
+        public Task SendEmail()
+        {
+            var Email = new Email();
+            Email.MailSubject = "Account Registered";
+            Email.MailBody = "Your account has been made.";
+            Email.SenderEmail = "aanisharai.aloi@gmail.com";
+            return  emailService.SendEmailAsync(Email);
+            
 
+        }*/
     }
 }
