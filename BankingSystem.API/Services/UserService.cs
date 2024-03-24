@@ -120,7 +120,7 @@ namespace BankingSystem.API.Services
                     {
                         throw new Exception("User already has an account.");
                     }
-                    await AccountServices.AddAccounts(accountDTO);
+                    await AccountServices.AddAccounts(accountDTO,users);
                 }
                 return await AddRoleForDisplay(user);
             }

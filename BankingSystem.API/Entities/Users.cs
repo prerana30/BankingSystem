@@ -3,6 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BankingSystem.API.Models
 {
+
+/* Users class inherits all the properties and functionality of IdentityUser<Guid>*/
     public class Users : IdentityUser<Guid>
     { 
         [Required]
