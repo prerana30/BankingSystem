@@ -10,7 +10,7 @@ using System.Data;
 
 namespace BankingSystem.API.Services
 {
-    public class UserService: IUserService
+    public class UserService : IUserService
     {
         private readonly IUserRepository UserRepository;
         private readonly AccountServices AccountServices;
@@ -44,7 +44,7 @@ namespace BankingSystem.API.Services
 
         public async Task<IEnumerable<UserInfoDisplayDTO>> GetUsersAsync()
         {
-            var users=  _userManager.Users.AsQueryable();
+            var users = _userManager.Users.AsQueryable().ToList();
             var userDTOs = new List<UserInfoDisplayDTO>();
 
             foreach (var user in users)
@@ -119,7 +119,7 @@ namespace BankingSystem.API.Services
                     {
                         throw new Exception("User already has an account.");
                     }
-                    await AccountServices.AddAccounts(accountDTO,users);
+                    await AccountServices.AddAccounts(accountDTO, users);
                 }
                 return await AddRoleForDisplay(user);
             }
@@ -138,7 +138,7 @@ namespace BankingSystem.API.Services
 
         public async Task<UserInfoDisplayDTO> PatchUserDetails(Guid Id, JsonPatchDocument<UserCreationDTO> patchDocument)
         {
-            var user= await UserRepository.PatchUserDetails(Id, patchDocument);
+            var user = await UserRepository.PatchUserDetails(Id, patchDocument);
             return await AddRoleForDisplay(user);
         }
 
