@@ -9,7 +9,7 @@ using BankingSystem.API.Services;
 using Moq;
 using Xunit;
 
-namespace BankingSystem.API.Tests.Services
+namespace BankingSystem.Test.UnitTests
 {
     public class TransactionServicesTests
     {
