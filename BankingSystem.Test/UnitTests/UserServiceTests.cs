@@ -5,6 +5,7 @@ using BankingSystem.API.Models;
 using BankingSystem.API.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using System.Globalization;
@@ -206,5 +207,177 @@ namespace BankingSystem.Test.UnitTests
             Assert.Equal(expectedUsers.Last().Id, userList.Last().Id);
             Assert.Equal(expectedUsers.Last().Fullname, userList.Last().Fullname);
         }
+
+        [Fact]
+        public async Task PatchUserDetails_WithValidData_ShouldReturnUpdatedUserInfoDisplayDTO()
+        {
+            // Arrange
+            var Id = new Guid();
+            var patchDocument = new JsonPatchDocument<UserCreationDTO>();
+            // Assume patchDocument is properly configured with valid operations
+
+            var userRepositoryMock = new Mock<IUserRepository>();
+            var mapperMock = new Mock<IMapper>();
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Users, UserInfoDisplayDTO>();
+            });
+            var mapper = mapperConfig.CreateMapper();
+            var accountRepositoryMock = new Mock<IAccountRepository>();
+            var configurationMock = new Mock<IConfiguration>();
+            var userManagerMock = MockUserManager<Users>();
+            var signInManagerMock = MockSignInManager<Users>();
+            var passwordHasherMock = new Mock<IPasswordHasher<Users>>();
+            var emailServiceMock = new Mock<EmailService>(configurationMock.Object);
+            var accountServicesMock = new Mock<AccountServices>(accountRepositoryMock.Object, emailServiceMock.Object, mapperMock.Object);
+
+            var userService = new UserService(userRepositoryMock.Object, mapper, accountServicesMock.Object, userManagerMock.Object, signInManagerMock.Object, passwordHasherMock.Object);
+
+            // Mock GetRolesAsync method
+            userManagerMock.Setup(um => um.GetRolesAsync(It.IsAny<Users>())).ReturnsAsync(new List<string> { "AccountHolder", "TellerPerson" });
+
+            // Setup UserRepository to return a user with given Id
+            userRepositoryMock.Setup(repo => repo.PatchUserDetails(Id, patchDocument))
+                .ReturnsAsync(new Users { Id = Id, UserName = "updatedUserName", Fullname = "Updated FullName", Address = "Updated Address", Email = "updatedemail@gmail.com" });
+
+            // Act
+            var result = await userService.PatchUserDetails(Id, patchDocument);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(Id, result.Id);
+            Assert.Equal("Updated FullName", result.Fullname);
+            Assert.Equal("updatedUserName", result.UserName);
+            // Assert other properties as needed
+        }
+
+        [Fact]
+        public async Task UpdateUsersAsync_WithValidData_ShouldReturnUpdatedUserInfoDisplayDTO()
+        {
+            // Arrange
+            var Id = new Guid();
+            var userUpdateDTO = new UserUpdateDTO
+            {
+                UserName = "updatedUserName",
+                Fullname = "Updated FullName",
+                Address = "Updated Address",
+                Email = "updatedemail@gmail.com",
+                Password = "newPassword",
+                // Assuming other properties are properly configured
+            };
+
+            // Mock existing user
+            var existingUser = new Users
+            {
+                Id = Id,
+                UserName = "existingUserName",
+                Fullname = "Existing FullName",
+                Address = "Existing Address",
+                Email = "existingemail@gmail.com",
+                // Set other properties as needed
+            };
+
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(repo => repo.GetUserAsync(Id)).ReturnsAsync(existingUser);
+
+            var mapperMock = new Mock<IMapper>();
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<UserUpdateDTO, Users>();
+                cfg.CreateMap<Users, UserInfoDisplayDTO>();
+            });
+            var mapper = mapperConfig.CreateMapper();
+
+            var mapperConfig1 = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<AccountDTO, Accounts>();
+            });
+            var mapper1 = mapperConfig1.CreateMapper();
+
+            var accountRepositoryMock = new Mock<IAccountRepository>();
+            var configurationMock = new Mock<IConfiguration>();
+            var userManagerMock = MockUserManager<Users>();
+            var signInManagerMock = MockSignInManager<Users>();
+            var passwordHasherMock = new Mock<IPasswordHasher<Users>>();
+            var emailServiceMock = new Mock<EmailService>(configurationMock.Object);
+            var accountServicesMock = new Mock<AccountServices>(accountRepositoryMock.Object, emailServiceMock.Object, mapper1);
+
+            var userService = new UserService(userRepositoryMock.Object, mapper, accountServicesMock.Object, userManagerMock.Object, signInManagerMock.Object, passwordHasherMock.Object);
+
+            // Set up password hasher to return Failed when passwords don't match
+            passwordHasherMock.Setup(ph => ph.VerifyHashedPassword(existingUser, existingUser.PasswordHash, userUpdateDTO.Password))
+                .Returns(PasswordVerificationResult.Failed);
+
+            // Set up GetRolesAsync method
+            userManagerMock.Setup(um => um.GetRolesAsync(It.IsAny<Users>())).ReturnsAsync(new List<string> { "AccountHolder", "TellerPerson" });
+
+            // Setup UserRepository to return the updated user
+            userRepositoryMock.Setup(repo => repo.UpdateUsersAsync(Id, It.IsAny<Users>()))
+                .ReturnsAsync(new Users { Id = Id, UserName = "updatedUserName", Fullname = "Updated FullName", Address = "Updated Address", Email = "updatedemail@gmail.com" });
+
+            // Act
+            var result = await userService.UpdateUsersAsync(Id, userUpdateDTO);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(Id, result.Id);
+            Assert.Equal("Updated FullName", result.Fullname);
+            Assert.Equal("updatedUserName", result.UserName);
+
+            // Assert other properties as needed
+            // Verify that the password hasher's HashPassword method is called if passwords don't match
+            passwordHasherMock.Verify(ph => ph.HashPassword(existingUser, userUpdateDTO.Password), Times.Once);
+        }
+
+        [Fact]
+        public async Task Login_WithValidCredentials_ShouldReturnUserInfoDisplayDTO()
+        {
+            // Arrange
+            var username = "existingUserName";
+            var password = "correctPassword";
+
+            var existingUser = new Users
+            {
+                UserName = username,
+                PasswordHash= password
+                // Set other properties as needed
+            };
+
+            var userRepositoryMock = new Mock<IUserRepository>();
+            var mapperMock = new Mock<IMapper>();
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Users, UserInfoDisplayDTO>();
+            });
+            var mapper = mapperConfig.CreateMapper();
+
+            var accountRepositoryMock = new Mock<IAccountRepository>();
+            var configurationMock = new Mock<IConfiguration>();
+            var userManagerMock = MockUserManager<Users>();
+            var signInManagerMock = MockSignInManager<Users>();
+            var passwordHasherMock = new Mock<IPasswordHasher<Users>>();
+            var emailServiceMock = new Mock<EmailService>(configurationMock.Object);
+            var accountServicesMock = new Mock<AccountServices>(accountRepositoryMock.Object, emailServiceMock.Object, mapperMock.Object);
+
+            var userService = new UserService(userRepositoryMock.Object, mapper, accountServicesMock.Object, userManagerMock.Object, signInManagerMock.Object, passwordHasherMock.Object);
+
+            // Set up GetRolesAsync method
+            userManagerMock.Setup(um => um.GetRolesAsync(It.IsAny<Users>())).ReturnsAsync(new List<string> { "AccountHolder", "TellerPerson" });
+
+            // Set up SignInManager to return Success when login is attempted
+            signInManagerMock.Setup(sm => sm.PasswordSignInAsync(username, password, true, false))
+                .ReturnsAsync(SignInResult.Success);
+
+            // Set up UserManager to return the existing user
+            userManagerMock.Setup(um => um.FindByNameAsync(username))
+                .ReturnsAsync(existingUser);
+
+            // Act
+            var result = await userService.Login(username, password);
+
+            // Assert
+            Assert.NotNull(result);
+        }
+
     }
 }

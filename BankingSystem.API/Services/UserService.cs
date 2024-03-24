@@ -148,6 +148,11 @@ namespace BankingSystem.API.Services
             finalUser.PasswordHash = users.Password;
 
             var existingUser = await GetUserAsync(Id);
+            // Check if the existing user is null
+            if (existingUser == null)
+            {
+                throw new Exception($"User with ID {Id} not found.");
+            }
             //if password is not same as in the database; update it
             if (!string.IsNullOrEmpty(finalUser.PasswordHash) && _passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash, users.Password) != PasswordVerificationResult.Success)
             {
