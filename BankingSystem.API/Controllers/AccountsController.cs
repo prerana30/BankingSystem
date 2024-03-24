@@ -46,7 +46,7 @@ namespace BankingSystem.API.Controllers
             return Ok(account);
         }
 
-        [HttpPost]
+        /*[HttpPost]
         public async Task<ActionResult<Accounts>> AddAccounts(AccountDTO account, string email)
         {
 
@@ -79,7 +79,7 @@ namespace BankingSystem.API.Controllers
            await emailService.SendEmailAsync(Email);
             return Ok(accounts);
 
-        }
+        }*/
 
         [HttpDelete("{accountId}")]
         public ActionResult DeleteUser(Guid accountId)

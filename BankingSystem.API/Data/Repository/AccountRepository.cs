@@ -37,7 +37,7 @@ namespace BankingSystem.API.Data.Repository
             var account = _context.Account.Add(accounts);
             await _context.SaveChangesAsync();
 
-            return GetAccountAsync(account.Entity.AccountId).Result;
+            return await GetAccountAsync(account.Entity.AccountId);
         }
 
         public void DeleteAccount(Guid accountId)
