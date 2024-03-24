@@ -92,7 +92,7 @@ namespace BankingSystem.API.Services
                     var atmCardPin = (int)RandomNumberGeneratorHelper.GenerateRandomNumber(3);
 
                     var accountDTO = new AccountDTO(user.Id, accountNumber, 0, atmCardNum, atmCardPin, DateTime.UtcNow, user.Id, DateTime.UtcNow, user.Id);
-                    await AccountServices.AddAccounts(accountDTO);
+                    await AccountServices.AddAccounts(accountDTO, users);
                 }
                 return user;
             }
