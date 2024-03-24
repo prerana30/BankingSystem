@@ -40,43 +40,40 @@ namespace BankingSystem.API.Services
             return await AccountRepository.GetAccountByUserIdAsync(userId);
         }
 
-        /*  public async Task<Accounts> AddAccounts(UserDTO userDTO)
-          {
-              var finalAccount = _mapper.Map<Accounts>(userDTO);
-              var addedAccount = await AccountRepository.AddAccounts(finalAccount);
 
-<<<<<<< HEAD
-        public async Task<Accounts> AddAccounts(Guid userId)
-        {
-            var final = new Accounts()
-            {
-                UserId = userId,
-                AtmCardNum = RandomNumberGeneratorHelper.GenerateRandomNumber(2),
-                AccountNumber = RandomNumberGeneratorHelper.GenerateRandomNumber(1),
-                AtmCardPin = (int)RandomNumberGeneratorHelper.GenerateRandomNumber(3)
-            };
-          
-            return await AccountRepository.AddAccounts(final);
-=======
-              // Send email after adding the account
-              var email = new Email
-              {
-                  MailSubject = "Welcome to Our Banking System",
-                  MailBody = "Thank you for creating an account with us. Welcome aboard!",
-                  ReceiverEmail = userDTO.Email // Use the email address from the UserDTO
-              };
 
-              await _emailService.SendEmailAsync(email);
+        /*   public async Task<Accounts> AddAccounts(AccountDTO accounts)
+           {
+               var finalAccount = _mapper.Map<Accounts>(accounts);
+               // finalAccount.AccountNumber = AccountNumberGenerator.GenerateAccountNumber();
+               return await AccountRepository.AddAccounts(finalAccount);
+           }*/
 
-              return addedAccount;
-          }
-  */
-        public async Task<Accounts> AddAccounts(AccountDTO accounts)
+        public async Task<Accounts> AddAccounts(AccountDTO accounts, UserDTO users)
         {
             var finalAccount = _mapper.Map<Accounts>(accounts);
-            // finalAccount.AccountNumber = AccountNumberGenerator.GenerateAccountNumber();
-            return await AccountRepository.AddAccounts(finalAccount);
+            var addedAccount = await AccountRepository.AddAccounts(finalAccount);
+
+            // Obtain necessary information such as user's email address from the UserDTO object
+            var userEmail = users.Email; // Assuming Email property is available in UserDTO
+
+            // Prepare email
+            var email = new Email
+            {
+                MailSubject = "Bank account registration Successful",
+                MailBody = "Dear user, Your bank account has been successfully registered.Thank you for choosing our banking services. If you have any questions or need assistance, feel free to contact our support team.",
+                ReceiverEmail = userEmail // Use the user's email address obtained from the UserDTO
+            };
+
+            // Send email
+            await _emailService.SendEmailAsync(email);
+
+            return addedAccount;
         }
+
+
+
+
 
         public void DeleteAccount(Guid accountId)
         {
