@@ -30,9 +30,9 @@ namespace BankingSystem.Test.UnitTests
 
             var mapperMock = new Mock<IMapper>(); // Mock IMapper if necessary for mapping operations
 
-            var firebaseStorageHelperMock = new Mock<FirebaseStorageHelper>(); // Mock FirebaseStorageHelper if necessary for file upload operations
+            var fileStorageHelperMock = new Mock<FileStorageHelper>(); // Mock FileStorageHelper if necessary for file upload operations
 
-            var kycService = new KycService(kycRepositoryMock.Object, mapperMock.Object, firebaseStorageHelperMock.Object);
+            var kycService = new KycService(kycRepositoryMock.Object, mapperMock.Object, fileStorageHelperMock.Object);
 
             // Act
             var result = await kycService.GetKycByUserIdAsync(userId);
@@ -62,9 +62,9 @@ namespace BankingSystem.Test.UnitTests
 
             var mapperMock = new Mock<IMapper>();// Mock IMapper if necessary for mapping operations
 
-            var firebaseStorageHelperMock = new Mock<FirebaseStorageHelper>();// Mock FirebaseStorageHelper if necessary for file upload operations
+            var fileStorageHelperMock = new Mock<FileStorageHelper>();// Mock FileStorageHelper if necessary for file upload operations
 
-            var kycService = new KycService(kycRepositoryMock.Object, mapperMock.Object, firebaseStorageHelperMock.Object);
+            var kycService = new KycService(kycRepositoryMock.Object, mapperMock.Object, fileStorageHelperMock.Object);
 
             // Act
             var result = await kycService.GetKycDocumentAsync();
