@@ -78,7 +78,7 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.Migrate();
 
     // Seed users and roles
-    AppDBInitialize.SeedUsersAndUserRolesAsync(app).Wait();
+    AppDBInitialize.SeedConstantsAsync(app).Wait();
 }
 
 app.Run();
