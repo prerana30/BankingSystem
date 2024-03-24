@@ -12,13 +12,13 @@ namespace BankingSystem.API.Services
     {
         private readonly IKycRepository _kycRepository;
         private readonly IMapper _mapper;
-        private readonly FirebaseStorageHelper _firebaseStorageHelper;
+        private readonly FileStorageHelper _fileStorageHelper;
 
-        public KycService(IKycRepository kycRepository, IMapper mapper, FirebaseStorageHelper firebaseStorageHelper)
+        public KycService(IKycRepository kycRepository, IMapper mapper, FileStorageHelper fileStorageHelper)
         {
             _kycRepository = kycRepository;
             _mapper = mapper;
-            _firebaseStorageHelper = firebaseStorageHelper;
+            _fileStorageHelper = fileStorageHelper;
         }
 
         public async Task<IEnumerable<KycDocument>> GetKycDocumentAsync()
@@ -40,7 +40,13 @@ namespace BankingSystem.API.Services
         {
             var kycDocument = _mapper.Map<KycDocument>(kycDocumentDto);
 
+            // Set UserImagePath to an empty string initially
+            kycDocument.UserImagePath = "";
+
+            // Upload files and set UserImagePath
+            Console.WriteLine("Before uploading file - UserImagePath: " + kycDocument.UserImagePath); // Debugging statement
             kycDocument.UserImagePath = await ValidateAndUploadFile(kycDocumentDto.UserImageFile);
+            Console.WriteLine("After uploading file - UserImagePath: " + kycDocument.UserImagePath); // Debugging statement
             kycDocument.CitizenshipImagePath = await ValidateAndUploadFile(kycDocumentDto.CitizenshipImageFile);
 
             if (kycDocument.UserImagePath != "" && kycDocument.CitizenshipImagePath != "")
@@ -48,6 +54,7 @@ namespace BankingSystem.API.Services
                 kycDocument.IsApproved = true;
             }
 
+            // Now you can add the KycDocument to the repository
             return await _kycRepository.AddKycDocumentAsync(kycDocument);
         }
 
@@ -102,7 +109,7 @@ namespace BankingSystem.API.Services
                         using var memoryStream = new MemoryStream();
                         await fileInput.CopyToAsync(memoryStream);
                         memoryStream.Seek(0, SeekOrigin.Begin);
-                        url = await _firebaseStorageHelper.UploadFileAsync(textInput, memoryStream); // pass the stream to the Firebase storage helper method
+                        url = await _fileStorageHelper.UploadFileAsync(textInput, memoryStream); // pass the stream to the Firebase storage helper method
                     }
                     catch (Exception ex)
                     {

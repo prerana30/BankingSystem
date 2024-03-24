@@ -29,7 +29,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IKycRepository, KycRepository>();
 
 builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<FirebaseStorageHelper>();
+builder.Services.AddScoped<FileStorageHelper>();
 builder.Services.AddScoped<KycService>();
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
