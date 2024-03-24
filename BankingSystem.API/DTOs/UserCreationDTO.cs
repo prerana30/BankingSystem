@@ -7,7 +7,7 @@ namespace BankingSystem.API.DTO
     {
         [Required]
         [MaxLength(50)]
-        public string Username { get; set; }
+        public string UserName { get; set; }
         [Required]
         [MaxLength(50)]
         public string Fullname { get; set; }
@@ -26,7 +26,7 @@ namespace BankingSystem.API.DTO
 
         public UserCreationDTO(string username, string fullname, string email, string password, string address, DateTime dateOfBirth)
         {
-            Username = username;
+            UserName = username;
             Fullname = fullname;
             Email = email;
             Password = password;
