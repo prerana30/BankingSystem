@@ -49,7 +49,7 @@ namespace BankingSystem.API.Services
                return await AccountRepository.AddAccounts(finalAccount);
            }*/
 
-        public async Task<Accounts> AddAccounts(AccountDTO accounts, UserDTO users)
+        public async Task<Accounts> AddAccounts(AccountDTO accounts, UserCreationDTO users)
         {
             var finalAccount = _mapper.Map<Accounts>(accounts);
             var addedAccount = await AccountRepository.AddAccounts(finalAccount);
