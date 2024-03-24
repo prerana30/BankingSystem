@@ -6,7 +6,6 @@ using BankingSystem.API.Services.IServices;
 using BankingSystem.API.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.EntityFrameworkCore;
 using System.Data;
 
 namespace BankingSystem.API.Services
@@ -45,7 +44,7 @@ namespace BankingSystem.API.Services
 
         public async Task<IEnumerable<UserInfoDisplayDTO>> GetUsersAsync()
         {
-            var users= await _userManager.Users.ToListAsync();
+            var users=  _userManager.Users.AsQueryable();
             var userDTOs = new List<UserInfoDisplayDTO>();
 
             foreach (var user in users)
@@ -68,7 +67,7 @@ namespace BankingSystem.API.Services
                 throw new Exception("Duplicate Email Address!");
             }
 
-            var usernameDuplication = _userManager.FindByNameAsync(users.Username);
+            var usernameDuplication = _userManager.FindByNameAsync(users.UserName);
             if (usernameDuplication.Result != null)
             {
                 throw new Exception("Duplicate UserName!");
@@ -149,6 +148,11 @@ namespace BankingSystem.API.Services
             finalUser.PasswordHash = users.Password;
 
             var existingUser = await GetUserAsync(Id);
+            // Check if the existing user is null
+            if (existingUser == null)
+            {
+                throw new Exception($"User with ID {Id} not found.");
+            }
             //if password is not same as in the database; update it
             if (!string.IsNullOrEmpty(finalUser.PasswordHash) && _passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash, users.Password) != PasswordVerificationResult.Success)
             {

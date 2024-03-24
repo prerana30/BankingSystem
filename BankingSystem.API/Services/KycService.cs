@@ -58,8 +58,6 @@ namespace BankingSystem.API.Services
             return await _kycRepository.AddKycDocumentAsync(kycDocument);
         }
 
-
-
         public async Task<KycDocument> UpdateKycDocumentAsync(Guid KYCId, KycDocumentDTO updatedKycDocumentDto)
         {
             var updatedKycDocument = _mapper.Map<KycDocument>(updatedKycDocumentDto);
