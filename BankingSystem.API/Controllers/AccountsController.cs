@@ -57,6 +57,7 @@ namespace BankingSystem.API.Controllers
                 return NotFound("User not found");
             }
 
+
             var userId = user.Id;
 
             var checkAccount = await accountServices.GetAccountByUserIdAsync(userId);
