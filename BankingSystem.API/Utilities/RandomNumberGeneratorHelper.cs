@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace BankingSystem.API.Utils
+namespace BankingSystem.API.Utilities
 {
     public static class RandomNumberGeneratorHelper
     {
@@ -30,7 +30,7 @@ namespace BankingSystem.API.Utils
                 case 3:
 
                     var atmCardPin = new StringBuilder();
-                    while(atmCardPin.Length < 4)
+                    while (atmCardPin.Length < 4)
                     {
                         atmCardPin.Append(ran.Next(4).ToString());
                     }

@@ -1,10 +1,9 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace BankingSystem.API.Migrations
+namespace BankingSystem.API.Data.Migrations
 {
     /// <inheritdoc />
     public partial class InitialMigrationIdentity : Migration

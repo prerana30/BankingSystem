@@ -1,4 +1,4 @@
-﻿using BankingSystem.API.Models;
+﻿using BankingSystem.API.Entities;
 
 namespace BankingSystem.API.Data.Repository.IRepository
 {

@@ -1,6 +1,6 @@
-﻿using BankingSystem.API.Models;
+﻿using BankingSystem.API.Entities;
 
-namespace BankingSystem.API.DTO
+namespace BankingSystem.API.DTOs
 {
     public class DepositTransactionDTO
     {

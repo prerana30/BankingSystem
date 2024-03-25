@@ -1,4 +1,4 @@
-﻿namespace BankingSystem.API.Models
+﻿namespace BankingSystem.API.Entities
 {
     public enum UserRoles
     {

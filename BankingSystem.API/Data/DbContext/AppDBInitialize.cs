@@ -1,4 +1,4 @@
-﻿using BankingSystem.API.Models;
+﻿using BankingSystem.API.Entities;
 using Microsoft.AspNetCore.Identity;
 using System.Globalization;
 
@@ -17,8 +17,10 @@ namespace BankingSystem.API.Data.DbContext
                 await SeedRoleAsync(roleManager, UserRoles.AccountHolder.ToString());
                 await SeedRoleAsync(roleManager, UserRoles.TellerPerson.ToString());
 
-          
-               // Save Changes
+                // Seed Users
+                await SeedUserAsync(userManager, "admin@gmail.com", "admin", "Teller Person", "Kathmandu", "9826274833", "2002-08-20T11:13:25.342Z", UserRoles.TellerPerson.ToString());
+
+                // Save Changes
                 var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 await context.SaveChangesAsync();
             }
@@ -30,6 +32,49 @@ namespace BankingSystem.API.Data.DbContext
                 await roleManager.CreateAsync(new IdentityRole<Guid>(roleName));
         }
 
+        private static async Task SeedUserAsync(UserManager<Users> userManager, string email, string username, string fullname, string address, string phoneNumber, string dateOfBirth, string role)
+        {
+            try
+            {
+                var existingUser = await userManager.FindByEmailAsync(email);
+                if (existingUser == null)
+                {
+                    var newUser = new Users
+                    {
+                        //Username = username,
+                        UserName = username,
+                        Fullname = fullname,
+                        Email = email,
+                        PhoneNumber = phoneNumber,
+                        Address = address,
+                        DateOfBirth = DateTime.SpecifyKind(DateTime.ParseExact(dateOfBirth, "yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture), DateTimeKind.Utc),
+                        CreatedAt = DateTime.UtcNow,
+                        ModifiedAt = DateTime.UtcNow,
+                        SecurityStamp = Guid.NewGuid().ToString(),
+                        EmailConfirmed = true,
+                        PhoneNumberConfirmed = true,
+                        TwoFactorEnabled = false,
+                        LockoutEnabled = false,
+                        AccessFailedCount = 0,
+                        //Password = $"{username}123",
+                        //UserType = role
+                    };
+
+                    var result = await userManager.CreateAsync(newUser, $"{username}123");
+                    if (result.Succeeded)
+                    {
+
+                        await userManager.AddToRoleAsync(newUser, role);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(nameof(ex));
+
+            }
+        }
     }
 }
 

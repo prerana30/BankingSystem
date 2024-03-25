@@ -1,12 +1,16 @@
 ﻿using AutoMapper;
 using BankingSystem.API.Data.Repository.IRepository;
-using BankingSystem.API.DTO;
-using BankingSystem.API.Models;
+using BankingSystem.API.DTOs;
+using BankingSystem.API.Entities;
 using BankingSystem.API.Services.IServices;
-using BankingSystem.API.Utils;
+using BankingSystem.API.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.IdentityModel.Tokens;
 using System.Data;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace BankingSystem.API.Services
 {
@@ -175,7 +179,17 @@ namespace BankingSystem.API.Services
                 {
                     // User is successfully logged in, retrieve the user from the database
                     var existingUser = await _userManager.FindByNameAsync(username);
-                    return await AddRoleForDisplay(existingUser);
+                    var jwtToken = await GenerateJwtToken(existingUser); // Generate JWT token
+                    //return jwtToken;
+                    var user = await AddRoleForDisplay(existingUser);// After generating the JWT token in your login method
+
+                    var handler = new JwtSecurityTokenHandler();
+                    var token = handler.ReadJwtToken(jwtToken);
+                    foreach (var claim in token.Claims)
+                    {
+                        Console.WriteLine($"Claim Type: {claim.Type}, Value: {claim.Value}");
+                    }
+                    return user;
                 }
                 else
                 {
@@ -189,6 +203,34 @@ namespace BankingSystem.API.Services
                 Console.WriteLine($"Error occurred during user login: {e}");
                 throw;
             }
+        }
+
+        private async Task<string> GenerateJwtToken(Users user)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("bootcamp-aloi-net-deploy-aws-secret-key"));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var userType = roles.FirstOrDefault(); // Assuming a user can have only one role
+
+            var claims = new[]
+            {
+               new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // Convert user.Id to string
+               new Claim(ClaimTypes.Name, user.UserName),
+               new Claim(ClaimTypes.Role, userType)
+            // Add additional claims as needed (e.g., roles)
+        };
+
+            var token = new JwtSecurityToken(
+                issuer: "your-issuer",
+                audience: "your-audience",
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(1), // Token expiration time
+                signingCredentials: credentials
+            );
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            return tokenHandler.WriteToken(token);
         }
 
         public async Task<UserInfoDisplayDTO> AddRoleForDisplay(Users user)
