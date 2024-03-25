@@ -40,7 +40,11 @@ namespace BankingSystem.Test.UnitTests
 
             var emailServiceMock = new Mock<EmailService>(configurationMock.Object);
             // EmailService mock setup
-            emailServiceMock.Setup(es => es.SendEmailAsync(It.IsAny<Email>())).Returns(Task.CompletedTask); // Mock the SendEmailAsync method
+            //emailServiceMock.Setup(es => es.SendEmailAsync(It.IsAny<Email>())).Returns(Task); // Mock the SendEmailAsync method
+            emailServiceMock
+            .Setup(es => es.SendEmailAsync(It.IsAny<Email>()))
+            .ReturnsAsync("Email sent successfully."); // Return a completed Task<string> with the desired message
+
 
             var accountServicesMock = new Mock<AccountServices>(accountRepositoryMock.Object, emailServiceMock.Object, mapper1);
 
@@ -120,7 +124,10 @@ namespace BankingSystem.Test.UnitTests
             var passwordHasherMock = new Mock<IPasswordHasher<Users>>();
 
             var emailServiceMock = new Mock<EmailService>(configurationMock.Object);
-            emailServiceMock.Setup(es => es.SendEmailAsync(It.IsAny<Email>())).Returns(Task.CompletedTask); // Mock the SendEmailAsync method
+            //emailServiceMock.Setup(es => es.SendEmailAsync(It.IsAny<Email>())).Returns(Task.CompletedTask); // Mock the SendEmailAsync method
+            emailServiceMock
+            .Setup(es => es.SendEmailAsync(It.IsAny<Email>()))
+            .ReturnsAsync("Email sent successfully."); // Return a completed Task<string> with the desired message
 
             var accountServicesMock = new Mock<AccountServices>(accountRepositoryMock.Object, emailServiceMock.Object, mapper1);
 
@@ -168,7 +175,10 @@ namespace BankingSystem.Test.UnitTests
             var passwordHasherMock = new Mock<IPasswordHasher<Users>>();
 
             var emailServiceMock = new Mock<EmailService>(configurationMock.Object);
-            emailServiceMock.Setup(es => es.SendEmailAsync(It.IsAny<Email>())).Returns(Task.CompletedTask); // Mock the SendEmailAsync method
+            //emailServiceMock.Setup(es => es.SendEmailAsync(It.IsAny<Email>())).Returns(Task.CompletedTask); // Mock the SendEmailAsync method
+            emailServiceMock
+            .Setup(es => es.SendEmailAsync(It.IsAny<Email>()))
+            .ReturnsAsync("Email sent successfully."); // Return a completed Task<string> with the desired message
 
             var accountServicesMock = new Mock<AccountServices>(accountRepositoryMock.Object, emailServiceMock.Object, mapper1);
 
