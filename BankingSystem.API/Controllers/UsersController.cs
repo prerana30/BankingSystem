@@ -1,10 +1,8 @@
-using BankingSystem.API.DTO;
-using BankingSystem.API.Models;
+using BankingSystem.API.DTOs;
+using BankingSystem.API.Entities;
 using BankingSystem.API.Services;
-using BankingSystem.API.Utils;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace BankingSystem.API.Controllers
 {
@@ -16,7 +14,7 @@ namespace BankingSystem.API.Controllers
 
         public UsersController(UserService UserService)
         {
-            userService = UserService ?? throw new ArgumentOutOfRangeException(nameof(UserService));
+            userService = UserService ?? throw new ArgumentNullException(nameof(userService));
         }
 
         [HttpGet]
@@ -50,14 +48,6 @@ namespace BankingSystem.API.Controllers
             {
                 // return NotFound("Email or Password is incorrect.");
                 return StatusCode(400, "Email or Password is incorrect.");
-            }
-            // Check if the user is authenticated: storing current logged in user
-            if (User.Identity.IsAuthenticated)
-            {
-                // Retrieve the user's username
-                Constants.user = user;
-                Constants.userId = user.Id;
-                Constants.role= User.FindFirstValue(ClaimTypes.Role);
             }
             return Ok(user);
         }

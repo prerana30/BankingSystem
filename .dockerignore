@@ -1,0 +1,25 @@
+# Exclude .NET build artifacts
+bin/
+obj/
+
+# Exclude Visual Studio files
+.vs/
+
+# Exclude NuGet packages
+**/packages/*
+
+# Exclude Docker-specific files
+.dockerignore
+Dockerfile
+
+# Exclude development-specific files
+.vscode/
+*.sln
+*.csproj.user
+
+# Exclude test files and directories
+**/TestResults/
+**/*.tests/
+**/*.Tests/
+**/obj/
+**/bin/

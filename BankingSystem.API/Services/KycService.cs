@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using BankingSystem.API.Data.Repository.IRepository;
-using BankingSystem.API.DTO;
-using BankingSystem.API.Models;
+using BankingSystem.API.DTOs;
+using BankingSystem.API.Entities;
 using BankingSystem.API.Services.IServices;
-using BankingSystem.API.Utils;
+using BankingSystem.API.Utilities;
 using System.Diagnostics;
 
 namespace BankingSystem.API.Services
 {
-    public class KycService: IKYCService
+    public class KycService : IKYCService
     {
         private readonly IKycRepository _kycRepository;
         private readonly IMapper _mapper;

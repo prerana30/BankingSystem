@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using BankingSystem.API.Data.Repository.IRepository;
-using BankingSystem.API.DTO;
-using BankingSystem.API.Models;
+using BankingSystem.API.DTOs;
+using BankingSystem.API.Entities;
 using BankingSystem.API.Services.IServices;
 
 namespace BankingSystem.API.Services
 {
-    public class TransactionServices: ITransactionService
+    public class TransactionServices : ITransactionService
     {
         private readonly ITransactionRepository _transactionRepository;
         private readonly IMapper _mapper;
@@ -42,10 +42,22 @@ namespace BankingSystem.API.Services
             return await _transactionRepository.DepositTransactionAsync(transaction, accountId, userId);
         }
 
+        public async Task<Transaction> TellerDepositTransactionAsync(DepositTransactionDTO transactionDto, long accountNumber, Guid userId)
+        {
+            var transaction = _mapper.Map<Transaction>(transactionDto);
+            return await _transactionRepository.TellerDepositTransactionAsync(transaction, accountNumber, userId);
+        }
+
         public async Task<Transaction> WithdrawTransactionAsync(WithdrawTransactionDTO withdrawDto, Guid accountId, int atmIdAtmCardPin)
         {
             var transaction = _mapper.Map<Transaction>(withdrawDto);
             return await _transactionRepository.WithdrawTransactionAsync(transaction, accountId, atmIdAtmCardPin);
+        }
+
+        public async Task<Transaction> SelfWithdrawTransactionAsync(WithdrawTransactionDTO withdrawDto, long accountNumber, int atmIdAtmCardPin)
+        {
+            var transaction = _mapper.Map<Transaction>(withdrawDto);
+            return await _transactionRepository.SelfWithdrawTransactionAsync(transaction, accountNumber, atmIdAtmCardPin);
         }
     }
 }

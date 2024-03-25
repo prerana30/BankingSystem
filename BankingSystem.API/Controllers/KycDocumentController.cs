@@ -1,5 +1,5 @@
-﻿using BankingSystem.API.DTO;
-using BankingSystem.API.Models;
+﻿using BankingSystem.API.DTOs;
+using BankingSystem.API.Entities;
 using BankingSystem.API.Services;
 using Microsoft.AspNetCore.Mvc;
 

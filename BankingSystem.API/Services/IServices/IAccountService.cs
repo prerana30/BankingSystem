@@ -1,5 +1,5 @@
-﻿using BankingSystem.API.DTO;
-using BankingSystem.API.Models;
+﻿using BankingSystem.API.DTOs;
+using BankingSystem.API.Entities;
 
 namespace BankingSystem.API.Services.IServices
 {
@@ -10,6 +10,6 @@ namespace BankingSystem.API.Services.IServices
         Task<Accounts?> GetAccountByUserIdAsync(Guid userId);
         Task<Accounts> AddAccounts(AccountDTO accounts , UserCreationDTO users) ;
         void DeleteAccount(Guid accountId);
-        Task<Accounts> UpdateAccountsAsync(Guid accountId, AccountDTO accounts);
+        Task<Accounts> UpdateAccountsAsync(Guid accountId, AccountUpdateDTO accounts);
     }
 }
