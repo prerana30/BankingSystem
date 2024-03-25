@@ -111,6 +111,7 @@ namespace BankingSystem.API.Services
                 Console.WriteLine(errorMsg);
                 throw new Exception(errorMsg);
             }
+        
         }
 
         private void checkValidation(UserCreationDTO users)
@@ -130,18 +131,27 @@ namespace BankingSystem.API.Services
 
         private async Task CreateUserAccount(UserCreationDTO users, Users user)
         {
-            var accountNumber = RandomNumberGeneratorHelper.GenerateRandomNumber(1);
-            var atmCardNum = RandomNumberGeneratorHelper.GenerateRandomNumber(2);
-            var atmCardPin = (int)RandomNumberGeneratorHelper.GenerateRandomNumber(3);
+            var accountDTO = new Accounts
+            {
+                AccountId = Guid.NewGuid(),
+                UserId = user.Id,
+                AccountNumber = RandomNumberGeneratorHelper.GenerateRandomNumber(1),
+                AtmCardNum = RandomNumberGeneratorHelper.GenerateRandomNumber(2),
+                AtmCardPin = (int)RandomNumberGeneratorHelper.GenerateRandomNumber(3),
+                Balance = 0,
+                CreatedAt = DateTime.UtcNow,
+                CreatedBy = user.Id,
+                ModifiedAt = null,
+                ModifiedBy = null,
 
-            var accountDTO = new AccountDTO(user.Id, accountNumber, 0, atmCardNum, atmCardPin, DateTime.UtcNow, user.Id, DateTime.UtcNow, user.Id);
+            };
 
             var checkAccount = await AccountServices.GetAccountByUserIdAsync(user.Id);
             if (checkAccount != null)
             {
                 throw new Exception("User already has an account.");
             }
-            await AccountServices.AddAccounts(accountDTO, users);
+            await AccountServices.AddAccounts(accountDTO, user.Email);
         }
 
         public void DeleteUser(Guid Id)
@@ -242,5 +252,6 @@ namespace BankingSystem.API.Services
             userDTO.UserType = userType;
             return userDTO;
         }
+
     }
 }
