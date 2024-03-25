@@ -65,17 +65,7 @@ namespace BankingSystem.API.Services
 
             finalUser.PasswordHash = users.Password;
 
-            var emailDuplication = _userManager.FindByEmailAsync(users.Email);
-            if (emailDuplication.Result != null)
-            {
-                throw new Exception("Duplicate Email Address!");
-            }
-
-            var usernameDuplication = _userManager.FindByNameAsync(users.UserName);
-            if (usernameDuplication.Result != null)
-            {
-                throw new Exception("Duplicate UserName!");
-            }
+            checkValidation(users);
 
             var user = new Users()
             {
@@ -111,19 +101,7 @@ namespace BankingSystem.API.Services
                 else
                 {
                     await _userManager.AddToRoleAsync(user, UserRoles.AccountHolder.ToString());
-
-                    var accountNumber = RandomNumberGeneratorHelper.GenerateRandomNumber(1);
-                    var atmCardNum = RandomNumberGeneratorHelper.GenerateRandomNumber(2);
-                    var atmCardPin = (int)RandomNumberGeneratorHelper.GenerateRandomNumber(3);
-
-                    var accountDTO = new AccountDTO(user.Id, accountNumber, 0, atmCardNum, atmCardPin, DateTime.UtcNow, user.Id, DateTime.UtcNow, user.Id);
-
-                    var checkAccount = await AccountServices.GetAccountByUserIdAsync(user.Id);
-                    if (checkAccount != null)
-                    {
-                        throw new Exception("User already has an account.");
-                    }
-                    await AccountServices.AddAccounts(accountDTO, users);
+                    await CreateUserAccount(users, user);
                 }
                 return await AddRoleForDisplay(user);
             }
@@ -133,6 +111,37 @@ namespace BankingSystem.API.Services
                 Console.WriteLine(errorMsg);
                 throw new Exception(errorMsg);
             }
+        }
+
+        private void checkValidation(UserCreationDTO users)
+        {
+            var emailDuplication = _userManager.FindByEmailAsync(users.Email);
+            if (emailDuplication.Result != null)
+            {
+                throw new Exception("Duplicate Email Address!");
+            }
+
+            var usernameDuplication = _userManager.FindByNameAsync(users.UserName);
+            if (usernameDuplication.Result != null)
+            {
+                throw new Exception("Duplicate UserName!");
+            }
+        }
+
+        private async Task CreateUserAccount(UserCreationDTO users, Users user)
+        {
+            var accountNumber = RandomNumberGeneratorHelper.GenerateRandomNumber(1);
+            var atmCardNum = RandomNumberGeneratorHelper.GenerateRandomNumber(2);
+            var atmCardPin = (int)RandomNumberGeneratorHelper.GenerateRandomNumber(3);
+
+            var accountDTO = new AccountDTO(user.Id, accountNumber, 0, atmCardNum, atmCardPin, DateTime.UtcNow, user.Id, DateTime.UtcNow, user.Id);
+
+            var checkAccount = await AccountServices.GetAccountByUserIdAsync(user.Id);
+            if (checkAccount != null)
+            {
+                throw new Exception("User already has an account.");
+            }
+            await AccountServices.AddAccounts(accountDTO, users);
         }
 
         public void DeleteUser(Guid Id)
@@ -180,15 +189,7 @@ namespace BankingSystem.API.Services
                     // User is successfully logged in, retrieve the user from the database
                     var existingUser = await _userManager.FindByNameAsync(username);
                     var jwtToken = await GenerateJwtToken(existingUser); // Generate JWT token
-                    //return jwtToken;
                     var user = await AddRoleForDisplay(existingUser);// After generating the JWT token in your login method
-
-                    var handler = new JwtSecurityTokenHandler();
-                    var token = handler.ReadJwtToken(jwtToken);
-                    foreach (var claim in token.Claims)
-                    {
-                        Console.WriteLine($"Claim Type: {claim.Type}, Value: {claim.Value}");
-                    }
                     return user;
                 }
                 else
