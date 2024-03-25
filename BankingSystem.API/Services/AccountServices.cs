@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using BankingSystem.API.Data.Repository;
 using BankingSystem.API.Data.Repository.IRepository;
 using BankingSystem.API.DTO;
 using BankingSystem.API.Models;
 using BankingSystem.API.Services.IServices;
+using Microsoft.AspNetCore.Identity;
 
 
 
@@ -87,9 +89,11 @@ namespace BankingSystem.API.Services
             AccountRepository.DeleteAccount(accountId);
         }
 
-        public async Task<Accounts> UpdateAccountsAsync(Guid accountId, AccountDTO accounts)
+        public async Task<Accounts> UpdateAccountsAsync(Guid accountId, AccountUpdateDTO accounts)
         {
             var finalAccount = _mapper.Map<Accounts>(accounts);
+            //finalAccount.Balance = accounts.Balance;
+            //finalAccount.AccountNumber = accounts.AccountNumber;
             return await AccountRepository.UpdateAccountsAsync(accountId, finalAccount);
         }
     }

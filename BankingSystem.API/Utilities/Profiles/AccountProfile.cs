@@ -10,6 +10,8 @@ namespace BankingSystem.API.Utilities.Profiles
         {
             CreateMap<Accounts, AccountDTO>();
             CreateMap<AccountDTO, Accounts>();
+
+            CreateMap<AccountUpdateDTO, Accounts>(); 
         }
     }
 }

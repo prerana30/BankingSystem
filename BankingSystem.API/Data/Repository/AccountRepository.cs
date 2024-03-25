@@ -52,8 +52,8 @@ namespace BankingSystem.API.Data.Repository
             var existingAccount = await GetAccountAsync(accountId);
             if (existingAccount != null)
             {
-                existingAccount.Balance = finalaccounts.Balance;
-                existingAccount.AtmCardNum = finalaccounts.AtmCardNum;
+              //  existingAccount.Balance = finalaccounts.Balance;
+              //  existingAccount.AtmCardNum = finalaccounts.AtmCardNum;
                 existingAccount.AtmCardPin = finalaccounts.AtmCardPin;
 
                 _context.SaveChanges();
