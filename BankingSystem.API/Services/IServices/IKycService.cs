@@ -1,5 +1,5 @@
-﻿using BankingSystem.API.DTO;
-using BankingSystem.API.Models;
+﻿using BankingSystem.API.DTOs;
+using BankingSystem.API.Entities;
 
 namespace BankingSystem.API.Services.IServices
 {

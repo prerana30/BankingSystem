@@ -1,5 +1,5 @@
 ﻿using BankingSystem.API.Data.Repository.IRepository;
-using BankingSystem.API.Models;
+using BankingSystem.API.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Data;

@@ -1,7 +1,7 @@
-﻿using BankingSystem.API.Models;
+﻿using BankingSystem.API.Entities;
 using System.ComponentModel.DataAnnotations;
 
-namespace BankingSystem.API.DTO
+namespace BankingSystem.API.DTOs
 {
     public class UserCreationDTO
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BankingSystem.API.Models
+namespace BankingSystem.API.Entities
 {
     public class Email
     {

@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using BankingSystem.API.Entities;
 using BankingSystem.API.Services;
-using BankingSystem.API.Models;
-using System.Threading.Tasks;
-using Xunit;
-using Moq;
 using Microsoft.Extensions.Configuration;
+using Moq;
 
 namespace BankingSystem.Test.UnitTests
 {
@@ -17,9 +11,7 @@ namespace BankingSystem.Test.UnitTests
         public async Task SendEmailAsync_Sends_Email_Successfully()
 
         {
-
             // Arrange
-
             var email = new Email
             {
                 ReceiverEmail = "prerana7717@mbmcsit.edu.np",
@@ -41,10 +33,5 @@ namespace BankingSystem.Test.UnitTests
             // Assert
             // Since we can't directly assert that an email was sent, we can consider it successful if no exceptions were thrown
         }
-
-
-
-
-
     }
 }
