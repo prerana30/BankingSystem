@@ -8,13 +8,11 @@ namespace BankingSystem.API.Utilities
 {
     public class FileStorageHelper
     {
-        private readonly IAmazonS3 _s3Client;
-        private readonly AWSCredentials _awsCredental;
+        private readonly IConfiguration _configuration;
 
-        public FileStorageHelper()
+        public FileStorageHelper(IConfiguration configuration)
         {
-            _awsCredental = new BasicAWSCredentials("AKIA6GBMGR4YXZTIBI62", "8kAGI7td9PCRNm/S9HWyQVKO7G6XGPMwHlCWX056");
-            _s3Client = new AmazonS3Client(_awsCredental, RegionEndpoint.USEast1);
+            _configuration = configuration;
         }
 
         public async Task<string> UploadFileAsync(string fileName, Stream fileStream)
@@ -22,8 +20,11 @@ namespace BankingSystem.API.Utilities
             try
             {
                 // Specify S3 bucket name and file key
-                string bucketName = "bankingsystemstorage";
+                string bucketName = _configuration["AWS:BucketName"];
                 string fileKey = "uploads/" + fileName; // Construct a valid file key
+
+                var _awsCredental = new BasicAWSCredentials(_configuration["AWS:IAMAccessKey"], _configuration["AWS:IAMSecretKey"]);
+                var _s3Client = new AmazonS3Client(_awsCredental, RegionEndpoint.USEast1);
 
                 var bucketRequest = new PutObjectRequest
                 {
