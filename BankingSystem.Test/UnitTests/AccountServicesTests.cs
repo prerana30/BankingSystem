@@ -25,19 +25,6 @@ namespace BankingSystem.API.Tests
 
             var mockMapper = new Mock<IMapper>();
 
-            var accountDTO = new AccountDTO(
-            id: Guid.NewGuid(),
-            accountNumber: 1000010231785407,
-            balance: 123456,
-            atmCardNum: 9000099252964762,
-            atmCardPin: 1234,
-            accountCreatedAt: DateTime.UtcNow,
-            accountCreatedBy: Guid.NewGuid(),
-            accountModifiedAt: DateTime.UtcNow,
-            accountModifiedBy: Guid.NewGuid()
-              );
-
-
             var userCreationDTO = new UserCreationDTO
             (
                
@@ -51,24 +38,25 @@ namespace BankingSystem.API.Tests
 
             var accounts = new Accounts
             {
-                UserId = accountDTO.UserId,
+                UserId =Guid.NewGuid(),
                 AccountId = Guid.NewGuid(), 
-                AccountNumber = accountDTO.AccountNumber,
-                AtmCardNum = accountDTO.AtmCardNum,
-                AtmCardPin = accountDTO.AtmCardPin,
-                CreatedBy =accountDTO.AccountCreatedBy,
-                CreatedAt   =accountDTO.AccountCreatedAt,
-                ModifiedAt = accountDTO.AccountModifiedAt,
-                ModifiedBy = accountDTO.AccountModifiedBy,
+                AccountNumber = 1000010231785407,
+                AtmCardNum = 9000099252964762,
+                AtmCardPin = 1234,
+                Balance = 123456,
+                CreatedBy =Guid.NewGuid(),
+                CreatedAt   = DateTime.UtcNow,
+                ModifiedAt = null,
+                ModifiedBy = null,
             };
-
-            mockMapper.Setup(m => m.Map<Accounts>(accountDTO)).Returns(accounts);
+          
+            mockMapper.Setup(m => m.Map<Accounts>(accounts)).Returns(accounts);
             mockAccountRepository.Setup(r => r.AddAccounts(accounts)).ReturnsAsync(accounts);
 
             var accountService = new AccountServices(mockAccountRepository.Object, mockEmailService.Object, mockMapper.Object);
 
             // Act
-            var result = await accountService.AddAccounts(accountDTO, userCreationDTO.Email );
+            var result = await accountService.AddAccounts(accounts, userCreationDTO.Email);
 
             // Assert
             Assert.Equal(accounts, result);

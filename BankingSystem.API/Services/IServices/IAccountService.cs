@@ -10,6 +10,6 @@ namespace BankingSystem.API.Services.IServices
         Task<Accounts?> GetAccountByUserIdAsync(Guid userId);
         Task<Accounts> AddAccounts(Accounts accounts , string useremail) ;
         void DeleteAccount(Guid accountId);
-        Task<Accounts> UpdateAccountsAsync(Guid accountId, Accounts accounts);
+        Task<Accounts> UpdateAccountsAsync(Guid accountId, AccountUpdateDTO accounts);
     }
 }

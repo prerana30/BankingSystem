@@ -67,10 +67,13 @@ namespace BankingSystem.API.Services
             AccountRepository.DeleteAccount(accountId);
         }
 
-        public async Task<Accounts> UpdateAccountsAsync(Guid accountId, Accounts accounts)
+        public async Task<Accounts> UpdateAccountsAsync(Guid accountId, AccountUpdateDTO accounts)
         {
-         
-            return await AccountRepository.UpdateAccountsAsync(accountId, accounts);
+            var account = AccountRepository.GetAccountAsync(accountId).Result;
+            account.AtmCardPin = accounts.AtmCardPin;
+            account.ModifiedBy = account.UserId;
+            account.ModifiedAt = DateTime.UtcNow;
+            return await AccountRepository.UpdateAccountsAsync(accountId, account);
         }
     }
 }

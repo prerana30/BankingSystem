@@ -55,7 +55,7 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<Accounts>> UpdateAccounts(AccountUpdateDTO account, string email)
+        public async Task<ActionResult<Accounts>> UpdateAccounts(AccountUpdateDTO updateModel, string email)
         {
             var user = await userServices.GetUserByEmailAsync(email);
 
@@ -74,7 +74,7 @@ namespace BankingSystem.API.Controllers
 
             var accountId = checkAccount.AccountId;
 
-            var newAccount = await accountServices.UpdateAccountsAsync(accountId, account);
+            var newAccount = await accountServices.UpdateAccountsAsync(accountId, updateModel);
             if (newAccount == null)
             {
                 return BadRequest("Update failed");

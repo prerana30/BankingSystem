@@ -39,7 +39,7 @@ namespace BankingSystem.Test.UnitTests
             var signInManagerMock = MockSignInManager<Users>();
             var passwordHasherMock = new Mock<IPasswordHasher<Users>>();
 
-            var emailServiceMock = new Mock<IEmailService>(configurationMock.Object);
+            var emailServiceMock = new Mock<IEmailService>();
             // EmailService mock setup
             //emailServiceMock.Setup(es => es.SendEmailAsync(It.IsAny<Email>())).Returns(Task); // Mock the SendEmailAsync method
             emailServiceMock
@@ -124,7 +124,7 @@ namespace BankingSystem.Test.UnitTests
             var signInManagerMock = MockSignInManager<Users>();
             var passwordHasherMock = new Mock<IPasswordHasher<Users>>();
 
-            var emailServiceMock = new Mock<IEmailService>(configurationMock.Object);
+            var emailServiceMock = new Mock<IEmailService>();
             //emailServiceMock.Setup(es => es.SendEmailAsync(It.IsAny<Email>())).Returns(Task.CompletedTask); // Mock the SendEmailAsync method
             emailServiceMock
             .Setup(es => es.SendEmailAsync(It.IsAny<Email>()))
@@ -175,7 +175,7 @@ namespace BankingSystem.Test.UnitTests
             var signInManagerMock = MockSignInManager<Users>();
             var passwordHasherMock = new Mock<IPasswordHasher<Users>>();
 
-            var emailServiceMock = new Mock<IEmailService>(configurationMock.Object);
+            var emailServiceMock = new Mock<IEmailService>();
             //emailServiceMock.Setup(es => es.SendEmailAsync(It.IsAny<Email>())).Returns(Task.CompletedTask); // Mock the SendEmailAsync method
             emailServiceMock
             .Setup(es => es.SendEmailAsync(It.IsAny<Email>()))
@@ -239,7 +239,7 @@ namespace BankingSystem.Test.UnitTests
             var userManagerMock = MockUserManager<Users>();
             var signInManagerMock = MockSignInManager<Users>();
             var passwordHasherMock = new Mock<IPasswordHasher<Users>>();
-            var emailServiceMock = new Mock<IEmailService>(configurationMock.Object);
+            var emailServiceMock = new Mock<IEmailService>();
             var accountServicesMock = new Mock<AccountServices>(accountRepositoryMock.Object, emailServiceMock.Object, mapperMock.Object);
 
             var userService = new UserService(userRepositoryMock.Object, mapper, accountServicesMock.Object, userManagerMock.Object, signInManagerMock.Object, passwordHasherMock.Object);
@@ -301,7 +301,7 @@ namespace BankingSystem.Test.UnitTests
 
             var mapperConfig1 = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<AccountDTO, Accounts>();
+                cfg.CreateMap<Accounts, Accounts>();
             });
             var mapper1 = mapperConfig1.CreateMapper();
 
@@ -310,7 +310,7 @@ namespace BankingSystem.Test.UnitTests
             var userManagerMock = MockUserManager<Users>();
             var signInManagerMock = MockSignInManager<Users>();
             var passwordHasherMock = new Mock<IPasswordHasher<Users>>();
-            var emailServiceMock = new Mock<IEmailService>(configurationMock.Object);
+            var emailServiceMock = new Mock<IEmailService>();
             var accountServicesMock = new Mock<AccountServices>(accountRepositoryMock.Object, emailServiceMock.Object, mapper1);
 
             var userService = new UserService(userRepositoryMock.Object, mapper, accountServicesMock.Object, userManagerMock.Object, signInManagerMock.Object, passwordHasherMock.Object);
@@ -367,7 +367,7 @@ namespace BankingSystem.Test.UnitTests
             var userManagerMock = MockUserManager<Users>();
             var signInManagerMock = MockSignInManager<Users>();
             var passwordHasherMock = new Mock<IPasswordHasher<Users>>();
-            var emailServiceMock = new Mock<IEmailService>(configurationMock.Object);
+            var emailServiceMock = new Mock<IEmailService>();
             var accountServicesMock = new Mock<AccountServices>(accountRepositoryMock.Object, emailServiceMock.Object, mapperMock.Object);
 
             var userService = new UserService(userRepositoryMock.Object, mapper, accountServicesMock.Object, userManagerMock.Object, signInManagerMock.Object, passwordHasherMock.Object);
