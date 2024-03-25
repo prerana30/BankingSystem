@@ -9,10 +9,10 @@ namespace BankingSystem.API.Services
     public class AccountServices : IAccountService
     {
         private readonly IAccountRepository AccountRepository;
-        private readonly EmailService _emailService;
+        private readonly IEmailService _emailService;
 
         private readonly IMapper _mapper;
-        public AccountServices(IAccountRepository accountRepository, EmailService emailService, IMapper mapper)
+        public AccountServices(IAccountRepository accountRepository, IEmailService emailService, IMapper mapper)
         {
             AccountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
@@ -38,15 +38,11 @@ namespace BankingSystem.API.Services
             return await AccountRepository.GetAccountByUserIdAsync(userId);
         }
 
-        public async Task<Accounts> AddAccounts(AccountDTO accounts, UserCreationDTO users)
+        public async Task<Accounts> AddAccounts(Accounts accounts, string useremail)
         {
             var finalAccount = _mapper.Map<Accounts>(accounts);
             var addedAccount = await AccountRepository.AddAccounts(finalAccount);
-
-            // Obtain necessary information such as user's email address from the UserDTO object
-            var userEmail = users.Email; // Assuming Email property is available in UserDTO
-
-
+            //TODO: create separate file for the email html
             var emailBody = "Dear user,<br><br>Your bank account has been successfully registered.<br><br>" +
                 "Account number: " + accounts.AccountNumber + "<br>" +
                 "ATM number: " + accounts.AtmCardNum + "<br>" +
@@ -57,7 +53,7 @@ namespace BankingSystem.API.Services
             {
                 MailSubject = "Bank account registration Successful",
                 MailBody = emailBody,
-                ReceiverEmail = userEmail // Use the user's email address obtained from the UserDTO
+                ReceiverEmail = useremail // Use the user's email address obtained from the UserDTO
             };
 
             // Send email
@@ -71,12 +67,10 @@ namespace BankingSystem.API.Services
             AccountRepository.DeleteAccount(accountId);
         }
 
-        public async Task<Accounts> UpdateAccountsAsync(Guid accountId, AccountUpdateDTO accounts)
+        public async Task<Accounts> UpdateAccountsAsync(Guid accountId, Accounts accounts)
         {
-            var finalAccount = _mapper.Map<Accounts>(accounts);
-            //finalAccount.Balance = accounts.Balance;
-            //finalAccount.AccountNumber = accounts.AccountNumber;
-            return await AccountRepository.UpdateAccountsAsync(accountId, finalAccount);
+         
+            return await AccountRepository.UpdateAccountsAsync(accountId, accounts);
         }
     }
 }

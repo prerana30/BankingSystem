@@ -112,18 +112,29 @@ namespace BankingSystem.API.Services
                 {
                     await _userManager.AddToRoleAsync(user, UserRoles.AccountHolder.ToString());
 
-                    var accountNumber = RandomNumberGeneratorHelper.GenerateRandomNumber(1);
-                    var atmCardNum = RandomNumberGeneratorHelper.GenerateRandomNumber(2);
-                    var atmCardPin = (int)RandomNumberGeneratorHelper.GenerateRandomNumber(3);
 
-                    var accountDTO = new AccountDTO(user.Id, accountNumber, 0, atmCardNum, atmCardPin, DateTime.UtcNow, user.Id, DateTime.UtcNow, user.Id);
+
+                    var accountDTO = new Accounts
+                    {
+                        AccountId = Guid.NewGuid(),
+                        UserId = user.Id,
+                        AccountNumber = RandomNumberGeneratorHelper.GenerateRandomNumber(1),
+                        AtmCardNum = RandomNumberGeneratorHelper.GenerateRandomNumber(2),
+                        AtmCardPin = (int)RandomNumberGeneratorHelper.GenerateRandomNumber(3),
+                        Balance = 0,
+                        CreatedAt = DateTime.UtcNow,
+                        CreatedBy = user.Id,
+                        ModifiedAt = null,
+                        ModifiedBy = null,
+
+                    };
 
                     var checkAccount = await AccountServices.GetAccountByUserIdAsync(user.Id);
                     if (checkAccount != null)
                     {
                         throw new Exception("User already has an account.");
                     }
-                    await AccountServices.AddAccounts(accountDTO, users);
+                    await AccountServices.AddAccounts(accountDTO, users.Email);
                 }
                 return await AddRoleForDisplay(user);
             }

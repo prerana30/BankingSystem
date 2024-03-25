@@ -1,4 +1,6 @@
-﻿namespace BankingSystem.API.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BankingSystem.API.DTOs
 {
     public class AccountUpdateDTO
     {
