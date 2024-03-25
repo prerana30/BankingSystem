@@ -1,6 +1,5 @@
-﻿using BankingSystem.API.Models;
+﻿using BankingSystem.API.Entities;
 using Microsoft.AspNetCore.Identity;
-using System.Globalization;
 
 namespace BankingSystem.API.Data.DbContext
 {
@@ -17,8 +16,8 @@ namespace BankingSystem.API.Data.DbContext
                 await SeedRoleAsync(roleManager, UserRoles.AccountHolder.ToString());
                 await SeedRoleAsync(roleManager, UserRoles.TellerPerson.ToString());
 
-          
-               // Save Changes
+
+                // Save Changes
                 var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 await context.SaveChangesAsync();
             }
@@ -29,7 +28,6 @@ namespace BankingSystem.API.Data.DbContext
             if (!await roleManager.RoleExistsAsync(roleName))
                 await roleManager.CreateAsync(new IdentityRole<Guid>(roleName));
         }
-
     }
 }
 

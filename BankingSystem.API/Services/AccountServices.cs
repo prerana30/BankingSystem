@@ -1,18 +1,16 @@
 ﻿using AutoMapper;
 using BankingSystem.API.Data.Repository.IRepository;
-using BankingSystem.API.DTO;
-using BankingSystem.API.Models;
+using BankingSystem.API.DTOs;
+using BankingSystem.API.Entities;
 using BankingSystem.API.Services.IServices;
-
-
 
 namespace BankingSystem.API.Services
 {
-    public class AccountServices: IAccountService
+    public class AccountServices : IAccountService
     {
         private readonly IAccountRepository AccountRepository;
         private readonly EmailService _emailService;
-       
+
         private readonly IMapper _mapper;
         public AccountServices(IAccountRepository accountRepository, EmailService emailService, IMapper mapper)
         {
@@ -40,15 +38,6 @@ namespace BankingSystem.API.Services
             return await AccountRepository.GetAccountByUserIdAsync(userId);
         }
 
-
-
-        /*   public async Task<Accounts> AddAccounts(AccountDTO accounts)
-           {
-               var finalAccount = _mapper.Map<Accounts>(accounts);
-               // finalAccount.AccountNumber = AccountNumberGenerator.GenerateAccountNumber();
-               return await AccountRepository.AddAccounts(finalAccount);
-           }*/
-
         public async Task<Accounts> AddAccounts(AccountDTO accounts, UserCreationDTO users)
         {
             var finalAccount = _mapper.Map<Accounts>(accounts);
@@ -70,10 +59,6 @@ namespace BankingSystem.API.Services
 
             return addedAccount;
         }
-
-
-
-
 
         public void DeleteAccount(Guid accountId)
         {

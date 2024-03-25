@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BankingSystem.API.Models
+namespace BankingSystem.API.Entities
 {
     public class Transaction
     {

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using BankingSystem.API.Data.Repository.IRepository;
-using BankingSystem.API.DTO;
-using BankingSystem.API.Models;
+using BankingSystem.API.DTOs;
+using BankingSystem.API.Entities;
 using BankingSystem.API.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -104,7 +104,7 @@ namespace BankingSystem.Test.UnitTests
             var Id = new Guid();
             // Arrange
             var userRepositoryMock = new Mock<IUserRepository>();
-            
+
             var mapperMock = new Mock<IMapper>();
 
             var mapperConfig1 = new MapperConfiguration(cfg =>
@@ -339,7 +339,7 @@ namespace BankingSystem.Test.UnitTests
             var existingUser = new Users
             {
                 UserName = username,
-                PasswordHash= password
+                PasswordHash = password
                 // Set other properties as needed
             };
 

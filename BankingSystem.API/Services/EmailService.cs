@@ -1,4 +1,4 @@
-﻿using BankingSystem.API.Models;
+﻿using BankingSystem.API.Entities;
 using System.Net;
 using System.Net.Mail;
 
