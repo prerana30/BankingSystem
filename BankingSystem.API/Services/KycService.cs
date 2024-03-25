@@ -87,6 +87,10 @@ namespace BankingSystem.API.Services
 
         public async Task<string> ValidateAndUploadFile(IFormFile fileInput)
         {
+            if (fileInput == null)
+            {
+                throw new ArgumentNullException(nameof(fileInput));
+            }
             var url = "";
             if (fileInput != null)
             {
@@ -95,7 +99,7 @@ namespace BankingSystem.API.Services
                     throw new CannotUnloadAppDomainException("File size exceeds the limit");
                 }
                 string fileExtension = Path.GetExtension(fileInput.FileName);
-                if (fileExtension.ToLower() != ".png" && fileExtension.ToLower() != ".pdf")
+                if (fileExtension.ToLower() != ".png" && fileExtension.ToLower() != ".pdf" && fileExtension.ToLower() != ".jpeg")
                 {
                     throw new CannotUnloadAppDomainException($"Invalid file type for {fileInput.FileName}");
                 }
