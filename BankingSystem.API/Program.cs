@@ -3,6 +3,7 @@ using BankingSystem.API.Data.Repository;
 using BankingSystem.API.Data.Repository.IRepository;
 using BankingSystem.API.Entities;
 using BankingSystem.API.Services;
+using BankingSystem.API.Services.IServices;
 using BankingSystem.API.Utilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -38,7 +39,7 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<AccountServices>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 
-builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<IEmailService,EmailService>();
 builder.Services.AddScoped<TransactionServices>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); //searches for all profiles automatically

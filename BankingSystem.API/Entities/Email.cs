@@ -20,4 +20,5 @@ namespace BankingSystem.API.Entities
         [RegularExpression(@"^[^@\s]+@[^@\s]+\.(com|net|org|gov|np|edu)$", ErrorMessage = "Invalid pattern.")]
         public string ReceiverEmail { get; set; }
     }
+
 }
