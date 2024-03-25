@@ -46,11 +46,17 @@ namespace BankingSystem.API.Services
             // Obtain necessary information such as user's email address from the UserDTO object
             var userEmail = users.Email; // Assuming Email property is available in UserDTO
 
+
+            var emailBody = "Dear user,<br><br>Your bank account has been successfully registered.<br><br>" +
+                "Account number: " + accounts.AccountNumber + "<br>" +
+                "ATM number: " + accounts.AtmCardNum + "<br>" +
+                "ATM PIN: " + accounts.AtmCardPin + "<br><br>" +
+                "Thank you for choosing our banking services. If you have any questions or need assistance, feel free to contact our support team.";
             // Prepare email
             var email = new Email
             {
                 MailSubject = "Bank account registration Successful",
-                MailBody = "Dear user, Your bank account has been successfully registered.Thank you for choosing our banking services. If you have any questions or need assistance, feel free to contact our support team.",
+                MailBody = emailBody,
                 ReceiverEmail = userEmail // Use the user's email address obtained from the UserDTO
             };
 
@@ -65,9 +71,11 @@ namespace BankingSystem.API.Services
             AccountRepository.DeleteAccount(accountId);
         }
 
-        public async Task<Accounts> UpdateAccountsAsync(Guid accountId, AccountDTO accounts)
+        public async Task<Accounts> UpdateAccountsAsync(Guid accountId, AccountUpdateDTO accounts)
         {
             var finalAccount = _mapper.Map<Accounts>(accounts);
+            //finalAccount.Balance = accounts.Balance;
+            //finalAccount.AccountNumber = accounts.AccountNumber;
             return await AccountRepository.UpdateAccountsAsync(accountId, finalAccount);
         }
     }

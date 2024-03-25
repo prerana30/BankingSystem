@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BankingSystem.API.Controllers
 {
-
     [ApiController]
     [Route("api/accounts")]
     public class AccountsController : ControllerBase
@@ -87,9 +86,26 @@ namespace BankingSystem.API.Controllers
             return NoContent();
         }
 
-        [HttpPut("{accountId}")]
-        public async Task<ActionResult<Accounts>> UpdateAccounts(Guid accountId, AccountDTO account)
+        [HttpPut]
+        public async Task<ActionResult<Accounts>> UpdateAccounts(AccountUpdateDTO account, string email)
         {
+            var user = await userServices.GetUserByEmailAsync(email);
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var userId = user.Id;
+
+            var checkAccount = await accountServices.GetAccountByUserIdAsync(userId);
+            if (checkAccount == null)
+            {
+                return NotFound("User account does not exist");
+            }
+
+            var accountId = checkAccount.AccountId;
+
             var newAccount = await accountServices.UpdateAccountsAsync(accountId, account);
             if (newAccount == null)
             {
