@@ -1,5 +1,5 @@
 ﻿using BankingSystem.API.Data.Repository.IRepository;
-using BankingSystem.API.Models;
+using BankingSystem.API.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BankingSystem.API.Data.Repository

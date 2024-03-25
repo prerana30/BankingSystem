@@ -1,6 +1,6 @@
 ﻿using BankingSystem.API.Data.Repository.IRepository;
-using BankingSystem.API.DTO;
-using BankingSystem.API.Models;
+using BankingSystem.API.DTOs;
+using BankingSystem.API.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;

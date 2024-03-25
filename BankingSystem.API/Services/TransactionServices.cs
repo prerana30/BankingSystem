@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using BankingSystem.API.Data.Repository.IRepository;
-using BankingSystem.API.DTO;
-using BankingSystem.API.Models;
+using BankingSystem.API.DTOs;
+using BankingSystem.API.Entities;
 using BankingSystem.API.Services.IServices;
 
 namespace BankingSystem.API.Services
 {
-    public class TransactionServices: ITransactionService
+    public class TransactionServices : ITransactionService
     {
         private readonly ITransactionRepository _transactionRepository;
         private readonly IMapper _mapper;

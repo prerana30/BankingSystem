@@ -4,7 +4,7 @@ using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
 
-namespace BankingSystem.API.Utils
+namespace BankingSystem.API.Utilities
 {
     public class FileStorageHelper
     {

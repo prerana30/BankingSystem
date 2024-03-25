@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using BankingSystem.API.Entities;
 using BankingSystem.API.Services;
-using BankingSystem.API.Models;
-using System.Threading.Tasks;
-using Xunit;
-using Moq;
 using Microsoft.Extensions.Configuration;
+using Moq;
 
 namespace BankingSystem.Test.UnitTests
 {

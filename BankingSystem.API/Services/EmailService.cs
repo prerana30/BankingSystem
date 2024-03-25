@@ -1,10 +1,7 @@
-﻿
-using BankingSystem.API.Models;
-using System;
+﻿using BankingSystem.API.Entities;
 using System.ComponentModel;
 using System.Net;
 using System.Net.Mail;
-using System.Threading.Tasks;
 
 namespace BankingSystem.API.Services
 {

@@ -1,4 +1,4 @@
-﻿using BankingSystem.API.Models;
+﻿using BankingSystem.API.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

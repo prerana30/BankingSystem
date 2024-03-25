@@ -1,14 +1,9 @@
 ﻿using AutoMapper;
 using BankingSystem.API.Data.Repository.IRepository;
-using BankingSystem.API.Models;
+using BankingSystem.API.Entities;
 using BankingSystem.API.Services;
-using BankingSystem.API.Utils;
+using BankingSystem.API.Utilities;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingSystem.Test.UnitTests
 {

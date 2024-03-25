@@ -1,12 +1,10 @@
-﻿using BankingSystem.API.DTO;
-using BankingSystem.API.Models;
+﻿using BankingSystem.API.DTOs;
+using BankingSystem.API.Entities;
 using BankingSystem.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace BankingSystem.API.Controllers
 {
-
     [ApiController]
     [Route("api/accounts")]
     public class AccountsController : ControllerBase
@@ -120,13 +118,13 @@ namespace BankingSystem.API.Controllers
          public async Task<ActionResult<Accounts>> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> patchDocument)
          {
              var account = await accountServices.PatchAccountDetails(accountId, patchDocument);
-             if (!ModelState.IsValid)
+             if (!Entitiestate.IsValid)
              {
-                 return BadRequest(ModelState);
+                 return BadRequest(Entitiestate);
              }
              if (!TryValidateModel(account))
              {
-                 return BadRequest(ModelState);
+                 return BadRequest(Entitiestate);
              }
              if (account == null)
              {
