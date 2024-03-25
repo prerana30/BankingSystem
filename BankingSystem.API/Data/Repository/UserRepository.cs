@@ -58,7 +58,7 @@ namespace BankingSystem.API.Data.Repository
 
                 patchDocument.ApplyTo(userToPatch);
 
-                existingUser.UserName = userToPatch.Username;
+                existingUser.UserName = userToPatch.UserName;
                 existingUser.Fullname = userToPatch.Fullname;
                 existingUser.Email = userToPatch.Email;
 

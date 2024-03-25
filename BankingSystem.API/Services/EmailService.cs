@@ -13,13 +13,7 @@ namespace BankingSystem.API.Services
             configuration = _configuration;
         }
 
-        //public EmailService(IConfiguration configuration , )
-        //{
-        //     Email = configuration["EmailSettings:SenderEmail"];
-        //     configuration["EmailSettings:SenderPassword"];
-        //}
-
-        public async Task SendEmailAsync(Email email)
+        public virtual async Task SendEmailAsync(Email email)
         {
             var senderEmail = configuration["EmailSettings:SenderEmail"];
             var senderPassword = configuration["EmailSettings:SenderPassword"];

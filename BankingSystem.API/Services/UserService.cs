@@ -6,12 +6,11 @@ using BankingSystem.API.Services.IServices;
 using BankingSystem.API.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.EntityFrameworkCore;
 using System.Data;
 
 namespace BankingSystem.API.Services
 {
-    public class UserService: IUserService
+    public class UserService : IUserService
     {
         private readonly IUserRepository UserRepository;
         private readonly AccountServices AccountServices;
@@ -45,7 +44,7 @@ namespace BankingSystem.API.Services
 
         public async Task<IEnumerable<UserInfoDisplayDTO>> GetUsersAsync()
         {
-            var users= await _userManager.Users.ToListAsync();
+            var users = _userManager.Users.AsQueryable().ToList();
             var userDTOs = new List<UserInfoDisplayDTO>();
 
             foreach (var user in users)
@@ -68,7 +67,7 @@ namespace BankingSystem.API.Services
                 throw new Exception("Duplicate Email Address!");
             }
 
-            var usernameDuplication = _userManager.FindByNameAsync(users.Username);
+            var usernameDuplication = _userManager.FindByNameAsync(users.UserName);
             if (usernameDuplication.Result != null)
             {
                 throw new Exception("Duplicate UserName!");
@@ -120,7 +119,7 @@ namespace BankingSystem.API.Services
                     {
                         throw new Exception("User already has an account.");
                     }
-                    await AccountServices.AddAccounts(accountDTO,users);
+                    await AccountServices.AddAccounts(accountDTO, users);
                 }
                 return await AddRoleForDisplay(user);
             }
@@ -139,7 +138,7 @@ namespace BankingSystem.API.Services
 
         public async Task<UserInfoDisplayDTO> PatchUserDetails(Guid Id, JsonPatchDocument<UserCreationDTO> patchDocument)
         {
-            var user= await UserRepository.PatchUserDetails(Id, patchDocument);
+            var user = await UserRepository.PatchUserDetails(Id, patchDocument);
             return await AddRoleForDisplay(user);
         }
 
@@ -149,6 +148,11 @@ namespace BankingSystem.API.Services
             finalUser.PasswordHash = users.Password;
 
             var existingUser = await GetUserAsync(Id);
+            // Check if the existing user is null
+            if (existingUser == null)
+            {
+                throw new Exception($"User with ID {Id} not found.");
+            }
             //if password is not same as in the database; update it
             if (!string.IsNullOrEmpty(finalUser.PasswordHash) && _passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash, users.Password) != PasswordVerificationResult.Success)
             {

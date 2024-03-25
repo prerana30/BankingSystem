@@ -1,11 +1,11 @@
-﻿using BankingSystem.API.Models;
+﻿using BankingSystem.API.DTO;
 
 namespace BankingSystem.API.Utils
 {
     public static class Constants
     {
-        public static Users user;
-        public static Guid   Id;
-        public static IList<string> role;
+        public static UserInfoDisplayDTO user;
+        public static Guid userId;
+        public static string role;
     }
 }
