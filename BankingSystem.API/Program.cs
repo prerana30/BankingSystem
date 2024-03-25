@@ -55,9 +55,6 @@ builder.Services.AddIdentity<Users, IdentityRole<Guid>>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-// Add the TellerPerson authorization policy setup
-builder.Services.AddTellerPersonAuthorizationPolicy();
-
 builder.Services.AddLogging(loggingBuilder =>
 {
     loggingBuilder.AddConsole(); // Configure logging to log to the console
