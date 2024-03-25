@@ -1,6 +1,6 @@
 ﻿using BankingSystem.API.Data.Repository.IRepository;
-using BankingSystem.API.DTO;
-using BankingSystem.API.Models;
+using BankingSystem.API.DTOs;
+using BankingSystem.API.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
@@ -58,7 +58,7 @@ namespace BankingSystem.API.Data.Repository
 
                 patchDocument.ApplyTo(userToPatch);
 
-                existingUser.UserName = userToPatch.Username;
+                existingUser.UserName = userToPatch.UserName;
                 existingUser.Fullname = userToPatch.Fullname;
                 existingUser.Email = userToPatch.Email;
 

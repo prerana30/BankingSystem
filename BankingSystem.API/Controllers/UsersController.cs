@@ -1,5 +1,5 @@
-using BankingSystem.API.DTO;
-using BankingSystem.API.Models;
+using BankingSystem.API.DTOs;
+using BankingSystem.API.Entities;
 using BankingSystem.API.Services;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +14,7 @@ namespace BankingSystem.API.Controllers
 
         public UsersController(UserService UserService)
         {
-            userService = UserService ?? throw new ArgumentOutOfRangeException(nameof(UserService));
+            userService = UserService ?? throw new ArgumentNullException(nameof(userService));
         }
 
         [HttpGet]
@@ -41,7 +41,7 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<Users>> Login(string username, string password)
+        public async Task<ActionResult<UserInfoDisplayDTO>> Login(string username, string password)
         {
             var user = await userService.Login(username, password);
             if (user == null)

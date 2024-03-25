@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using BankingSystem.API.Data.Repository.IRepository;
-using BankingSystem.API.DTO;
-using BankingSystem.API.Models;
+using BankingSystem.API.DTOs;
+using BankingSystem.API.Entities;
 using BankingSystem.API.Services.IServices;
-using BankingSystem.API.Utils;
+using BankingSystem.API.Utilities;
 using System.Diagnostics;
 
 namespace BankingSystem.API.Services
 {
-    public class KycService: IKYCService
+    public class KycService : IKYCService
     {
         private readonly IKycRepository _kycRepository;
         private readonly IMapper _mapper;
@@ -57,8 +57,6 @@ namespace BankingSystem.API.Services
             // Now you can add the KycDocument to the repository
             return await _kycRepository.AddKycDocumentAsync(kycDocument);
         }
-
-
 
         public async Task<KycDocument> UpdateKycDocumentAsync(Guid KYCId, KycDocumentDTO updatedKycDocumentDto)
         {

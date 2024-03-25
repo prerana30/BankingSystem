@@ -1,13 +1,10 @@
 ﻿//using Firebase.Storage;
 using Amazon;
+using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
-using Amazon.Runtime;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Diagnostics;
-using System.IO;
 
-namespace BankingSystem.API.Utils
+namespace BankingSystem.API.Utilities
 {
     public class FileStorageHelper
     {

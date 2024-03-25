@@ -1,17 +1,20 @@
 ﻿using AutoMapper;
 using BankingSystem.API.Data.Repository.IRepository;
-using BankingSystem.API.DTO;
-using BankingSystem.API.Models;
+using BankingSystem.API.DTOs;
+using BankingSystem.API.Entities;
 using BankingSystem.API.Services.IServices;
-using BankingSystem.API.Utils;
+using BankingSystem.API.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Data;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace BankingSystem.API.Services
 {
-    public class UserService: IUserService
+    public class UserService : IUserService
     {
         private readonly IUserRepository UserRepository;
         private readonly AccountServices AccountServices;
@@ -45,7 +48,7 @@ namespace BankingSystem.API.Services
 
         public async Task<IEnumerable<UserInfoDisplayDTO>> GetUsersAsync()
         {
-            var users= await _userManager.Users.ToListAsync();
+            var users = _userManager.Users.AsQueryable().ToList();
             var userDTOs = new List<UserInfoDisplayDTO>();
 
             foreach (var user in users)
@@ -68,7 +71,7 @@ namespace BankingSystem.API.Services
                 throw new Exception("Duplicate Email Address!");
             }
 
-            var usernameDuplication = _userManager.FindByNameAsync(users.Username);
+            var usernameDuplication = _userManager.FindByNameAsync(users.UserName);
             if (usernameDuplication.Result != null)
             {
                 throw new Exception("Duplicate UserName!");
@@ -120,7 +123,7 @@ namespace BankingSystem.API.Services
                     {
                         throw new Exception("User already has an account.");
                     }
-                    await AccountServices.AddAccounts(accountDTO,users);
+                    await AccountServices.AddAccounts(accountDTO, users);
                 }
                 return await AddRoleForDisplay(user);
             }
@@ -139,7 +142,7 @@ namespace BankingSystem.API.Services
 
         public async Task<UserInfoDisplayDTO> PatchUserDetails(Guid Id, JsonPatchDocument<UserCreationDTO> patchDocument)
         {
-            var user= await UserRepository.PatchUserDetails(Id, patchDocument);
+            var user = await UserRepository.PatchUserDetails(Id, patchDocument);
             return await AddRoleForDisplay(user);
         }
 
@@ -149,6 +152,11 @@ namespace BankingSystem.API.Services
             finalUser.PasswordHash = users.Password;
 
             var existingUser = await GetUserAsync(Id);
+            // Check if the existing user is null
+            if (existingUser == null)
+            {
+                throw new Exception($"User with ID {Id} not found.");
+            }
             //if password is not same as in the database; update it
             if (!string.IsNullOrEmpty(finalUser.PasswordHash) && _passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash, users.Password) != PasswordVerificationResult.Success)
             {
@@ -171,7 +179,17 @@ namespace BankingSystem.API.Services
                 {
                     // User is successfully logged in, retrieve the user from the database
                     var existingUser = await _userManager.FindByNameAsync(username);
-                    return await AddRoleForDisplay(existingUser);
+                    var jwtToken = await GenerateJwtToken(existingUser); // Generate JWT token
+                    //return jwtToken;
+                    var user = await AddRoleForDisplay(existingUser);// After generating the JWT token in your login method
+
+                    var handler = new JwtSecurityTokenHandler();
+                    var token = handler.ReadJwtToken(jwtToken);
+                    foreach (var claim in token.Claims)
+                    {
+                        Console.WriteLine($"Claim Type: {claim.Type}, Value: {claim.Value}");
+                    }
+                    return user;
                 }
                 else
                 {
@@ -185,6 +203,34 @@ namespace BankingSystem.API.Services
                 Console.WriteLine($"Error occurred during user login: {e}");
                 throw;
             }
+        }
+
+        private async Task<string> GenerateJwtToken(Users user)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("bootcamp-aloi-net-deploy-aws-secret-key"));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var userType = roles.FirstOrDefault(); // Assuming a user can have only one role
+
+            var claims = new[]
+            {
+               new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // Convert user.Id to string
+               new Claim(ClaimTypes.Name, user.UserName),
+               new Claim(ClaimTypes.Role, userType)
+            // Add additional claims as needed (e.g., roles)
+        };
+
+            var token = new JwtSecurityToken(
+                issuer: "your-issuer",
+                audience: "your-audience",
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(1), // Token expiration time
+                signingCredentials: credentials
+            );
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            return tokenHandler.WriteToken(token);
         }
 
         public async Task<UserInfoDisplayDTO> AddRoleForDisplay(Users user)

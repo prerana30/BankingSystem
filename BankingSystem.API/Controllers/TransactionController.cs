@@ -1,6 +1,7 @@
-﻿using BankingSystem.API.DTO;
-using BankingSystem.API.Models;
+﻿using BankingSystem.API.DTOs;
+using BankingSystem.API.Entities;
 using BankingSystem.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BankingSystem.API.Controllers
@@ -31,6 +32,10 @@ namespace BankingSystem.API.Controllers
 
         [Route("api/transactions/deposit")]
         [HttpPost]
+        //[Authorize(Roles ="TellerPerson")]
+        [Authorize("TellerPersonPolicy")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] // Add this attribute
+
         public async Task<ActionResult<Transaction>> DepositTransaction(DepositTransactionDTO transaction, Guid accountId, Guid tellerId)
         {
             var depositAccount = await _transactionServices.DepositTransactionAsync(transaction, accountId, tellerId);

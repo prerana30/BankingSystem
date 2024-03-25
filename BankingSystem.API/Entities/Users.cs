@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace BankingSystem.API.Models
+namespace BankingSystem.API.Entities
 {
 
 /* Users class inherits all the properties and functionality of IdentityUser<Guid>*/

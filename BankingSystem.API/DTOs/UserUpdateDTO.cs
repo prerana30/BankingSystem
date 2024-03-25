@@ -1,11 +1,11 @@
-﻿using BankingSystem.API.Models;
+﻿using BankingSystem.API.Entities;
 using System.ComponentModel.DataAnnotations;
 
-namespace BankingSystem.API.DTO
+namespace BankingSystem.API.DTOs
 {
     public class UserUpdateDTO
     {
-        public string Username { get; set; }
+        public string UserName { get; set; }
         public string Fullname { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using BankingSystem.API.DTO;
-using BankingSystem.API.Models;
+using BankingSystem.API.DTOs;
+using BankingSystem.API.Entities;
 
 namespace BankingSystem.API.Utilities.Profiles
 {
@@ -10,6 +10,8 @@ namespace BankingSystem.API.Utilities.Profiles
         {
             CreateMap<Accounts, AccountDTO>();
             CreateMap<AccountDTO, Accounts>();
+
+            CreateMap<AccountUpdateDTO, Accounts>(); 
         }
     }
 }
