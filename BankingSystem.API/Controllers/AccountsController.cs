@@ -1,6 +1,7 @@
 ﻿using BankingSystem.API.DTOs;
 using BankingSystem.API.Entities;
 using BankingSystem.API.Services;
+using BankingSystem.API.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BankingSystem.API.Controllers
@@ -11,9 +12,9 @@ namespace BankingSystem.API.Controllers
     {
         private readonly AccountServices accountServices;
         private readonly UserService userServices;
-        private readonly EmailService emailService;
+        private readonly IEmailService emailService;
 
-        public AccountsController(AccountServices AccountServices, UserService UserService, EmailService _emailService)
+        public AccountsController(AccountServices AccountServices, UserService UserService, IEmailService _emailService)
         {
             accountServices = AccountServices ?? throw new ArgumentOutOfRangeException(nameof(AccountServices));
             userServices = UserService ?? throw new ArgumentOutOfRangeException(nameof(UserService));
@@ -44,40 +45,7 @@ namespace BankingSystem.API.Controllers
             return Ok(account);
         }
 
-        /*[HttpPost]
-        public async Task<ActionResult<Accounts>> AddAccounts(AccountDTO account, string email)
-        {
-
-            var user = await userServices.GetUserByEmailAsync(email);
-
-            if (user == null)
-            {
-                return NotFound("User not found");
-            }
-
-
-            var userId = user.Id;
-
-            var checkAccount = await accountServices.GetAccountByUserIdAsync(userId);
-            if (checkAccount != null)
-            {
-                return StatusCode(400, "User already has an account.");
-            }
-            var accounts = await accountServices.AddAccounts(account);
-            if (accounts == null)
-            {
-                return StatusCode(400, "Account already exists.");
-            }
-
-            var Email = new Email();
-            Email.MailSubject = "Account Registered";
-            Email.MailBody = "Your account has been made.";
-            Email.ReceiverEmail = email;
-            
-           await emailService.SendEmailAsync(Email);
-            return Ok(accounts);
-
-        }*/
+       
 
         [HttpDelete("{accountId}")]
         public ActionResult DeleteUser(Guid accountId)
@@ -87,7 +55,7 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<Accounts>> UpdateAccounts(AccountUpdateDTO account, string email)
+        public async Task<ActionResult<Accounts>> UpdateAccounts(AccountUpdateDTO updateModel, string email)
         {
             var user = await userServices.GetUserByEmailAsync(email);
 
@@ -106,7 +74,7 @@ namespace BankingSystem.API.Controllers
 
             var accountId = checkAccount.AccountId;
 
-            var newAccount = await accountServices.UpdateAccountsAsync(accountId, account);
+            var newAccount = await accountServices.UpdateAccountsAsync(accountId, updateModel);
             if (newAccount == null)
             {
                 return BadRequest("Update failed");

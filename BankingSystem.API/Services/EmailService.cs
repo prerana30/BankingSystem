@@ -1,11 +1,12 @@
 ﻿using BankingSystem.API.Entities;
+using BankingSystem.API.Services.IServices;
 using System.ComponentModel;
 using System.Net;
 using System.Net.Mail;
 
 namespace BankingSystem.API.Services
 {
-    public class EmailService
+    public class EmailService: IEmailService
     {
         private readonly IConfiguration configuration;
 

@@ -8,7 +8,7 @@ namespace BankingSystem.API.Services.IServices
         Task<Accounts?> GetAccountAsync(Guid accountId);
         Task<IEnumerable<Accounts>> GetAccountsAsync();
         Task<Accounts?> GetAccountByUserIdAsync(Guid userId);
-        Task<Accounts> AddAccounts(AccountDTO accounts , UserCreationDTO users) ;
+        Task<Accounts> AddAccounts(Accounts accounts , string useremail) ;
         void DeleteAccount(Guid accountId);
         Task<Accounts> UpdateAccountsAsync(Guid accountId, AccountUpdateDTO accounts);
     }
