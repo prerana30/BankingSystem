@@ -1,20 +1,25 @@
 ﻿using AutoMapper;
+using BankingSystem.API.Data.Repository;
 using BankingSystem.API.Data.Repository.IRepository;
 using BankingSystem.API.DTOs;
 using BankingSystem.API.Entities;
 using BankingSystem.API.Services.IServices;
+using BankingSystem.API.Utilities.EmailTemplates;
+using System.Security.Principal;
 
 namespace BankingSystem.API.Services
 {
     public class AccountServices : IAccountService
     {
         private readonly IAccountRepository AccountRepository;
+        private readonly IUserRepository UserRepository;
         private readonly IEmailService _emailService;
 
         private readonly IMapper _mapper;
-        public AccountServices(IAccountRepository accountRepository, IEmailService emailService, IMapper mapper)
+        public AccountServices(IAccountRepository accountRepository, IEmailService emailService, IMapper mapper, IUserRepository userRepository)
         {
             AccountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
+            UserRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
@@ -42,12 +47,9 @@ namespace BankingSystem.API.Services
         {
             var finalAccount = _mapper.Map<Accounts>(accounts);
             var addedAccount = await AccountRepository.AddAccounts(finalAccount);
-            //TODO: create separate file for the email html
-            var emailBody = "Dear user,<br><br>Your bank account has been successfully registered.<br><br>" +
-                "Account number: " + accounts.AccountNumber + "<br>" +
-                "ATM number: " + accounts.AtmCardNum + "<br>" +
-                "ATM PIN: " + accounts.AtmCardPin + "<br><br>" +
-                "Thank you for choosing our banking services. If you have any questions or need assistance, feel free to contact our support team.";
+         
+            var emailBody = EmailTemplates.EmailBodyForAddAccount(accounts.AccountNumber, accounts.AtmCardNum, accounts.AtmCardPin);
+
             // Prepare email
             var email = new Email
             {
@@ -73,6 +75,23 @@ namespace BankingSystem.API.Services
             account.AtmCardPin = accounts.AtmCardPin;
             account.ModifiedBy = account.UserId;
             account.ModifiedAt = DateTime.UtcNow;
+
+            var user = await UserRepository.GetUserAsync(account.UserId);
+
+
+            var emailBody = EmailTemplates.EmailBodyForPinUpdate(account.AtmCardPin, user.Fullname);
+            // Prepare email
+            var email = new Email
+            {
+                MailSubject = "Bank account pin updated",
+                MailBody = emailBody,
+                ReceiverEmail = user.Email // Use the user's email address obtained from the UserDTO
+            };
+
+
+            // Send email
+            await _emailService.SendEmailAsync(email);
+
             return await AccountRepository.UpdateAccountsAsync(accountId, account);
         }
     }
