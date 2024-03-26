@@ -20,7 +20,6 @@ namespace BankingSystem.API.Data.Repository
         }
 
 
-
         public async Task<IEnumerable<Transaction>> GetTransactionsOfAccountAsync(Guid accountId)
         {
             return await _context.Transactions
@@ -221,7 +220,6 @@ namespace BankingSystem.API.Data.Repository
                 throw new Exception("KYC is not verified, transaction cannot be made.");
             }
         }
-
 
         public async Task<Transaction> SelfWithdrawTransactionAsync(Transaction transaction, long accountNumber, int atmIdAtmCardPin)
         {
