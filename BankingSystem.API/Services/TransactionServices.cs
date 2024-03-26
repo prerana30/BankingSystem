@@ -36,28 +36,16 @@ namespace BankingSystem.API.Services
             return await _transactionRepository.IsVerifiedKycAsync(kycId);
         }
 
-        public async Task<Transaction> DepositTransactionAsync(DepositTransactionDTO transactionDto, Guid accountId, Guid userId)
+        public async Task<Transaction> DepositTransactionAsync(DepositTransactionDTO transactionDto, long accountNumber, Guid userId)
         {
             var transaction = _mapper.Map<Transaction>(transactionDto);
-            return await _transactionRepository.DepositTransactionAsync(transaction, accountId, userId);
+            return await _transactionRepository.DepositTransactionAsync(transaction, accountNumber, userId);
         }
 
-        public async Task<Transaction> TellerDepositTransactionAsync(DepositTransactionDTO transactionDto, long accountNumber, Guid userId)
-        {
-            var transaction = _mapper.Map<Transaction>(transactionDto);
-            return await _transactionRepository.TellerDepositTransactionAsync(transaction, accountNumber, userId);
-        }
-
-        public async Task<Transaction> WithdrawTransactionAsync(WithdrawTransactionDTO withdrawDto, Guid accountId, int atmIdAtmCardPin)
+        public async Task<Transaction> WithdrawTransactionAsync(WithdrawTransactionDTO withdrawDto, long accountNumber, int atmIdAtmCardPin)
         {
             var transaction = _mapper.Map<Transaction>(withdrawDto);
-            return await _transactionRepository.WithdrawTransactionAsync(transaction, accountId, atmIdAtmCardPin);
-        }
-
-        public async Task<Transaction> SelfWithdrawTransactionAsync(WithdrawTransactionDTO withdrawDto, long accountNumber, int atmIdAtmCardPin)
-        {
-            var transaction = _mapper.Map<Transaction>(withdrawDto);
-            return await _transactionRepository.SelfWithdrawTransactionAsync(transaction, accountNumber, atmIdAtmCardPin);
+            return await _transactionRepository.WithdrawTransactionAsync(transaction, accountNumber, atmIdAtmCardPin);
         }
     }
 }

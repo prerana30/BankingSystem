@@ -43,14 +43,14 @@ namespace BankingSystem.Test.UnitTests
         public async Task DepositTransactionAsync_ReturnsTransaction()
         {
             // Arrange
-            var accountId = Guid.NewGuid();
+            var accountNumber = 112233445566;
             var userId = Guid.NewGuid();
             var depositTransactionDto = new DepositTransactionDTO { Amount = 100 }; // Example DTO for deposit transaction
 
             var expectedTransaction = new Transaction { AccountId = Guid.NewGuid(), Amount = 100, TransactionTime = DateTime.Now }; // Example expected transaction
 
             var transactionRepositoryMock = new Mock<ITransactionRepository>();
-            transactionRepositoryMock.Setup(repo => repo.DepositTransactionAsync(It.IsAny<Transaction>(), accountId, userId))
+            transactionRepositoryMock.Setup(repo => repo.DepositTransactionAsync(It.IsAny<Transaction>(), accountNumber, userId))
                 .ReturnsAsync(expectedTransaction);
 
             var mapperMock = new Mock<IMapper>();
@@ -59,12 +59,11 @@ namespace BankingSystem.Test.UnitTests
             var transactionServices = new TransactionServices(transactionRepositoryMock.Object, mapperMock.Object);
 
             // Act
-            var result = await transactionServices.DepositTransactionAsync(depositTransactionDto, accountId, userId);
+            var result = await transactionServices.DepositTransactionAsync(depositTransactionDto, accountNumber, userId);
 
             // Assert
             Assert.NotNull(result);
             Assert.IsType<Transaction>(result);
-            Assert.Equal(expectedTransaction.AccountId, result.AccountId);
             Assert.Equal(expectedTransaction.Amount, result.Amount);
         }
 
@@ -74,14 +73,14 @@ namespace BankingSystem.Test.UnitTests
         public async Task WithdrawTransactionAsync_ReturnsTransaction()
         {
             // Arrange
-            var accountId = Guid.NewGuid();
+            var accountNumber = 112233445566;
             var atmIdAtmCardPin = 1234; // Example ATM ID or ATM card PIN
             var withdrawTransactionDto = new WithdrawTransactionDTO { Amount = 50 }; // Example DTO for withdraw transaction
 
-            var expectedTransaction = new Transaction { AccountId = Guid.NewGuid(), Amount = 50, TransactionTime = DateTime.Now }; // Example expected transaction
+            var expectedTransaction = new Transaction { Amount = 50, TransactionTime = DateTime.Now }; // Example expected transaction
 
             var transactionRepositoryMock = new Mock<ITransactionRepository>();
-            transactionRepositoryMock.Setup(repo => repo.WithdrawTransactionAsync(It.IsAny<Transaction>(), accountId, atmIdAtmCardPin))
+            transactionRepositoryMock.Setup(repo => repo.WithdrawTransactionAsync(It.IsAny<Transaction>(), accountNumber, atmIdAtmCardPin))
                 .ReturnsAsync(expectedTransaction);
 
             var mapperMock = new Mock<IMapper>();
@@ -90,12 +89,11 @@ namespace BankingSystem.Test.UnitTests
             var transactionServices = new TransactionServices(transactionRepositoryMock.Object, mapperMock.Object);
 
             // Act
-            var result = await transactionServices.WithdrawTransactionAsync(withdrawTransactionDto, accountId, atmIdAtmCardPin);
+            var result = await transactionServices.WithdrawTransactionAsync(withdrawTransactionDto, accountNumber, atmIdAtmCardPin);
 
             // Assert
             Assert.NotNull(result);
             Assert.IsType<Transaction>(result);
-            Assert.Equal(expectedTransaction.AccountId, result.AccountId);
             Assert.Equal(expectedTransaction.Amount, result.Amount);
         }
     }
