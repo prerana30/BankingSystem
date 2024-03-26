@@ -98,9 +98,6 @@ namespace BankingSystem.API.Data.Repository
                 if (finalUser.DateOfBirth != new DateTime() && existingUser.DateOfBirth != finalUser.DateOfBirth)
                     existingUser.DateOfBirth = finalUser.DateOfBirth;
 
-                if (!string.IsNullOrEmpty(finalUser.PasswordHash) && existingUser.PasswordHash != finalUser.PasswordHash)
-                    existingUser.PasswordHash = finalUser.PasswordHash;
-
                 if (!string.IsNullOrEmpty(finalUser.Address) && existingUser.Address != finalUser.Address)
                     existingUser.Address = finalUser.Address;
 

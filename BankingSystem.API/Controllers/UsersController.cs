@@ -54,11 +54,6 @@ namespace BankingSystem.API.Controllers
             return Ok(user);
         }
 
-        /// <summary>
-        /// User addition is done by user and userType would be populated automatically later from the UI button click
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
         [HttpPost]
         [CustomAuthorize("TellerPerson")]
         public async Task<ActionResult<Users>> AddUsers(UserCreationDTO user)

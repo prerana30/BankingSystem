@@ -171,21 +171,12 @@ namespace BankingSystem.API.Services
         public async Task<UserInfoDisplayDTO> UpdateUsersAsync(Guid Id, UserUpdateDTO users)
         {
             var finalUser = _mapper.Map<Users>(users);
-            finalUser.PasswordHash = users.Password;
 
             var existingUser = await GetUserAsync(Id);
             ValidateExistingUser(existingUser, Id);
 
             //user exists: add Id to the incoming changes for the user
             finalUser.Id = Id;
-
-            //if password is not same as in the database; update it
-            if (!string.IsNullOrEmpty(finalUser.PasswordHash) && _passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash, users.Password) != PasswordVerificationResult.Success)
-            {
-                // Hash the new password
-                var newPasswordHash = _passwordHasher.HashPassword(existingUser, users.Password);
-                finalUser.PasswordHash = newPasswordHash;
-            }
 
             var userId = GetCurrentUserId();
             existingUser.ModifiedBy = userId;
