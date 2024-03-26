@@ -22,7 +22,7 @@ namespace BankingSystem.API.Services
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             UserRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-            AccountRepository = accountRepository;
+            AccountRepository = accountRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         public async Task<IEnumerable<Transaction>> GetTransactionsOfAccountAsync(Guid accountId)
@@ -49,7 +49,9 @@ namespace BankingSystem.API.Services
         {
             var transaction = _mapper.Map<Transaction>(transactionDto);
 
-            var user = await UserRepository.GetUserAsync(userId);
+            var account = await AccountRepository.GetAccountByAccountNumberAsync(accountNumber);
+
+            var user = await UserRepository.GetUserAsync(account.UserId);
 
             var emailBody = EmailTemplates.EmailBodyForTransactionDeposit(user.Fullname,transactionDto.Amount, transactionDto.TransactionRemarks);
 
