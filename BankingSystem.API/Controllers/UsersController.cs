@@ -1,8 +1,7 @@
 using BankingSystem.API.DTOs;
 using BankingSystem.API.Entities;
-using BankingSystem.API.Services;
+using BankingSystem.API.Services.IServices;
 using BankingSystem.API.Utilities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,9 +11,9 @@ namespace BankingSystem.API.Controllers
     [Route("api/users")]
     public class UsersController : ControllerBase
     {
-        private readonly UserService userService;
+        private readonly IUserService userService;
 
-        public UsersController(UserService UserService)
+        public UsersController(IUserService UserService)
         {
             userService = UserService ?? throw new ArgumentNullException(nameof(userService));
         }
@@ -91,13 +90,24 @@ namespace BankingSystem.API.Controllers
             return Ok(newUser);
         }
 
-        [HttpPut("/forgotPassword/{Id}")]
+        [HttpPut("/resetPassword/{Id}")]
         public async Task<ActionResult<Users>> ResetPassword(Guid Id, string password)
         {
-            var newUser = await userService.UpdateUserPasswordAsync(Id, password);
+            var newUser = await userService.ResetUserPasswordAsync(Id, password);
             if (newUser == null)
             {
                 return BadRequest("Update failed");
+            }
+            return Ok(newUser);
+        }
+
+        [HttpPut("/changePassword/{Id}")]
+        public async Task<ActionResult<Users>> ChangePassword(Guid Id, string oldPassword, string newPassword)
+        {
+            var newUser = await userService.ChangePasswordAsync(Id, oldPassword, newPassword);
+            if (newUser == null)
+            {
+                return BadRequest("Password Change failed");
             }
             return Ok(newUser);
         }

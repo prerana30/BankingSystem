@@ -55,7 +55,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IKycRepository, KycRepository>();
 
-builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.AddScoped<FileStorageHelper>();
 builder.Services.AddScoped<KycService>();
 
