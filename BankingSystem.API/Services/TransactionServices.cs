@@ -53,7 +53,7 @@ namespace BankingSystem.API.Services
 
             var user = await UserRepository.GetUserAsync(account.UserId);
 
-            var emailBody = EmailTemplates.EmailBodyForTransactionDeposit(user.Fullname,transactionDto.Amount, transactionDto.TransactionRemarks);
+            var emailBody = EmailTemplates.EmailBodyForTransactionDeposit(user.Fullname,transactionDto.Amount, transactionDto.TransactionRemarks, transactionDto.TransactionTime);
 
             // Prepare email
             var email = new Email
@@ -77,12 +77,12 @@ namespace BankingSystem.API.Services
 
             var user = await UserRepository.GetUserAsync(account.UserId);
 
-            var emailBody = EmailTemplates.EmailBodyForTransactionDeposit(user.Fullname, withdrawDto.Amount, withdrawDto.TransactionRemarks);
+            var emailBody = EmailTemplates.EmailBodyForTransactionDeposit(user.Fullname, withdrawDto.Amount, withdrawDto.TransactionRemarks, withdrawDto.TransactionTime);
 
             // Prepare email
             var email = new Email
             {
-                MailSubject = "Amount Withdraw",
+                MailSubject = "Amount Withdrawn",
                 MailBody = emailBody,
                 ReceiverEmail = user.Email // Use the user's email address obtained from the UserDTO
             };
