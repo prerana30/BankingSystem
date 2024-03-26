@@ -330,7 +330,7 @@ namespace BankingSystem.Test.UnitTests
             userManagerMock.Setup(um => um.GetRolesAsync(It.IsAny<Users>())).ReturnsAsync(new List<string> { "AccountHolder", "TellerPerson" });
 
             // Setup UserRepository to return the updated user
-            userRepositoryMock.Setup(repo => repo.UpdateUsersAsync(Id, It.IsAny<Users>()))
+            userRepositoryMock.Setup(repo => repo.UpdateUsersAsync(It.IsAny<Users>()))
                 .ReturnsAsync(new Users { Id = Id, UserName = "updatedUserName", Fullname = "Updated FullName", Address = "Updated Address", Email = "updatedemail@gmail.com" });
 
             // Act

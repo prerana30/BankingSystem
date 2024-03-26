@@ -176,6 +176,9 @@ namespace BankingSystem.API.Services
             var existingUser = await GetUserAsync(Id);
             ValidateExistingUser(existingUser, Id);
 
+            //user exists: add Id to the incoming changes for the user
+            finalUser.Id = Id;
+
             //if password is not same as in the database; update it
             if (!string.IsNullOrEmpty(finalUser.PasswordHash) && _passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash, users.Password) != PasswordVerificationResult.Success)
             {
@@ -187,14 +190,18 @@ namespace BankingSystem.API.Services
             var userId = GetCurrentUserId();
             existingUser.ModifiedBy = userId;
 
-            var user = await UserRepository.UpdateUsersAsync(Id, finalUser);
+            var user = await UserRepository.UpdateUsersAsync(finalUser);
             return await AddRoleForDisplay(user);
         }
 
-        public async Task<UserInfoDisplayDTO> ResetUserPasswordAsync(Guid Id, string password)
+        public async Task<UserInfoDisplayDTO> ResetUserPasswordAsync(string userName, string password)
         {
-            var existingUser = await GetUserAsync(Id);
-            ValidateExistingUser(existingUser, Id);
+            var existingUser = await _userManager.FindByNameAsync(userName);
+            // Check if the existing user is null
+            if (existingUser == null)
+            {
+                throw new Exception($"User with username {userName} not found.");
+            }
 
             //if password is not empty and not same as in the database; update it
             if (!string.IsNullOrEmpty(password) && _passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash, password) != PasswordVerificationResult.Success)
@@ -206,7 +213,7 @@ namespace BankingSystem.API.Services
             var userId= GetCurrentUserId(); 
             existingUser.ModifiedBy = userId;
             
-            var user = await UserRepository.UpdatePasswordAsync(Id, existingUser);
+            var user = await UserRepository.UpdatePasswordAsync(existingUser);
             return await AddRoleForDisplay(user);
         }
 
@@ -246,7 +253,7 @@ namespace BankingSystem.API.Services
             var userId = GetCurrentUserId();
             existingUser.ModifiedBy = userId;
            
-            var user = await UserRepository.UpdatePasswordAsync(Id, existingUser);
+            var user = await UserRepository.UpdatePasswordAsync(existingUser);
             return await AddRoleForDisplay(user);
         }
 

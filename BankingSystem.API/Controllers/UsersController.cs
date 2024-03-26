@@ -90,10 +90,10 @@ namespace BankingSystem.API.Controllers
             return Ok(newUser);
         }
 
-        [HttpPut("/resetPassword/{Id}")]
-        public async Task<ActionResult<Users>> ResetPassword(Guid Id, string password)
+        [HttpPut("/resetPassword/{username}")]
+        public async Task<ActionResult<Users>> ResetPassword(string username, string password)
         {
-            var newUser = await userService.ResetUserPasswordAsync(Id, password);
+            var newUser = await userService.ResetUserPasswordAsync(username, password);
             if (newUser == null)
             {
                 return BadRequest("Update failed");
