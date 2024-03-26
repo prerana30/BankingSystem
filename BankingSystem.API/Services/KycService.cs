@@ -14,11 +14,11 @@ namespace BankingSystem.API.Services
         private readonly IMapper _mapper;
         private readonly FileStorageHelper _fileStorageHelper;
 
-        public KycService(IKycRepository kycRepository, IMapper mapper, FileStorageHelper fileStorageHelper)
+        public KycService(IKycRepository kycRepository, IMapper mapper, IConfiguration configuration)
         {
             _kycRepository = kycRepository;
             _mapper = mapper;
-            _fileStorageHelper = fileStorageHelper;
+            _fileStorageHelper = new FileStorageHelper(configuration);
         }
 
         public async Task<IEnumerable<KycDocument>> GetKycDocumentAsync()
