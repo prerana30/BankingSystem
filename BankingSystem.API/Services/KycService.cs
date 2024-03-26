@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace BankingSystem.API.Services
 {
-    public class KycService : IKYCService
+    public class KycService : IKycService
     {
         private readonly IKycRepository _kycRepository;
         private readonly IMapper _mapper;

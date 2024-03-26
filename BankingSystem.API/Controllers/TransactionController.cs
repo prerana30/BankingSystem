@@ -1,6 +1,7 @@
 ﻿using BankingSystem.API.DTOs;
 using BankingSystem.API.Entities;
 using BankingSystem.API.Services;
+using BankingSystem.API.Services.IServices;
 using BankingSystem.API.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +16,7 @@ namespace BankingSystem.API.Controllers
     [Produces("application/json")]
     public class TransactionController : ControllerBase
     {
-        private readonly TransactionServices _transactionServices;
+        private readonly ITransactionService _transactionServices;
         private readonly UserManager<Users> _userManager;
 
         /// <summary>
@@ -23,7 +24,7 @@ namespace BankingSystem.API.Controllers
         /// </summary>
         /// <param name="transactionServices">Instance of TransactionServices</param>
         /// <param name="userManager">Instance of UserManager</param>
-        public TransactionController(TransactionServices transactionServices, UserManager<Users> userManager)
+        public TransactionController(ITransactionService transactionServices, UserManager<Users> userManager)
         {
             _transactionServices = transactionServices ?? throw new ArgumentOutOfRangeException(nameof(transactionServices));
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
@@ -39,16 +40,16 @@ namespace BankingSystem.API.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Transaction>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("{accountId}")]
-        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactions(Guid accountId)
+        [Route("{accountNumber}")]
+        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactions(long accountNumber)
         {
-            if (await _transactionServices.GetTransactionsOfAccountAsync(accountId) == null)
+            var transactions = await _transactionServices.GetTransactionsOfAccountAsync(accountNumber);
+            if (transactions == null)
             {
                 var list = new List<Transaction>();
                 return NotFound(list);
             }
-
-            return Ok(await _transactionServices.GetTransactionsOfAccountAsync(accountId));
+            return Ok(transactions);
         }
 
         /// <summary>

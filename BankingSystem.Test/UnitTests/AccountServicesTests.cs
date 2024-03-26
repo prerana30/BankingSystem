@@ -21,13 +21,14 @@ namespace BankingSystem.API.Tests
         {
             // Arrange
             var mockAccountRepository = new Mock<IAccountRepository>();
+            var userRepository= new Mock<IUserRepository>();
             var mockEmailService = new Mock<IEmailService>();
 
             var mockMapper = new Mock<IMapper>();
 
             var userCreationDTO = new UserCreationDTO
             (
-               
+
                  username: "asdf",
               fullname: "hello world",
               email: "user@example.com",
@@ -38,22 +39,22 @@ namespace BankingSystem.API.Tests
 
             var accounts = new Accounts
             {
-                UserId =Guid.NewGuid(),
-                AccountId = Guid.NewGuid(), 
+                UserId = Guid.NewGuid(),
+                AccountId = Guid.NewGuid(),
                 AccountNumber = 1000010231785407,
                 AtmCardNum = 9000099252964762,
                 AtmCardPin = 1234,
                 Balance = 123456,
-                CreatedBy =Guid.NewGuid(),
-                CreatedAt   = DateTime.UtcNow,
+                CreatedBy = Guid.NewGuid(),
+                CreatedAt = DateTime.UtcNow,
                 ModifiedAt = null,
                 ModifiedBy = null,
             };
-          
+
             mockMapper.Setup(m => m.Map<Accounts>(accounts)).Returns(accounts);
             mockAccountRepository.Setup(r => r.AddAccounts(accounts)).ReturnsAsync(accounts);
 
-            var accountService = new AccountServices(mockAccountRepository.Object, mockEmailService.Object, mockMapper.Object);
+            var accountService = new AccountServices(mockAccountRepository.Object, mockEmailService.Object, mockMapper.Object, userRepository.Object);
 
             // Act
             var result = await accountService.AddAccounts(accounts, userCreationDTO.Email);
