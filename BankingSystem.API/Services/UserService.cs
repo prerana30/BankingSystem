@@ -106,7 +106,7 @@ namespace BankingSystem.API.Services
                 else
                 {
                     await _userManager.AddToRoleAsync(user, UserRoles.AccountHolder.ToString());
-                    await CreateUserAccount(users, user);
+                    await CreateUserAccount(user, userId);
                 }
                 return await AddRoleForDisplay(user);
             }
@@ -133,7 +133,7 @@ namespace BankingSystem.API.Services
             }
         }
 
-        private async Task CreateUserAccount(UserCreationDTO users, Users user)
+        private async Task CreateUserAccount(Users user, Guid userId)
         {
             var accountDTO = new Accounts
             {
@@ -144,7 +144,7 @@ namespace BankingSystem.API.Services
                 AtmCardPin = (int)RandomNumberGeneratorHelper.GenerateRandomNumber(3),
                 Balance = 0,
                 CreatedAt = DateTime.UtcNow,
-                CreatedBy = user.Id,
+                CreatedBy = userId,
                 ModifiedAt = null,
                 ModifiedBy = null,
             };
@@ -313,7 +313,7 @@ namespace BankingSystem.API.Services
             return userDTO;
         }
 
-        public Guid? GetCurrentUserId()
+        public Guid GetCurrentUserId()
         {
             Guid userId;
             var currentUserId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -322,8 +322,7 @@ namespace BankingSystem.API.Services
                 // currentUserId is successfully parsed as a GUID
                 return userId;
             }
-            return null;
+            return Guid.Empty;
         }
-
     }
 }
