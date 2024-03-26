@@ -90,5 +90,4 @@ namespace BankingSystem.API.Controllers
             return Ok(withdrawAccount);
         }
     }
-
 }

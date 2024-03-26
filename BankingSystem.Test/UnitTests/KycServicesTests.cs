@@ -5,6 +5,7 @@ using BankingSystem.API.Entities;
 using BankingSystem.API.Services;
 using BankingSystem.API.Utilities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Moq;
 
 namespace BankingSystem.Test.UnitTests
@@ -27,7 +28,7 @@ namespace BankingSystem.Test.UnitTests
 
             var mapperMock = new Mock<IMapper>(); // Mock IMapper if necessary for mapping operations
 
-            var fileStorageHelperMock = new Mock<FileStorageHelper>(); // Mock FileStorageHelper if necessary for file upload operations
+            var fileStorageHelperMock = new Mock<IConfiguration>(); // Mock FileStorageHelper if necessary for file upload operations
 
             var kycService = new KycService(kycRepositoryMock.Object, mapperMock.Object, fileStorageHelperMock.Object);
 
@@ -59,7 +60,7 @@ namespace BankingSystem.Test.UnitTests
 
             var mapperMock = new Mock<IMapper>();// Mock IMapper if necessary for mapping operations
 
-            var fileStorageHelperMock = new Mock<FileStorageHelper>();// Mock FileStorageHelper if necessary for file upload operations
+            var fileStorageHelperMock = new Mock<IConfiguration>();// Mock FileStorageHelper if necessary for file upload operations
 
             var kycService = new KycService(kycRepositoryMock.Object, mapperMock.Object, fileStorageHelperMock.Object);
 
@@ -88,7 +89,7 @@ namespace BankingSystem.Test.UnitTests
 
             var mapperMock = new Mock<IMapper>(); // Mock IMapper if necessary for mapping operations
 
-            var fileStorageHelperMock = new Mock<FileStorageHelper>(); // Mock FileStorageHelper if necessary for file upload operations
+            var fileStorageHelperMock = new Mock<IConfiguration>(); // Mock FileStorageHelper if necessary for file upload operations
 
             var kycService = new KycService(kycRepositoryMock.Object, mapperMock.Object, fileStorageHelperMock.Object);
 
@@ -107,7 +108,7 @@ namespace BankingSystem.Test.UnitTests
             var userId = Guid.NewGuid(); // Generate a valid user ID
             var kycRepository = new Mock<IKycRepository>(); // Use a mock repository for testing concurrency
             var mapper = new Mock<IMapper>(); // Use mock mapper
-            var fileStorageHelper = new Mock<FileStorageHelper>(); // Use mock file storage helper
+            var fileStorageHelper = new Mock<IConfiguration>(); // Use mock file storage helper
             var kycService = new KycService(kycRepository.Object, mapper.Object, fileStorageHelper.Object);
 
             // Simulate concurrent requests
@@ -133,7 +134,7 @@ namespace BankingSystem.Test.UnitTests
             var kycService = new KycService(
                 Mock.Of<IKycRepository>(), // Mocked repository
                 Mock.Of<IMapper>(), // Mocked mapper
-                Mock.Of<FileStorageHelper>() // Mocked file storage helper
+                Mock.Of<IConfiguration>() // Mocked file storage helper
             );
 
             // Act and Assert

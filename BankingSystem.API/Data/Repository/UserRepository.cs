@@ -92,6 +92,9 @@ namespace BankingSystem.API.Data.Repository
                 if (!string.IsNullOrEmpty(finalUser.Email) && existingUser.Email != finalUser.Email)
                     existingUser.Email = finalUser.Email;
 
+                if (!string.IsNullOrEmpty(finalUser.PhoneNumber) && existingUser.PhoneNumber != finalUser.PhoneNumber)
+                    existingUser.PhoneNumber = finalUser.PhoneNumber;
+
                 if (finalUser.DateOfBirth != new DateTime() && existingUser.DateOfBirth != finalUser.DateOfBirth)
                     existingUser.DateOfBirth = finalUser.DateOfBirth;
 
@@ -104,7 +107,24 @@ namespace BankingSystem.API.Data.Repository
                 //update modifiedAt DateTime
                 existingUser.ModifiedAt = DateTime.UtcNow;
 
-                _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
+                return existingUser;
+            }
+            return null;
+        }
+
+        public async Task<Users> UpdatePasswordAsync(Guid Id, Users finalUser)
+        {
+            var existingUser = await GetUserAsync(Id);
+            if (existingUser != null)
+            {
+                if (!string.IsNullOrEmpty(finalUser.PasswordHash) && existingUser.PasswordHash != finalUser.PasswordHash)
+                    existingUser.PasswordHash = finalUser.PasswordHash;
+
+                //update modifiedAt DateTime
+                existingUser.ModifiedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
                 return existingUser;
             }
             return null;
