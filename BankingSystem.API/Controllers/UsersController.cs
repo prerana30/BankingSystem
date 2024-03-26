@@ -1,6 +1,8 @@
 using BankingSystem.API.DTOs;
 using BankingSystem.API.Entities;
 using BankingSystem.API.Services;
+using BankingSystem.API.Utilities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +20,7 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpGet]
+        [CustomAuthorize("TellerPerson")]
         public async Task<ActionResult<IEnumerable<Users>>> GetUsers()
         {
             var users = await userService.GetUsersAsync();
@@ -52,7 +55,13 @@ namespace BankingSystem.API.Controllers
             return Ok(user);
         }
 
+        /// <summary>
+        /// User addition is done by user and userType would be populated automatically later from the UI button click
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         [HttpPost]
+        [CustomAuthorize("TellerPerson")]
         public async Task<ActionResult<Users>> AddUsers(UserCreationDTO user)
         {
             var users = await userService.RegisterUser(user);
@@ -64,6 +73,7 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpDelete("{Id}")]
+        [CustomAuthorize("TellerPerson")]
         public ActionResult DeleteUser(Guid Id)
         {
             userService.DeleteUser(Id);
@@ -74,6 +84,17 @@ namespace BankingSystem.API.Controllers
         public async Task<ActionResult<Users>> UpdateUsers(Guid Id, UserUpdateDTO user)
         {
             var newUser = await userService.UpdateUsersAsync(Id, user);
+            if (newUser == null)
+            {
+                return BadRequest("Update failed");
+            }
+            return Ok(newUser);
+        }
+
+        [HttpPut("/forgotPassword/{Id}")]
+        public async Task<ActionResult<Users>> ResetPassword(Guid Id, string password)
+        {
+            var newUser = await userService.UpdateUserPasswordAsync(Id, password);
             if (newUser == null)
             {
                 return BadRequest("Update failed");

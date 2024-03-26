@@ -1,6 +1,7 @@
 ﻿using BankingSystem.API.DTOs;
 using BankingSystem.API.Entities;
 using BankingSystem.API.Services;
+using BankingSystem.API.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BankingSystem.API.Controllers
@@ -17,6 +18,7 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpGet]
+        [CustomAuthorize("TellerPerson")]
         public async Task<ActionResult<IEnumerable<KycDocument>>> GetKycDocument()
         {
             var KycDocument = await _kycService.GetKycDocumentAsync();

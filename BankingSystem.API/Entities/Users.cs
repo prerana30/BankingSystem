@@ -12,7 +12,9 @@ namespace BankingSystem.API.Entities
         public string Fullname { get; set; }
         public string Address { get; set; }
         public DateTime DateOfBirth { get; set; }
+        public Guid? CreatedBy { get; set; }
         public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+        public Guid? ModifiedBy { get; set; }
         public DateTime? ModifiedAt { get; set; } = DateTime.UtcNow;
 
         public Users()

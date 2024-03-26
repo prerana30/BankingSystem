@@ -4,6 +4,7 @@ using BankingSystem.API.DTOs;
 using BankingSystem.API.Entities;
 using BankingSystem.API.Services.IServices;
 using BankingSystem.API.Utilities;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.IdentityModel.Tokens;
@@ -25,7 +26,9 @@ namespace BankingSystem.API.Services
         private readonly SignInManager<Users> _signInManager;
         private readonly IPasswordHasher<Users> _passwordHasher;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, AccountServices accountServices, UserManager<Users> userManager, SignInManager<Users> signInManager, IPasswordHasher<Users> passwordHasher)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public UserService(IUserRepository userRepository, IMapper mapper, AccountServices accountServices, UserManager<Users> userManager, SignInManager<Users> signInManager, IPasswordHasher<Users> passwordHasher, IHttpContextAccessor httpContextAccessor)
         {
             UserRepository = userRepository ?? throw new ArgumentOutOfRangeException(nameof(userRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -33,6 +36,7 @@ namespace BankingSystem.API.Services
             _userManager = userManager;
             _signInManager = signInManager;
             _passwordHasher = passwordHasher;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<Users?> GetUserAsync(Guid Id)
@@ -63,7 +67,19 @@ namespace BankingSystem.API.Services
         {
             var finalUser = _mapper.Map<Users>(users);
 
+            Guid userId;
             finalUser.PasswordHash = users.Password;
+
+            var tellerUserId= _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (Guid.TryParse(tellerUserId, out userId))
+            {
+                // tellerUserId is successfully parsed as a GUID
+                finalUser.CreatedBy = userId;
+            }
+            else
+            {
+                finalUser.CreatedBy = null;
+            }
 
             checkValidation(users);
 
@@ -75,8 +91,10 @@ namespace BankingSystem.API.Services
                 PhoneNumber = finalUser.PhoneNumber,
                 Address = finalUser.Address,
                 DateOfBirth = finalUser.DateOfBirth,
+                CreatedBy= finalUser.CreatedBy,
                 CreatedAt = DateTime.UtcNow,
-                ModifiedAt = DateTime.UtcNow,
+                //ModifiedBy= null,
+                //ModifiedAt = DateTime.UtcNow,
 
                 SecurityStamp = Guid.NewGuid().ToString(),
                 EmailConfirmed = true,
@@ -111,7 +129,6 @@ namespace BankingSystem.API.Services
                 Console.WriteLine(errorMsg);
                 throw new Exception(errorMsg);
             }
-        
         }
 
         private void checkValidation(UserCreationDTO users)
@@ -143,7 +160,6 @@ namespace BankingSystem.API.Services
                 CreatedBy = user.Id,
                 ModifiedAt = null,
                 ModifiedBy = null,
-
             };
 
             var checkAccount = await AccountServices.GetAccountByUserIdAsync(user.Id);
@@ -184,7 +200,52 @@ namespace BankingSystem.API.Services
                 finalUser.PasswordHash = newPasswordHash;
             }
 
+            Guid userId;
+            var currentUserId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (Guid.TryParse(currentUserId, out userId))
+            {
+                // tellerUserId is successfully parsed as a GUID
+                existingUser.ModifiedBy = userId;
+            }
+            else
+            {
+                existingUser.ModifiedBy = null;
+            }
+
             var user = await UserRepository.UpdateUsersAsync(Id, finalUser);
+            return await AddRoleForDisplay(user);
+        }
+
+        public async Task<UserInfoDisplayDTO> UpdateUserPasswordAsync(Guid Id, string password)
+        {
+            var existingUser = await GetUserAsync(Id);
+            // Check if the existing user is null
+            if (existingUser == null)
+            {
+                throw new Exception($"User with ID {Id} not found.");
+            }
+
+            //if password is not empty and not same as in the database; update it
+            if (!string.IsNullOrEmpty(password) && _passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash, password) != PasswordVerificationResult.Success)
+            {
+                // Hash the new password
+                var newPasswordHash = _passwordHasher.HashPassword(existingUser, password);
+                existingUser.PasswordHash = newPasswordHash;
+            }
+
+            Guid userId;
+            var currentUserId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (Guid.TryParse(currentUserId, out userId))
+            {
+                // tellerUserId is successfully parsed as a GUID
+                existingUser.ModifiedBy = userId;
+            }
+            else
+            {
+                existingUser.ModifiedBy = null;
+            }
+
+            var user = await UserRepository.UpdatePasswordAsync(Id, existingUser);
             return await AddRoleForDisplay(user);
         }
 
