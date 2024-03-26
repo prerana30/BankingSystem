@@ -2,6 +2,7 @@
 using BankingSystem.API.Entities;
 using BankingSystem.API.Services;
 using BankingSystem.API.Services.IServices;
+using BankingSystem.API.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BankingSystem.API.Controllers
@@ -36,6 +37,7 @@ namespace BankingSystem.API.Controllers
         /// </summary>
         /// <returns>A list of <see cref="Accounts"/>.</returns>
         [HttpGet]
+        [CustomAuthorize("TellerPerson")]
         public async Task<ActionResult<IEnumerable<Accounts>>> GetAccounts()
         {
             var accounts = await accountServices.GetAccountsAsync();
@@ -69,6 +71,7 @@ namespace BankingSystem.API.Controllers
         /// <param name="accountId">The id of the account.</param>
         /// <returns>A NoContent response.</returns>
         [HttpDelete("{accountId}")]
+        [CustomAuthorize("TellerPerson")]
         public ActionResult DeleteUser(Guid accountId)
         {
             accountServices.DeleteAccount(accountId);
@@ -82,6 +85,7 @@ namespace BankingSystem.API.Controllers
         /// <param name="email">The email of the user.</param>
         /// <returns>The updated <see cref="Accounts"/>.</returns>
         [HttpPut]
+        [CustomAuthorize("AccountHolder")]
         public async Task<ActionResult<Accounts>> UpdateAccounts(AccountUpdateDTO updateModel, string email)
         {
             var user = await userServices.GetUserByEmailAsync(email);
