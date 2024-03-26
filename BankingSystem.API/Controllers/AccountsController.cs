@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BankingSystem.API.Controllers
 {
+    /// <summary>
+    /// Controller for handling accounts endpoints.
+    /// </summary>
     [ApiController]
     [Route("api/accounts")]
     public class AccountsController : ControllerBase
@@ -14,26 +17,41 @@ namespace BankingSystem.API.Controllers
         private readonly UserService userServices;
         private readonly IEmailService emailService;
 
-        public AccountsController(AccountServices AccountServices, UserService UserService, IEmailService _emailService)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccountsController"/> class.
+        /// </summary>
+        /// <param name="accountServices">The account services.</param>
+        /// <param name="userServices">The user services.</param>
+        /// <param name="_emailService">The email service.</param>
+        public AccountsController(AccountServices accountServices, UserService userServices, IEmailService _emailService)
         {
-            accountServices = AccountServices ?? throw new ArgumentOutOfRangeException(nameof(AccountServices));
-            userServices = UserService ?? throw new ArgumentOutOfRangeException(nameof(UserService));
-            emailService = _emailService;
+            this.accountServices = accountServices ?? throw new ArgumentNullException(nameof(accountServices));
+            this.userServices = userServices ?? throw new ArgumentNullException(nameof(userServices));
+            this.emailService = _emailService;
 
         }
 
+        /// <summary>
+        /// Gets all accounts.
+        /// </summary>
+        /// <returns>A list of <see cref="Accounts"/>.</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Accounts>>> GetAccounts()
         {
-            if (await accountServices.GetAccountsAsync() == null)
+            var accounts = await accountServices.GetAccountsAsync();
+            if (accounts == null)
             {
-                var list = new List<Accounts>();
-                return list;
+                return Ok(new List<Accounts>());
             }
 
-            return Ok(await accountServices.GetAccountsAsync());
+            return Ok(accounts);
         }
 
+        /// <summary>
+        /// Gets an account by id.
+        /// </summary>
+        /// <param name="id">The id of the account.</param>
+        /// <returns>The <see cref="Accounts"/>.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Accounts>> GetAccountAsync(Guid id)
         {
@@ -45,8 +63,11 @@ namespace BankingSystem.API.Controllers
             return Ok(account);
         }
 
-       
-
+        /// <summary>
+        /// Deletes an account by id.
+        /// </summary>
+        /// <param name="accountId">The id of the account.</param>
+        /// <returns>A NoContent response.</returns>
         [HttpDelete("{accountId}")]
         public ActionResult DeleteUser(Guid accountId)
         {
@@ -54,6 +75,12 @@ namespace BankingSystem.API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Updates an account pin by user email .
+        /// </summary>
+        /// <param name="updateModel">The update model.</param>
+        /// <param name="email">The email of the user.</param>
+        /// <returns>The updated <see cref="Accounts"/>.</returns>
         [HttpPut]
         public async Task<ActionResult<Accounts>> UpdateAccounts(AccountUpdateDTO updateModel, string email)
         {
@@ -81,36 +108,5 @@ namespace BankingSystem.API.Controllers
             }
             return Ok(newAccount);
         }
-
-        /* [HttpPatch("{userId}")]
-         public async Task<ActionResult<Accounts>> PatchAccountDetails(Guid accountId, JsonPatchDocument<AccountDTO> patchDocument)
-         {
-             var account = await accountServices.PatchAccountDetails(accountId, patchDocument);
-             if (!Entitiestate.IsValid)
-             {
-                 return BadRequest(Entitiestate);
-             }
-             if (!TryValidateModel(account))
-             {
-                 return BadRequest(Entitiestate);
-             }
-             if (account == null)
-             {
-                 NotFound();
-             }
-             return Ok(account);
-         }*/
-        /*Route("api/send-email")]
-        [HttpPost]
-        public Task SendEmail()
-        {
-            var Email = new Email();
-            Email.MailSubject = "Account Registered";
-            Email.MailBody = "Your account has been made.";
-            Email.SenderEmail = "aanisharai.aloi@gmail.com";
-            return  emailService.SendEmailAsync(Email);
-            
-
-        }*/
     }
 }
