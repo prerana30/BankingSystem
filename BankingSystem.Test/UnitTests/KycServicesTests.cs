@@ -3,21 +3,9 @@ using BankingSystem.API.Data.Repository.IRepository;
 using BankingSystem.API.DTOs;
 using BankingSystem.API.Entities;
 using BankingSystem.API.Services;
-using BankingSystem.API.Services.IServices;
-using BankingSystem.API.Controllers;
 using BankingSystem.API.Utilities;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
-using BankingSystem.API.Data.Repository;
-using Microsoft.AspNetCore.JsonPatch;
-
 
 namespace BankingSystem.Test.UnitTests
 {

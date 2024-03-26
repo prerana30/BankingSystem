@@ -50,7 +50,7 @@ namespace BankingSystem.Test.UnitTests
             var expectedTransaction = new Transaction { AccountId = Guid.NewGuid(), Amount = 100, TransactionTime = DateTime.Now }; // Example expected transaction
 
             var transactionRepositoryMock = new Mock<ITransactionRepository>();
-            transactionRepositoryMock.Setup(repo => repo.TellerDepositTransactionAsync(It.IsAny<Transaction>(), accountNumber, userId))
+            transactionRepositoryMock.Setup(repo => repo.DepositTransactionAsync(It.IsAny<Transaction>(), accountNumber, userId))
                 .ReturnsAsync(expectedTransaction);
 
             var mapperMock = new Mock<IMapper>();
@@ -59,7 +59,7 @@ namespace BankingSystem.Test.UnitTests
             var transactionServices = new TransactionServices(transactionRepositoryMock.Object, mapperMock.Object);
 
             // Act
-            var result = await transactionServices.TellerDepositTransactionAsync(depositTransactionDto, accountNumber, userId);
+            var result = await transactionServices.DepositTransactionAsync(depositTransactionDto, accountNumber, userId);
 
             // Assert
             Assert.NotNull(result);
@@ -80,7 +80,7 @@ namespace BankingSystem.Test.UnitTests
             var expectedTransaction = new Transaction { Amount = 50, TransactionTime = DateTime.Now }; // Example expected transaction
 
             var transactionRepositoryMock = new Mock<ITransactionRepository>();
-            transactionRepositoryMock.Setup(repo => repo.SelfWithdrawTransactionAsync(It.IsAny<Transaction>(), accountNumber, atmIdAtmCardPin))
+            transactionRepositoryMock.Setup(repo => repo.WithdrawTransactionAsync(It.IsAny<Transaction>(), accountNumber, atmIdAtmCardPin))
                 .ReturnsAsync(expectedTransaction);
 
             var mapperMock = new Mock<IMapper>();
@@ -89,7 +89,7 @@ namespace BankingSystem.Test.UnitTests
             var transactionServices = new TransactionServices(transactionRepositoryMock.Object, mapperMock.Object);
 
             // Act
-            var result = await transactionServices.SelfWithdrawTransactionAsync(withdrawTransactionDto, accountNumber, atmIdAtmCardPin);
+            var result = await transactionServices.WithdrawTransactionAsync(withdrawTransactionDto, accountNumber, atmIdAtmCardPin);
 
             // Assert
             Assert.NotNull(result);
