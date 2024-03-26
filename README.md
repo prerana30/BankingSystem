@@ -15,18 +15,27 @@ Welcome to the Bank System Project repository! This project aims to develop a co
 | :--------------:|:---------------:|:------------------:|
 | C#              | AWS RDS 			  | Firebase (for test)  |
 | .NET Core       | AWS S3 	        | Render (for test)    |
-| ASP.NET 			  | AWS ECR   	    | Visual Studio      |
+| ASP.NET Core    | AWS ECR   	    | Visual Studio      |
 | PostgreSQL      | AWS ECS       	| GitHub, Trello     |             
 
 
 
-## Get Started:
-> Install .NET8 on your machine   [download link](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)   
-> Install this GitHub Repo on your machine `git clone git@github.com:ishwors/BankingSystem.git`
+
+
+## Getting Started:
+
+### Prerequisites Installed
+- [.NET8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+- [PostgreSQL](https://www.postgresql.org/download/)
+
+### Clone & RUN Source Code
+```
+git clone git@github.com:ishwors/BankingSystem.git
+```
 
 <details>
 <summary>
-Make sure that you have following packages while running this project (after rinning `build` command)
+Make sure that you have following packages while running this project
 </summary>
   
 > AutoMapper" Version="13.0.1"  
@@ -45,13 +54,27 @@ Make sure that you have following packages while running this project (after rin
 > Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2"  
 > Swashbuckle.AspNetCore" Version="6.4.0"
 </details>
-  
-**RUN**
-> dotnet build
-> dotnet run
 
-OR You can run **docker image** (get [here](https://hub.docker.com/repository/docker/ishwors/bankingsystem-repo/) )
-cmd: `docker pull ishwors/bankingsystem-repo:latest` - `docker run -it -p 8080:8080 ishwors/bankingsystem-repo`
+```
+cd BankingSystem.API
+```
+```
+dotnet build
+```
+```
+dotnet run
+```
+
+
+OR
+### RUN [**docker image**](https://hub.docker.com/repository/docker/ishwors/bankingsystem-repo/)
+
+```
+docker pull ishwors/bankingsystem-repo:latest
+```
+```
+docker run -it -p 8080:8080 ishwors/bankingsystem-repo
+```
 
 
 
