@@ -14,11 +14,11 @@ namespace BankingSystem.API.Services
         private readonly IMapper _mapper;
         private readonly FileStorageHelper _fileStorageHelper;
 
-        public KycService(IKycRepository kycRepository, IMapper mapper, FileStorageHelper fileStorageHelper)
+        public KycService(IKycRepository kycRepository, IMapper mapper, IConfiguration configuration)
         {
             _kycRepository = kycRepository;
             _mapper = mapper;
-            _fileStorageHelper = fileStorageHelper;
+            _fileStorageHelper = new FileStorageHelper(configuration);
         }
 
         public async Task<IEnumerable<KycDocument>> GetKycDocumentAsync()
@@ -87,6 +87,10 @@ namespace BankingSystem.API.Services
 
         public async Task<string> ValidateAndUploadFile(IFormFile fileInput)
         {
+            if (fileInput == null)
+            {
+                throw new ArgumentNullException(nameof(fileInput));
+            }
             var url = "";
             if (fileInput != null)
             {
@@ -95,7 +99,7 @@ namespace BankingSystem.API.Services
                     throw new CannotUnloadAppDomainException("File size exceeds the limit");
                 }
                 string fileExtension = Path.GetExtension(fileInput.FileName);
-                if (fileExtension.ToLower() != ".png" && fileExtension.ToLower() != ".pdf")
+                if (fileExtension.ToLower() != ".png" && fileExtension.ToLower() != ".pdf" && fileExtension.ToLower() != ".jpeg")
                 {
                     throw new CannotUnloadAppDomainException($"Invalid file type for {fileInput.FileName}");
                 }

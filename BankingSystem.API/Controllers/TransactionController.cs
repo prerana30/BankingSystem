@@ -7,79 +7,88 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BankingSystem.API.Controllers
 {
+    /// <summary>
+    /// Controller for handling transactions
+    /// </summary>
     [ApiController]
+    [Route("[controller]")]
+    [Produces("application/json")]
     public class TransactionController : ControllerBase
     {
         private readonly TransactionServices _transactionServices;
         private readonly UserManager<Users> _userManager;
 
+        /// <summary>
+        /// Constructor for TransactionController
+        /// </summary>
+        /// <param name="transactionServices">Instance of TransactionServices</param>
+        /// <param name="userManager">Instance of UserManager</param>
         public TransactionController(TransactionServices transactionServices, UserManager<Users> userManager)
         {
             _transactionServices = transactionServices ?? throw new ArgumentOutOfRangeException(nameof(transactionServices));
-            _userManager= userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
 
-
-        [Route("api/transactions")]
+        /// <summary>
+        /// Gets all transactions associated with an account
+        /// </summary>
+        /// <param name="accountId">Id of the account</param>
+        /// <returns>List of transactions</returns>
+        /// <response code="200">Returns the transactions for the given account</response>
+        /// <response code="404">If no transactions are found</response>
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<Transaction>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Route("{accountId}")]
         public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactions(Guid accountId)
         {
             if (await _transactionServices.GetTransactionsOfAccountAsync(accountId) == null)
             {
                 var list = new List<Transaction>();
-                return list;
+                return NotFound(list);
             }
 
             return Ok(await _transactionServices.GetTransactionsOfAccountAsync(accountId));
         }
 
-        /*[Route("api/transactions/deposit")]
-        [HttpPost]
-        //[Authorize(Roles ="TellerPerson")]
-        [CustomAuthorize("TellerPerson")]
-        //[Authorize("TellerPersonPolicy")]
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] // Add this attribute
-
-        public async Task<ActionResult<Transaction>> DepositTransaction(DepositTransactionDTO transaction, Guid accountId, Guid tellerId)
-        {
-            var depositAccount = await _transactionServices.DepositTransactionAsync(transaction, accountId, tellerId);
-
-            return Ok(depositAccount);
-        }*/
-
-
-        [Route("api/transactions/deposit")]
+        /// <summary>
+        /// Deposits funds into an account
+        /// </summary>
+        /// <param name="transaction">Deposit transaction details</param>
+        /// <param name="accountNumber">Account number to be credited</param>
+        /// <returns>The deposit transaction</returns>
+        /// <response code="200">Returns the deposit transaction details</response>
         [HttpPost]
         [CustomAuthorize("TellerPerson")]
-        public async Task<ActionResult<Transaction>> TellerDepositTransaction(DepositTransactionDTO transaction, long accountNumber)
+        [ProducesResponseType(typeof(Transaction), StatusCodes.Status200OK)]
+        [Route("deposit")]
+        public async Task<ActionResult<Transaction>> DepositTransaction(DepositTransactionDTO transaction, long accountNumber)
         {
             // Get the user associated with the current HttpContext.User
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            var depositAccount = await _transactionServices.TellerDepositTransactionAsync(transaction, accountNumber, user.Id);
+            var depositAccount = await _transactionServices.DepositTransactionAsync(transaction, accountNumber, user.Id);
 
             return Ok(depositAccount);
         }
 
-        /*[Route("api/transactions/withdraw")]
-        [HttpPost]
-        //[Authorize(Roles = "AccountHolder")]
-        [CustomAuthorize("AccountHolder")]
-        public async Task<ActionResult<Transaction>> WithdrawTransaction(WithdrawTransactionDTO transaction, Guid accountId, int atmCardPin)
-        {
-            var withdrawAccount = await _transactionServices.WithdrawTransactionAsync(transaction, accountId, atmCardPin);
-
-            return Ok(withdrawAccount);
-        }*/
-
-        //[Route("api/transactions/selfWithdraw")]
-        [Route("api/transactions/withdraw")]
+        /// <summary>
+        /// Withdraws funds from an account
+        /// </summary>
+        /// <param name="transaction">Withdraw transaction details</param>
+        /// <param name="accountNumber">Account number to be debited</param>
+        /// <param name="atmCardPin">ATM card PIN for authentication</param>
+        /// <returns>The withdraw transaction</returns>
+        /// <response code="200">Returns the withdraw transaction details</response>
         [HttpPost]
         [CustomAuthorize("AccountHolder")]
-        public async Task<ActionResult<Transaction>> SelfWithdrawTransaction(WithdrawTransactionDTO transaction, long accountNumber, int atmCardPin)
+        [ProducesResponseType(typeof(Transaction), StatusCodes.Status200OK)]
+        [Route("withdraw")]
+        public async Task<ActionResult<Transaction>> WithdrawTransaction(WithdrawTransactionDTO transaction, long accountNumber, int atmCardPin)
         {
-            var withdrawAccount = await _transactionServices.SelfWithdrawTransactionAsync(transaction, accountNumber, atmCardPin);
+            var withdrawAccount = await _transactionServices.WithdrawTransactionAsync(transaction, accountNumber, atmCardPin);
 
             return Ok(withdrawAccount);
         }
     }
+
 }
