@@ -20,10 +20,11 @@ namespace BankingSystem.API.Data.Repository
         }
 
 
-        public async Task<IEnumerable<Transaction>> GetTransactionsOfAccountAsync(Guid accountId)
+        public async Task<IEnumerable<Transaction>> GetTransactionsOfAccountAsync(long accountNumber)
         {
+            var account = await _context.Account.Where(a => a.AccountNumber == accountNumber).FirstOrDefaultAsync();
             return await _context.Transactions
-                .Where(p => p.AccountId == accountId)
+                .Where(p => p.AccountId == account.AccountId)
                 .ToArrayAsync();
         }
 

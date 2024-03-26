@@ -5,7 +5,7 @@ namespace BankingSystem.API.Data.Repository.IRepository
 {
     public interface ITransactionRepository
     {
-        Task<IEnumerable<Transaction>> GetTransactionsOfAccountAsync(Guid accountId);
+        Task<IEnumerable<Transaction>> GetTransactionsOfAccountAsync(long accountNumber);
 
         Task DeleteTransaction(Guid accountId, Guid transactionId);
 

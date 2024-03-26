@@ -17,7 +17,7 @@ namespace BankingSystem.API.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository UserRepository;
-        private readonly AccountServices AccountServices;
+        private readonly IAccountService AccountServices;
 
         private readonly IMapper _mapper;
 
@@ -27,7 +27,7 @@ namespace BankingSystem.API.Services
 
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, AccountServices accountServices, UserManager<Users> userManager, SignInManager<Users> signInManager, IPasswordHasher<Users> passwordHasher, IHttpContextAccessor httpContextAccessor)
+        public UserService(IUserRepository userRepository, IMapper mapper, IAccountService accountServices, UserManager<Users> userManager, SignInManager<Users> signInManager, IPasswordHasher<Users> passwordHasher, IHttpContextAccessor httpContextAccessor)
         {
             UserRepository = userRepository ?? throw new ArgumentOutOfRangeException(nameof(userRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

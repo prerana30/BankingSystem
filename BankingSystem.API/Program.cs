@@ -53,19 +53,20 @@ builder.Services.AddHttpContextAccessor();
 
 //registering the service
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IKycRepository, KycRepository>();
-
 builder.Services.AddScoped<IUserService, UserService>();
 
+builder.Services.AddScoped<IKycRepository, KycRepository>();
+builder.Services.AddScoped<IKycService, KycService>();
+
 builder.Services.AddScoped<FileStorageHelper>();
-builder.Services.AddScoped<KycService>();
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-builder.Services.AddScoped<AccountServices>();
+builder.Services.AddScoped<IAccountService, AccountServices>();
+
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddScoped<ITransactionService, TransactionServices>();
 
 builder.Services.AddScoped<IEmailService,EmailService>();
-builder.Services.AddScoped<TransactionServices>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); //searches for all profiles automatically
 

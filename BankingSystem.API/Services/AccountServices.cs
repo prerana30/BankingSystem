@@ -76,7 +76,6 @@ namespace BankingSystem.API.Services
 
             var user = await UserRepository.GetUserAsync(account.UserId);
 
-
             var emailBody = EmailTemplates.EmailBodyForPinUpdate(account.AtmCardPin, user.Fullname);
             // Prepare email
             var email = new Email

@@ -47,7 +47,7 @@ namespace BankingSystem.Test.UnitTests
             .ReturnsAsync("Email sent successfully."); // Return a completed Task<string> with the desired message
 
 
-            var accountServicesMock = new Mock<AccountServices>(accountRepositoryMock.Object, emailServiceMock.Object, mapper1);
+            var accountServicesMock = new Mock<IAccountService>();
 
             var contextMock = new Mock<IHttpContextAccessor>();
 
@@ -132,7 +132,7 @@ namespace BankingSystem.Test.UnitTests
             .Setup(es => es.SendEmailAsync(It.IsAny<Email>()))
             .ReturnsAsync("Email sent successfully."); // Return a completed Task<string> with the desired message
 
-            var accountServicesMock = new Mock<AccountServices>(accountRepositoryMock.Object, emailServiceMock.Object, mapper1);
+            var accountServicesMock = new Mock<IAccountService>();
             var contextMock = new Mock<IHttpContextAccessor>();
 
             var userService = new UserService(userRepositoryMock.Object, mapperMock.Object, accountServicesMock.Object, userManagerMock.Object, signInManagerMock.Object, passwordHasherMock.Object, contextMock.Object);
@@ -184,7 +184,7 @@ namespace BankingSystem.Test.UnitTests
             .Setup(es => es.SendEmailAsync(It.IsAny<Email>()))
             .ReturnsAsync("Email sent successfully."); // Return a completed Task<string> with the desired message
 
-            var accountServicesMock = new Mock<AccountServices>(accountRepositoryMock.Object, emailServiceMock.Object, mapper1);
+            var accountServicesMock = new Mock<IAccountService>();
             var contextMock = new Mock<IHttpContextAccessor>();
 
             var userService = new UserService(userRepositoryMock.Object, mapper, accountServicesMock.Object, userManagerMock.Object, signInManagerMock.Object, passwordHasherMock.Object, contextMock.Object);
@@ -244,7 +244,7 @@ namespace BankingSystem.Test.UnitTests
             var signInManagerMock = MockSignInManager<Users>();
             var passwordHasherMock = new Mock<IPasswordHasher<Users>>();
             var emailServiceMock = new Mock<IEmailService>();
-            var accountServicesMock = new Mock<AccountServices>(accountRepositoryMock.Object, emailServiceMock.Object, mapperMock.Object);
+            var accountServicesMock = new Mock<IAccountService>();
 
             var contextMock = new Mock<IHttpContextAccessor>();
 
@@ -317,7 +317,7 @@ namespace BankingSystem.Test.UnitTests
             var signInManagerMock = MockSignInManager<Users>();
             var passwordHasherMock = new Mock<IPasswordHasher<Users>>();
             var emailServiceMock = new Mock<IEmailService>();
-            var accountServicesMock = new Mock<AccountServices>(accountRepositoryMock.Object, emailServiceMock.Object, mapper1);
+            var accountServicesMock = new Mock<IAccountService>();
             var contextMock = new Mock<IHttpContextAccessor>();
 
             var userService = new UserService(userRepositoryMock.Object, mapper, accountServicesMock.Object, userManagerMock.Object, signInManagerMock.Object, passwordHasherMock.Object, contextMock.Object);
@@ -375,7 +375,7 @@ namespace BankingSystem.Test.UnitTests
             var signInManagerMock = MockSignInManager<Users>();
             var passwordHasherMock = new Mock<IPasswordHasher<Users>>();
             var emailServiceMock = new Mock<IEmailService>();
-            var accountServicesMock = new Mock<AccountServices>(accountRepositoryMock.Object, emailServiceMock.Object, mapperMock.Object);
+            var accountServicesMock = new Mock<IAccountService>();
             var contextMock = new Mock<IHttpContextAccessor>();
 
             var userService = new UserService(userRepositoryMock.Object, mapper, accountServicesMock.Object, userManagerMock.Object, signInManagerMock.Object, passwordHasherMock.Object, contextMock.Object);

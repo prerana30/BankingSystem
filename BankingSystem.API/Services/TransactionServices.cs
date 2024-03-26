@@ -16,9 +16,9 @@ namespace BankingSystem.API.Services
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<IEnumerable<Transaction>> GetTransactionsOfAccountAsync(Guid accountId)
+        public async Task<IEnumerable<Transaction>> GetTransactionsOfAccountAsync(long accountNumber)
         {
-            return await _transactionRepository.GetTransactionsOfAccountAsync(accountId);
+            return await _transactionRepository.GetTransactionsOfAccountAsync(accountNumber);
         }
 
         public void DeleteTransaction(Guid accountId, Guid transactionId)

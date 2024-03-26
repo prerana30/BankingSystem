@@ -13,7 +13,7 @@ namespace BankingSystem.Test.UnitTests
         public async Task GetTransactionsOfAccountAsync_ReturnsTransactions()
         {
             // Arrange
-            var accountId = Guid.NewGuid();
+            var accountId = 112233445566;
             var expectedTransactions = new List<Transaction>
             {
                 new Transaction { AccountId = Guid.NewGuid(), Amount = 100, TransactionTime = DateTime.Now },

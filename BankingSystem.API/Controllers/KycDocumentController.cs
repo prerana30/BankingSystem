@@ -1,6 +1,6 @@
 ﻿using BankingSystem.API.DTOs;
 using BankingSystem.API.Entities;
-using BankingSystem.API.Services;
+using BankingSystem.API.Services.IServices;
 using BankingSystem.API.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,14 +14,14 @@ namespace BankingSystem.API.Controllers
     [Route("api/kycdocument")]
     public class KycDocumentController : ControllerBase
     {
-        private readonly KycService _kycService;
+        private readonly IKycService _kycService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="KycDocumentController"/> class.
         /// </summary>
         /// <param name="kycService">The service that handles KYC Documents.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="kycService"/> is null.</exception>
-        public KycDocumentController(KycService kycService)
+        public KycDocumentController(IKycService kycService)
         {
             _kycService = kycService ?? throw new ArgumentNullException(nameof(kycService));
         }
