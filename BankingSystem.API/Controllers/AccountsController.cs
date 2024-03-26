@@ -2,6 +2,7 @@
 using BankingSystem.API.Entities;
 using BankingSystem.API.Services;
 using BankingSystem.API.Services.IServices;
+using BankingSystem.API.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BankingSystem.API.Controllers
@@ -23,6 +24,7 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpGet]
+        [CustomAuthorize("TellerPerson")]
         public async Task<ActionResult<IEnumerable<Accounts>>> GetAccounts()
         {
             if (await accountServices.GetAccountsAsync() == null)
@@ -48,6 +50,7 @@ namespace BankingSystem.API.Controllers
        
 
         [HttpDelete("{accountId}")]
+        [CustomAuthorize("TellerPerson")]
         public ActionResult DeleteUser(Guid accountId)
         {
             accountServices.DeleteAccount(accountId);
@@ -55,6 +58,7 @@ namespace BankingSystem.API.Controllers
         }
 
         [HttpPut]
+        [CustomAuthorize("AccountHolder")]
         public async Task<ActionResult<Accounts>> UpdateAccounts(AccountUpdateDTO updateModel, string email)
         {
             var user = await userServices.GetUserByEmailAsync(email);
