@@ -14,8 +14,8 @@ namespace BankingSystem.API.Controllers
     [Route("api/accounts")]
     public class AccountsController : ControllerBase
     {
-        private readonly AccountServices accountServices;
-        private readonly UserService userServices;
+        private readonly IAccountService accountServices;
+        private readonly IUserService userServices;
         private readonly IEmailService emailService;
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace BankingSystem.API.Controllers
         /// <param name="accountServices">The account services.</param>
         /// <param name="userServices">The user services.</param>
         /// <param name="_emailService">The email service.</param>
-        public AccountsController(AccountServices accountServices, UserService userServices, IEmailService _emailService)
+        public AccountsController(IAccountService accountServices, IUserService userServices, IEmailService _emailService)
         {
             this.accountServices = accountServices ?? throw new ArgumentNullException(nameof(accountServices));
             this.userServices = userServices ?? throw new ArgumentNullException(nameof(userServices));
@@ -72,7 +72,7 @@ namespace BankingSystem.API.Controllers
         /// <returns>A NoContent response.</returns>
         [HttpDelete("{accountId}")]
         [CustomAuthorize("TellerPerson")]
-        public ActionResult DeleteUser(Guid accountId)
+        public ActionResult DeleteAccount(Guid accountId)
         {
             accountServices.DeleteAccount(accountId);
             return NoContent();

@@ -4,7 +4,6 @@ using BankingSystem.API.DTOs;
 using BankingSystem.API.Entities;
 using BankingSystem.API.Services.IServices;
 using BankingSystem.API.Utilities;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.IdentityModel.Tokens;
@@ -18,7 +17,7 @@ namespace BankingSystem.API.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository UserRepository;
-        private readonly AccountServices AccountServices;
+        private readonly IAccountService AccountServices;
 
         private readonly IMapper _mapper;
 
@@ -28,7 +27,7 @@ namespace BankingSystem.API.Services
 
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, AccountServices accountServices, UserManager<Users> userManager, SignInManager<Users> signInManager, IPasswordHasher<Users> passwordHasher, IHttpContextAccessor httpContextAccessor)
+        public UserService(IUserRepository userRepository, IMapper mapper, IAccountService accountServices, UserManager<Users> userManager, SignInManager<Users> signInManager, IPasswordHasher<Users> passwordHasher, IHttpContextAccessor httpContextAccessor)
         {
             UserRepository = userRepository ?? throw new ArgumentOutOfRangeException(nameof(userRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -66,22 +65,12 @@ namespace BankingSystem.API.Services
         public async Task<UserInfoDisplayDTO> RegisterUser(UserCreationDTO users)
         {
             var finalUser = _mapper.Map<Users>(users);
-
-            Guid userId;
             finalUser.PasswordHash = users.Password;
 
-            var tellerUserId= _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (Guid.TryParse(tellerUserId, out userId))
-            {
-                // tellerUserId is successfully parsed as a GUID
-                finalUser.CreatedBy = userId;
-            }
-            else
-            {
-                finalUser.CreatedBy = null;
-            }
-
             checkValidation(users);
+
+            var userId = GetCurrentUserId();
+            finalUser.CreatedBy = userId;
 
             var user = new Users()
             {
@@ -93,8 +82,6 @@ namespace BankingSystem.API.Services
                 DateOfBirth = finalUser.DateOfBirth,
                 CreatedBy= finalUser.CreatedBy,
                 CreatedAt = DateTime.UtcNow,
-                //ModifiedBy= null,
-                //ModifiedAt = DateTime.UtcNow,
 
                 SecurityStamp = Guid.NewGuid().ToString(),
                 EmailConfirmed = true,
@@ -184,45 +171,27 @@ namespace BankingSystem.API.Services
         public async Task<UserInfoDisplayDTO> UpdateUsersAsync(Guid Id, UserUpdateDTO users)
         {
             var finalUser = _mapper.Map<Users>(users);
-            finalUser.PasswordHash = users.Password;
 
             var existingUser = await GetUserAsync(Id);
-            // Check if the existing user is null
-            if (existingUser == null)
-            {
-                throw new Exception($"User with ID {Id} not found.");
-            }
-            //if password is not same as in the database; update it
-            if (!string.IsNullOrEmpty(finalUser.PasswordHash) && _passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash, users.Password) != PasswordVerificationResult.Success)
-            {
-                // Hash the new password
-                var newPasswordHash = _passwordHasher.HashPassword(existingUser, users.Password);
-                finalUser.PasswordHash = newPasswordHash;
-            }
+            ValidateExistingUser(existingUser, Id);
 
-            Guid userId;
-            var currentUserId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (Guid.TryParse(currentUserId, out userId))
-            {
-                // tellerUserId is successfully parsed as a GUID
-                existingUser.ModifiedBy = userId;
-            }
-            else
-            {
-                existingUser.ModifiedBy = null;
-            }
+            //user exists: add Id to the incoming changes for the user
+            finalUser.Id = Id;
 
-            var user = await UserRepository.UpdateUsersAsync(Id, finalUser);
+            var userId = GetCurrentUserId();
+            existingUser.ModifiedBy = userId;
+
+            var user = await UserRepository.UpdateUsersAsync(finalUser);
             return await AddRoleForDisplay(user);
         }
 
-        public async Task<UserInfoDisplayDTO> UpdateUserPasswordAsync(Guid Id, string password)
+        public async Task<UserInfoDisplayDTO> ResetUserPasswordAsync(string userName, string password)
         {
-            var existingUser = await GetUserAsync(Id);
+            var existingUser = await _userManager.FindByNameAsync(userName);
             // Check if the existing user is null
             if (existingUser == null)
             {
-                throw new Exception($"User with ID {Id} not found.");
+                throw new Exception($"User with username {userName} not found.");
             }
 
             //if password is not empty and not same as in the database; update it
@@ -232,20 +201,50 @@ namespace BankingSystem.API.Services
                 var newPasswordHash = _passwordHasher.HashPassword(existingUser, password);
                 existingUser.PasswordHash = newPasswordHash;
             }
+            var userId= GetCurrentUserId(); 
+            existingUser.ModifiedBy = userId;
+            
+            var user = await UserRepository.UpdatePasswordAsync(existingUser);
+            return await AddRoleForDisplay(user);
+        }
 
-            Guid userId;
-            var currentUserId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (Guid.TryParse(currentUserId, out userId))
+        private void ValidateExistingUser(Users? existingUser, Guid Id)
+        {
+            // Check if the existing user is null
+            if (existingUser == null)
             {
-                // tellerUserId is successfully parsed as a GUID
-                existingUser.ModifiedBy = userId;
+                throw new Exception($"User with ID {Id} not found.");
+            }
+        }
+
+        public async Task<UserInfoDisplayDTO> ChangePasswordAsync(Guid Id, string oldPassword, string newPassword)
+        {
+            var existingUser = await GetUserAsync(Id);
+            ValidateExistingUser(existingUser, Id);
+
+            //if password is not empty and oldPassword == database password
+            if (!string.IsNullOrEmpty(oldPassword) && !string.IsNullOrEmpty(newPassword) && _passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash, oldPassword) == PasswordVerificationResult.Success)
+            {
+                //if password is not empty and not same as in the database; update it
+                if (_passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash, newPassword) != PasswordVerificationResult.Success){
+                    // Hash the new password
+                    var newPasswordHash = _passwordHasher.HashPassword(existingUser, newPassword);
+                    existingUser.PasswordHash = newPasswordHash;
+                }
+                else
+                {
+                    throw new Exception($"New Password cannot be same as the old one.");
+                }
             }
             else
             {
-                existingUser.ModifiedBy = null;
+                throw new Exception($"Old Password is incorrect.");
             }
 
-            var user = await UserRepository.UpdatePasswordAsync(Id, existingUser);
+            var userId = GetCurrentUserId();
+            existingUser.ModifiedBy = userId;
+           
+            var user = await UserRepository.UpdatePasswordAsync(existingUser);
             return await AddRoleForDisplay(user);
         }
 
@@ -312,6 +311,18 @@ namespace BankingSystem.API.Services
             var userDTO = _mapper.Map<UserInfoDisplayDTO>(user);
             userDTO.UserType = userType;
             return userDTO;
+        }
+
+        public Guid? GetCurrentUserId()
+        {
+            Guid userId;
+            var currentUserId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (Guid.TryParse(currentUserId, out userId))
+            {
+                // currentUserId is successfully parsed as a GUID
+                return userId;
+            }
+            return null;
         }
 
     }

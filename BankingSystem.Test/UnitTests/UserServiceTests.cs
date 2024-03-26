@@ -47,7 +47,7 @@ namespace BankingSystem.Test.UnitTests
             .ReturnsAsync("Email sent successfully."); // Return a completed Task<string> with the desired message
 
 
-            var accountServicesMock = new Mock<AccountServices>(accountRepositoryMock.Object, emailServiceMock.Object, mapper1);
+            var accountServicesMock = new Mock<IAccountService>();
 
             var contextMock = new Mock<IHttpContextAccessor>();
 
@@ -132,7 +132,7 @@ namespace BankingSystem.Test.UnitTests
             .Setup(es => es.SendEmailAsync(It.IsAny<Email>()))
             .ReturnsAsync("Email sent successfully."); // Return a completed Task<string> with the desired message
 
-            var accountServicesMock = new Mock<AccountServices>(accountRepositoryMock.Object, emailServiceMock.Object, mapper1);
+            var accountServicesMock = new Mock<IAccountService>();
             var contextMock = new Mock<IHttpContextAccessor>();
 
             var userService = new UserService(userRepositoryMock.Object, mapperMock.Object, accountServicesMock.Object, userManagerMock.Object, signInManagerMock.Object, passwordHasherMock.Object, contextMock.Object);
@@ -184,7 +184,7 @@ namespace BankingSystem.Test.UnitTests
             .Setup(es => es.SendEmailAsync(It.IsAny<Email>()))
             .ReturnsAsync("Email sent successfully."); // Return a completed Task<string> with the desired message
 
-            var accountServicesMock = new Mock<AccountServices>(accountRepositoryMock.Object, emailServiceMock.Object, mapper1);
+            var accountServicesMock = new Mock<IAccountService>();
             var contextMock = new Mock<IHttpContextAccessor>();
 
             var userService = new UserService(userRepositoryMock.Object, mapper, accountServicesMock.Object, userManagerMock.Object, signInManagerMock.Object, passwordHasherMock.Object, contextMock.Object);
@@ -244,7 +244,7 @@ namespace BankingSystem.Test.UnitTests
             var signInManagerMock = MockSignInManager<Users>();
             var passwordHasherMock = new Mock<IPasswordHasher<Users>>();
             var emailServiceMock = new Mock<IEmailService>();
-            var accountServicesMock = new Mock<AccountServices>(accountRepositoryMock.Object, emailServiceMock.Object, mapperMock.Object);
+            var accountServicesMock = new Mock<IAccountService>();
 
             var contextMock = new Mock<IHttpContextAccessor>();
 
@@ -278,8 +278,7 @@ namespace BankingSystem.Test.UnitTests
                 UserName = "updatedUserName",
                 Fullname = "Updated FullName",
                 Address = "Updated Address",
-                Email = "updatedemail@gmail.com",
-                Password = "newPassword",
+                Email = "updatedemail@gmail.com"
                 // Assuming other properties are properly configured
             };
 
@@ -317,20 +316,16 @@ namespace BankingSystem.Test.UnitTests
             var signInManagerMock = MockSignInManager<Users>();
             var passwordHasherMock = new Mock<IPasswordHasher<Users>>();
             var emailServiceMock = new Mock<IEmailService>();
-            var accountServicesMock = new Mock<AccountServices>(accountRepositoryMock.Object, emailServiceMock.Object, mapper1);
+            var accountServicesMock = new Mock<IAccountService>();
             var contextMock = new Mock<IHttpContextAccessor>();
 
             var userService = new UserService(userRepositoryMock.Object, mapper, accountServicesMock.Object, userManagerMock.Object, signInManagerMock.Object, passwordHasherMock.Object, contextMock.Object);
-
-            // Set up password hasher to return Failed when passwords don't match
-            passwordHasherMock.Setup(ph => ph.VerifyHashedPassword(existingUser, existingUser.PasswordHash, userUpdateDTO.Password))
-                .Returns(PasswordVerificationResult.Failed);
 
             // Set up GetRolesAsync method
             userManagerMock.Setup(um => um.GetRolesAsync(It.IsAny<Users>())).ReturnsAsync(new List<string> { "AccountHolder", "TellerPerson" });
 
             // Setup UserRepository to return the updated user
-            userRepositoryMock.Setup(repo => repo.UpdateUsersAsync(Id, It.IsAny<Users>()))
+            userRepositoryMock.Setup(repo => repo.UpdateUsersAsync(It.IsAny<Users>()))
                 .ReturnsAsync(new Users { Id = Id, UserName = "updatedUserName", Fullname = "Updated FullName", Address = "Updated Address", Email = "updatedemail@gmail.com" });
 
             // Act
@@ -341,10 +336,6 @@ namespace BankingSystem.Test.UnitTests
             Assert.Equal(Id, result.Id);
             Assert.Equal("Updated FullName", result.Fullname);
             Assert.Equal("updatedUserName", result.UserName);
-
-            // Assert other properties as needed
-            // Verify that the password hasher's HashPassword method is called if passwords don't match
-            passwordHasherMock.Verify(ph => ph.HashPassword(existingUser, userUpdateDTO.Password), Times.Once);
         }
 
         [Fact]
@@ -375,7 +366,7 @@ namespace BankingSystem.Test.UnitTests
             var signInManagerMock = MockSignInManager<Users>();
             var passwordHasherMock = new Mock<IPasswordHasher<Users>>();
             var emailServiceMock = new Mock<IEmailService>();
-            var accountServicesMock = new Mock<AccountServices>(accountRepositoryMock.Object, emailServiceMock.Object, mapperMock.Object);
+            var accountServicesMock = new Mock<IAccountService>();
             var contextMock = new Mock<IHttpContextAccessor>();
 
             var userService = new UserService(userRepositoryMock.Object, mapper, accountServicesMock.Object, userManagerMock.Object, signInManagerMock.Object, passwordHasherMock.Object, contextMock.Object);
