@@ -53,6 +53,9 @@ namespace BankingSystem.API.Services
         {
             var transaction = _mapper.Map<Transaction>(transactionDto);
 
+            var depositTeller = _getLoggedinUser.GetCurrentUserId();
+            transaction.LoggedInTeller = depositTeller;
+
             var depositedTransaction = await _transactionRepository.DepositTransactionAsync(transaction, accountNumber, userId);
 
             if (depositedTransaction != null)
@@ -65,11 +68,7 @@ namespace BankingSystem.API.Services
                 var user = await UserRepository.GetUserAsync(account.UserId);
 
                 //get the email body string from Email Templates file
-                var emailBody = EmailTemplates.EmailBodyForTransactionDeposit(user.Fullname, transactionDto.Amount, transactionDto.TransactionRemarks, transactionDto.TransactionTime);
-            var depositTeller = _getLoggedinUser.GetCurrentUserId();
-            transaction.LoggedInTeller = depositTeller;
-
-            var emailBody = EmailTemplates.EmailBodyForTransactionDeposit(user.Fullname,transactionDto.Amount, transactionDto.TransactionRemarks, transaction.TransactionTime);
+                var emailBody = EmailTemplates.EmailBodyForTransactionDeposit(user.Fullname, transactionDto.Amount, transactionDto.TransactionRemarks, transaction.TransactionTime);
 
                 // Prepare email
                 var email = new Email
@@ -102,7 +101,7 @@ namespace BankingSystem.API.Services
                 var user = await UserRepository.GetUserAsync(account.UserId);
 
                 //get the email body string from Email Templates file
-                var emailBody = EmailTemplates.EmailBodyForTransactionDeposit(user.Fullname, withdrawDto.Amount, withdrawDto.TransactionRemarks, withdrawDto.TransactionTime);
+                var emailBody = EmailTemplates.EmailBodyForTransactionDeposit(user.Fullname, withdrawDto.Amount, withdrawDto.TransactionRemarks, transaction.TransactionTime);
 
                 // Prepare email
                 var email = new Email
