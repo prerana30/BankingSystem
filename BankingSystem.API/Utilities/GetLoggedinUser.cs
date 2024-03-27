@@ -10,7 +10,8 @@ namespace BankingSystem.API.Utilities
         {
             _httpContextAccessor = httpContextAccessor;
         }
-        public Guid? GetCurrentUserId()
+
+        public Guid GetCurrentUserId()
         {
             Guid userId;
             var currentUserId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -19,7 +20,7 @@ namespace BankingSystem.API.Utilities
                 // currentUserId is successfully parsed as a GUID
                 return userId;
             }
-            return null;
+            return Guid.Empty;
         }
     }
 }

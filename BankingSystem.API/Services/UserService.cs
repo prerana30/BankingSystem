@@ -25,7 +25,6 @@ namespace BankingSystem.API.Services
         private readonly SignInManager<Users> _signInManager;
         private readonly IPasswordHasher<Users> _passwordHasher;
 
-       // private readonly IHttpContextAccessor _httpContextAccessor;
        private readonly GetLoggedinUser _getLoggedinUser;
 
         public UserService(IUserRepository userRepository, IMapper mapper, IAccountService accountServices, UserManager<Users> userManager, SignInManager<Users> signInManager, IPasswordHasher<Users> passwordHasher, GetLoggedinUser getLoggedinUser)
@@ -108,7 +107,7 @@ namespace BankingSystem.API.Services
                 else
                 {
                     await _userManager.AddToRoleAsync(user, UserRoles.AccountHolder.ToString());
-                    await CreateUserAccount(users, user);
+                    await CreateUserAccount(user, userId);
                 }
                 return await AddRoleForDisplay(user);
             }
@@ -135,7 +134,7 @@ namespace BankingSystem.API.Services
             }
         }
 
-        private async Task CreateUserAccount(UserCreationDTO users, Users user)
+        private async Task CreateUserAccount(Users user, Guid userId)
         {
             var accountDTO = new Accounts
             {
@@ -146,7 +145,7 @@ namespace BankingSystem.API.Services
                 AtmCardPin = (int)RandomNumberGeneratorHelper.GenerateRandomNumber(3),
                 Balance = 0,
                 CreatedAt = DateTime.UtcNow,
-                CreatedBy = user.Id,
+                CreatedBy = userId,
                 ModifiedAt = null,
                 ModifiedBy = null,
             };
@@ -314,18 +313,6 @@ namespace BankingSystem.API.Services
             userDTO.UserType = userType;
             return userDTO;
         }
-
-        /*public Guid? GetCurrentUserId()
-        {
-            Guid userId;
-            var currentUserId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (Guid.TryParse(currentUserId, out userId))
-            {
-                // currentUserId is successfully parsed as a GUID
-                return userId;
-            }
-            return null;
-        }*/
 
     }
 }
