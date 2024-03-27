@@ -15,17 +15,17 @@ namespace BankingSystem.API.Services
         private readonly ITransactionRepository _transactionRepository;
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
-        private readonly IAccountRepository AccountRepository;
-        private readonly IUserRepository UserRepository;
+        private readonly IAccountService _accountService;
+        private readonly IUserService _userService;
         private readonly GetLoggedinUser _getLoggedinUser;
 
-        public TransactionServices(ITransactionRepository transactionRepository, IMapper mapper, IEmailService emailService, IUserRepository userRepository, IAccountRepository accountRepository, GetLoggedinUser getLoggedinUser)
+        public TransactionServices(ITransactionRepository transactionRepository, IMapper mapper, IEmailService emailService, IUserService userService, IAccountService accountService, GetLoggedinUser getLoggedinUser)
         {
             _transactionRepository = transactionRepository ?? throw new ArgumentOutOfRangeException(nameof(transactionRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
-            UserRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-            AccountRepository = accountRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _accountService = accountService ?? throw new ArgumentException(nameof(accountService));
             _getLoggedinUser = getLoggedinUser;
         }
 
@@ -62,10 +62,10 @@ namespace BankingSystem.API.Services
             {
 
                 //get the account object from accountNumber
-                var account = await AccountRepository.GetAccountByAccountNumberAsync(accountNumber);
+                var account = await _accountService.GetAccountByAccountNumberAsync(accountNumber);
 
                 //get the user object from userId in account object
-                var user = await UserRepository.GetUserAsync(account.UserId);
+                var user = await _userService.GetUserAsync(account.UserId);
 
                 //get the email body string from Email Templates file
                 var emailBody = EmailTemplates.EmailBodyForTransactionDeposit(user.Fullname, transactionDto.Amount, transactionDto.TransactionRemarks, transaction.TransactionTime);
@@ -95,10 +95,10 @@ namespace BankingSystem.API.Services
             {
 
                 //get the account object from accountNumber
-                var account = await AccountRepository.GetAccountByAccountNumberAsync(accountNumber);
+                var account = await _accountService.GetAccountByAccountNumberAsync(accountNumber);
 
                 //get the user object from userId in account object
-                var user = await UserRepository.GetUserAsync(account.UserId);
+                var user = await _userService.GetUserAsync(account.UserId);
 
                 //get the email body string from Email Templates file
                 var emailBody = EmailTemplates.EmailBodyForTransactionDeposit(user.Fullname, withdrawDto.Amount, withdrawDto.TransactionRemarks, transaction.TransactionTime);
