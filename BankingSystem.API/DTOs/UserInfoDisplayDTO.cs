@@ -15,7 +15,7 @@ namespace BankingSystem.API.DTOs
         public DateTime DateOfBirth { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
-
+        public string? JWTtoken { get; set; }
         public UserInfoDisplayDTO()
         {
 

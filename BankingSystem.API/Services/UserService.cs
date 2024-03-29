@@ -273,13 +273,10 @@ namespace BankingSystem.API.Services
                     var existingUser = await _userManager.FindByNameAsync(username);
                     var jwtToken = await GenerateJwtToken(existingUser); // Generate JWT token
                     var user = await AddRoleForDisplay(existingUser);// After generating the JWT token in your login method
+                    user.JWTtoken = jwtToken;
                     return user;
                 }
-                else
-                {
-                    // Handle failed login attempt
-                    throw new Exception("Invalid login attempt.");
-                }
+                return null;
             }
             catch (Exception e)
             {

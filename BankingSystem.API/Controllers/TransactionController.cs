@@ -2,6 +2,7 @@
 using BankingSystem.API.Entities;
 using BankingSystem.API.Services.IServices;
 using BankingSystem.API.Utilities.CustomAuthorizations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,7 +41,7 @@ namespace BankingSystem.API.Controllers
         [ProducesResponseType(typeof(IEnumerable<Transaction>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("{accountNumber}")]
-        [RequireLoggedIn]
+        //[RequireLoggedIn]
         public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactions(long accountNumber)
         {
             var transactions = await _transactionServices.GetTransactionsOfAccountAsync(accountNumber);
@@ -60,14 +61,14 @@ namespace BankingSystem.API.Controllers
         /// <returns>The deposit transaction</returns>
         /// <response code="200">Returns the deposit transaction details</response>
         [HttpPost]
-        [CustomAuthorize("TellerPerson")]
+        //[CustomAuthorize("TellerPerson")]
         [ProducesResponseType(typeof(Transaction), StatusCodes.Status200OK)]
         [Route("deposit")]
         public async Task<ActionResult<Transaction>> DepositTransaction(DepositTransactionDTO transaction, long accountNumber)
         {
             // Get the user associated with the current HttpContext.User
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            var depositAccount = await _transactionServices.DepositTransactionAsync(transaction, accountNumber, user.Id);
+            var depositAccount = await _transactionServices.DepositTransactionAsync(transaction, accountNumber);
 
             return Ok(depositAccount);
         }
@@ -81,7 +82,7 @@ namespace BankingSystem.API.Controllers
         /// <returns>The withdraw transaction</returns>
         /// <response code="200">Returns the withdraw transaction details</response>
         [HttpPost]
-        [CustomAuthorize("AccountHolder")]
+        //[CustomAuthorize("AccountHolder")]
         [ProducesResponseType(typeof(Transaction), StatusCodes.Status200OK)]
         [Route("withdraw")]
         public async Task<ActionResult<Transaction>> WithdrawTransaction(WithdrawTransactionDTO transaction, long accountNumber, int atmCardPin)
