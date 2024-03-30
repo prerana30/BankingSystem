@@ -271,9 +271,9 @@ namespace BankingSystem.API.Services
                 {
                     // User is successfully logged in, retrieve the user from the database
                     var existingUser = await _userManager.FindByNameAsync(username);
-                    var jwtToken = await GenerateJwtToken(existingUser); // Generate JWT token
+                    //var jwtToken = await GenerateJwtToken(existingUser); // Generate JWT token
                     var user = await AddRoleForDisplay(existingUser);// After generating the JWT token in your login method
-                    user.JWTtoken = jwtToken;
+                    //user.JWTtoken = jwtToken;
                     return user;
                 }
                 return null;

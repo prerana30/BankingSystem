@@ -67,6 +67,11 @@ namespace BankingSystem.API.Controllers
                 // return NotFound("Email or Password is incorrect.");
                 return StatusCode(400, "Email or Password is incorrect.");
             }
+            // Assuming user authentication is successful, create a session for the user
+            var sessionID = Guid.NewGuid().ToString();
+            user.sessionID = sessionID;
+            // Store the session ID in session state
+            HttpContext.Session.SetString("SessionID", sessionID);
             return Ok(user);
         }
 

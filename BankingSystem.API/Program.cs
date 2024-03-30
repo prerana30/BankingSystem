@@ -5,6 +5,7 @@ using BankingSystem.API.Entities;
 using BankingSystem.API.Services;
 using BankingSystem.API.Services.IServices;
 using BankingSystem.API.Utilities;
+using Community.Microsoft.Extensions.Caching.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -109,6 +110,23 @@ builder.Services.AddCors(options =>
                    .AllowAnyMethod();
         });
 });
+
+//builder.Services.AddMemoryCache();
+
+builder.Services.AddDistributedPostgreSqlCache(options =>
+{
+    options.ConnectionString = builder.Configuration.GetConnectionString("PostgreSqlCache");
+    options.SchemaName = "public";
+    options.TableName = "SessionData";
+});
+
+builder.Services.AddSession(options =>
+{
+    // Set session timeout
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    // Other session options can be configured here
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -117,9 +135,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-//app.UseAuthentication();
-//app.UseAuthorization();
+app.UseSession();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 app.UseCors("AllowSpecificOrigin");
