@@ -11,7 +11,7 @@ namespace BankingSystem.API.Controllers
     /// </summary>
     [ApiController]
     [Route("api/accounts")]
-    [RequireLoggedIn]
+    //[RequireLoggedIn]
     public class AccountsController : ControllerBase
     {
         private readonly IAccountService accountServices;
@@ -58,6 +58,22 @@ namespace BankingSystem.API.Controllers
         public async Task<ActionResult<Accounts>> GetAccountAsync(Guid id)
         {
             var account = await accountServices.GetAccountAsync(id);
+            if (account == null)
+            {
+                return NotFound();
+            }
+            return Ok(account);
+        }
+
+        /// <summary>
+        /// Gets an account by id.
+        /// </summary>
+        /// <param name="userId">The userId of the accountHolder.</param>
+        /// <returns>The <see cref="Accounts"/>.</returns>
+        [HttpGet("by{userId}")]
+        public async Task<ActionResult<Accounts>> GetAccountByUserIdAsync(Guid userId)
+        {
+            var account = await accountServices.GetAccountByUserIdAsync(userId);
             if (account == null)
             {
                 return NotFound();

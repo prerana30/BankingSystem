@@ -2,8 +2,11 @@ using BankingSystem.API.DTOs;
 using BankingSystem.API.Entities;
 using BankingSystem.API.Services.IServices;
 using BankingSystem.API.Utilities.CustomAuthorizations;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Security.Claims;
 
 namespace BankingSystem.API.Controllers
 {
@@ -11,11 +14,14 @@ namespace BankingSystem.API.Controllers
     [Route("api/users")]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService userService;
+        private readonly IUserService userService; 
+        private readonly IDistributedCache _cache;
 
-        public UsersController(IUserService UserService)
+
+        public UsersController(IUserService UserService, IDistributedCache cache)
         {
             userService = UserService ?? throw new ArgumentNullException(nameof(userService));
+            _cache = cache;
         }
 
         /// <summary>
@@ -67,13 +73,52 @@ namespace BankingSystem.API.Controllers
                 // return NotFound("Email or Password is incorrect.");
                 return StatusCode(400, "Email or Password is incorrect.");
             }
+
+            // Create ClaimsIdentity
+            var claimsIdentity = new ClaimsIdentity(user.claims, "login");
+
+            // Create ClaimsPrincipal
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+            // Set HttpContext User
+            HttpContext.User = claimsPrincipal;
+
             // Assuming user authentication is successful, create a session for the user
             var sessionID = Guid.NewGuid().ToString();
             user.sessionID = sessionID;
+
             // Store the session ID in session state
             HttpContext.Session.SetString("SessionID", sessionID);
+
             return Ok(user);
         }
+
+        [HttpPost("logout")]
+        public async Task<ActionResult> Logout()
+        {
+            try
+            {
+                await userService.Logout();
+
+                // Clear session cookies
+                HttpContext.Session.Clear();
+
+                // Invalidate cache entries for the user's session
+                string sessionId = HttpContext.Session.Id;
+                await _cache.RemoveAsync(sessionId);
+
+                // Optionally, you can clear any other cookies or data related to the user
+                // For example, you can remove user-specific data from local storage or cookies
+
+                return Ok("Logged out successfully");
+            }
+            catch (Exception ex)
+            {
+                // Log any errors and return an error response
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error occurred: {ex.Message}");
+            }
+        }
+
 
 
         /// <summary>

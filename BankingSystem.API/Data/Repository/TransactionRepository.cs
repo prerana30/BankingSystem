@@ -76,7 +76,7 @@ namespace BankingSystem.API.Data.Repository
                 throw new Exception($"KYC document not found for user ID {account.UserId}");
             }
 
-            /*var teller = await _context.SystemUser
+            var teller = await _context.SystemUser
                 .FirstOrDefaultAsync(c => c.Id == userId);
 
             if (teller is null)
@@ -90,7 +90,7 @@ namespace BankingSystem.API.Data.Repository
             if (!isTeller)
             {
                 throw new Exception($"Teller id {userId} is not a valid/available.");
-            }*/
+            }
 
             var isVerified = await IsVerifiedKycAsync(kycAccount.KYCId);
 

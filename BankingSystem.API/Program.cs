@@ -6,19 +6,16 @@ using BankingSystem.API.Services;
 using BankingSystem.API.Services.IServices;
 using BankingSystem.API.Utilities;
 using Community.Microsoft.Extensions.Caching.PostgreSql;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-//Register ApplicationDbContext
+// Register ApplicationDbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -26,9 +23,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-// Register the Swagger generator, defining 1 or more Swagger documents
+// Register the Swagger generator
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -44,9 +40,7 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath);
 });
 
-builder.Services.AddHttpContextAccessor();
-
-//registering the service
+// Registering the services
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
@@ -61,10 +55,15 @@ builder.Services.AddScoped<IAccountService, AccountServices>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<ITransactionService, TransactionServices>();
 
-builder.Services.AddScoped<IEmailService,EmailService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<GetLoggedinUser>();
 
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); //searches for all profiles automatically
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddLogging(loggingBuilder =>
+{
+    loggingBuilder.AddConsole();
+});
 
 builder.Services.AddIdentity<Users, IdentityRole<Guid>>(options =>
 {
@@ -78,27 +77,6 @@ builder.Services.AddIdentity<Users, IdentityRole<Guid>>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddLogging(loggingBuilder =>
-{
-    loggingBuilder.AddConsole(); // Configure logging to log to the console
-    // Add other logging providers as needed
-});
-
-// Configure JWT authentication
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = "your_issuer",
-            ValidAudience = "your_audience",
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("bootcamp-aloi-net-deploy-aws-secret-key"))
-        };
-    });
 
 builder.Services.AddCors(options =>
 {
@@ -107,12 +85,12 @@ builder.Services.AddCors(options =>
         {
             builder.WithOrigins("http://localhost:5173")
                    .AllowAnyHeader()
-                   .AllowAnyMethod();
+                   .AllowAnyMethod()
+                   .AllowCredentials(); // Allow credentials (cookies)
         });
 });
 
-//builder.Services.AddMemoryCache();
-
+// Configure PostgreSQL cache
 builder.Services.AddDistributedPostgreSqlCache(options =>
 {
     options.ConnectionString = builder.Configuration.GetConnectionString("PostgreSqlCache");
@@ -120,12 +98,16 @@ builder.Services.AddDistributedPostgreSqlCache(options =>
     options.TableName = "SessionData";
 });
 
+// Configure session services
 builder.Services.AddSession(options =>
 {
-    // Set session timeout
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
-    // Other session options can be configured here
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session expiry time
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
 });
+
+
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -135,23 +117,25 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseSession();
+
+app.UseCors("AllowSpecificOrigin");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseCors("AllowSpecificOrigin");
 
-// Seed data during application startup
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var dbContext = services.GetRequiredService<ApplicationDbContext>();
 
-    // Apply migrations (if needed)
+    // Apply migrations
     dbContext.Database.Migrate();
 
-    // Seed users and roles
+    // Seed data during application startup
     AppDBInitialize.SeedConstantsAsync(app).Wait();
 }
 

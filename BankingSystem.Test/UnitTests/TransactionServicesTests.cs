@@ -96,7 +96,7 @@ namespace BankingSystem.Test.UnitTests
                 accountRepositoryMock.Object, getLoggedInUserMock.Object);
 
             // Act
-            var result = await transactionServices.DepositTransactionAsync(depositTransactionDto, accountNumber);
+            var result = await transactionServices.DepositTransactionAsync(depositTransactionDto, accountNumber, Guid.NewGuid());
 
             // Assert
             Assert.NotNull(result);

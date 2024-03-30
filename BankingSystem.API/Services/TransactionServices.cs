@@ -49,14 +49,15 @@ namespace BankingSystem.API.Services
             return await _transactionRepository.IsVerifiedKycAsync(kycId);
         }
 
-        public async Task<Transaction> DepositTransactionAsync(DepositTransactionDTO transactionDto, long accountNumber)
+        public async Task<Transaction> DepositTransactionAsync(DepositTransactionDTO transactionDto, long accountNumber, Guid loggedInTeller)
         {
             var transaction = _mapper.Map<Transaction>(transactionDto);
 
-            var depositTeller = _getLoggedinUser.GetCurrentUserId();
-            transaction.LoggedInTeller = depositTeller;
+            //var depositTeller = _getLoggedinUser.GetCurrentUserId();
+            //transaction.LoggedInTeller = depositTeller;
+            transaction.LoggedInTeller = loggedInTeller;
 
-            var depositedTransaction = await _transactionRepository.DepositTransactionAsync(transaction, accountNumber, depositTeller);
+            var depositedTransaction = await _transactionRepository.DepositTransactionAsync(transaction, accountNumber, loggedInTeller);
 
             if (depositedTransaction != null)
             {

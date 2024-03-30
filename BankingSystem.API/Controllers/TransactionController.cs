@@ -12,7 +12,7 @@ namespace BankingSystem.API.Controllers
     /// Controller for handling transactions
     /// </summary>
     [ApiController]
-    [Route("[controller]")]
+    [Route("/api/transactions")]
     [Produces("application/json")]
     public class TransactionController : ControllerBase
     {
@@ -64,11 +64,16 @@ namespace BankingSystem.API.Controllers
         //[CustomAuthorize("TellerPerson")]
         [ProducesResponseType(typeof(Transaction), StatusCodes.Status200OK)]
         [Route("deposit")]
-        public async Task<ActionResult<Transaction>> DepositTransaction(DepositTransactionDTO transaction, long accountNumber)
+        public async Task<ActionResult<Transaction>> DepositTransaction(DepositTransactionDTO transaction, long accountNumber, Guid loggedInTeller)
         {
             // Get the user associated with the current HttpContext.User
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            var depositAccount = await _transactionServices.DepositTransactionAsync(transaction, accountNumber);
+            // In other endpoints
+            //var userId = HttpContext.Session.GetString("UserId"); // Retrieve user ID from session
+                                                                  // Example logging in backend code
+            var session = HttpContext.Session.GetString("SessionID");
+            var sessionId= HttpContext.Session.Id;
+            var depositAccount = await _transactionServices.DepositTransactionAsync(transaction, accountNumber, loggedInTeller);
 
             return Ok(depositAccount);
         }
