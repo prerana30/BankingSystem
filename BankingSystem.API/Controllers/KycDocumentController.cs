@@ -13,7 +13,7 @@ namespace BankingSystem.API.Controllers
     /// </summary>
     [ApiController]
     [Route("api/kycdocument")]
-    //[RequireLoggedIn]
+    [RequireLoggedIn]
     public class KycDocumentController : ControllerBase
     {
         private readonly IKycService _kycService;

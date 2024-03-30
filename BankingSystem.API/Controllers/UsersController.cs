@@ -2,10 +2,8 @@ using BankingSystem.API.DTOs;
 using BankingSystem.API.Entities;
 using BankingSystem.API.Services.IServices;
 using BankingSystem.API.Utilities.CustomAuthorizations;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Distributed;
 using System.Security.Claims;
 
 namespace BankingSystem.API.Controllers
@@ -14,14 +12,11 @@ namespace BankingSystem.API.Controllers
     [Route("api/users")]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService userService; 
-        private readonly IDistributedCache _cache;
+        private readonly IUserService userService;
 
-
-        public UsersController(IUserService UserService, IDistributedCache cache)
+        public UsersController(IUserService UserService)
         {
             userService = UserService ?? throw new ArgumentNullException(nameof(userService));
-            _cache = cache;
         }
 
         /// <summary>
@@ -29,7 +24,7 @@ namespace BankingSystem.API.Controllers
         /// </summary>
         /// <returns>A list of <see cref="Users"/>.</returns>
         [HttpGet]
-       // [CustomAuthorize("TellerPerson")]
+        [CustomAuthorize("TellerPerson")]
         public async Task<ActionResult<IEnumerable<Users>>> GetUsers()
         {
             var users = await userService.GetUsersAsync();
@@ -65,7 +60,7 @@ namespace BankingSystem.API.Controllers
         /// <param name="password">The user's password.</param>
         /// <returns>The logged in user.</returns>
         [HttpPost("login")]
-        public async Task<ActionResult<UserInfoDisplayDTO>> Login([FromBody]UserLoginDTO userlogin)
+        public async Task<ActionResult<UserInfoDisplayDTO>> Login([FromBody] UserLoginDTO userlogin)
         {
             var user = await userService.Login(userlogin.UserName, userlogin.Password);
             if (user == null)
@@ -73,23 +68,6 @@ namespace BankingSystem.API.Controllers
                 // return NotFound("Email or Password is incorrect.");
                 return StatusCode(400, "Email or Password is incorrect.");
             }
-
-            // Create ClaimsIdentity
-            var claimsIdentity = new ClaimsIdentity(user.claims, "login");
-
-            // Create ClaimsPrincipal
-            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-
-            // Set HttpContext User
-            HttpContext.User = claimsPrincipal;
-
-            // Assuming user authentication is successful, create a session for the user
-            var sessionID = Guid.NewGuid().ToString();
-            user.sessionID = sessionID;
-
-            // Store the session ID in session state
-            HttpContext.Session.SetString("SessionID", sessionID);
-
             return Ok(user);
         }
 
@@ -100,16 +78,11 @@ namespace BankingSystem.API.Controllers
             {
                 await userService.Logout();
 
-                // Clear session cookies
-                HttpContext.Session.Clear();
+                // Clear authentication cookies or tokens
+                //await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-                // Invalidate cache entries for the user's session
-                string sessionId = HttpContext.Session.Id;
-                await _cache.RemoveAsync(sessionId);
-
-                // Optionally, you can clear any other cookies or data related to the user
-                // For example, you can remove user-specific data from local storage or cookies
-
+                // Reset user identity
+                HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity());
                 return Ok("Logged out successfully");
             }
             catch (Exception ex)
@@ -118,8 +91,6 @@ namespace BankingSystem.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error occurred: {ex.Message}");
             }
         }
-
-
 
         /// <summary>
         /// Creates a new user using the given UserCreationDTO.

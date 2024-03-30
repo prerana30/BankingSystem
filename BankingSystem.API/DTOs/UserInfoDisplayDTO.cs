@@ -16,8 +16,7 @@ namespace BankingSystem.API.DTOs
         public DateTime DateOfBirth { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
-        public string? sessionID { get; set; }
-        public Claim[] claims { get; set; }
+        public string? token { get; set; }
         public UserInfoDisplayDTO()
         {
 

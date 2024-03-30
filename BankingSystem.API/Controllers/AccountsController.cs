@@ -11,7 +11,7 @@ namespace BankingSystem.API.Controllers
     /// </summary>
     [ApiController]
     [Route("api/accounts")]
-    //[RequireLoggedIn]
+    [RequireLoggedIn]
     public class AccountsController : ControllerBase
     {
         private readonly IAccountService accountServices;
@@ -37,7 +37,7 @@ namespace BankingSystem.API.Controllers
         /// </summary>
         /// <returns>A list of <see cref="Accounts"/>.</returns>
         [HttpGet]
-       // [CustomAuthorize("TellerPerson")]
+        [CustomAuthorize("TellerPerson")]
         public async Task<ActionResult<IEnumerable<Accounts>>> GetAccounts()
         {
             var accounts = await accountServices.GetAccountsAsync();

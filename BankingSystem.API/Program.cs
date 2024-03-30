@@ -5,11 +5,13 @@ using BankingSystem.API.Entities;
 using BankingSystem.API.Services;
 using BankingSystem.API.Services.IServices;
 using BankingSystem.API.Utilities;
-using Community.Microsoft.Extensions.Caching.PostgreSql;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -63,6 +65,8 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddLogging(loggingBuilder =>
 {
     loggingBuilder.AddConsole();
+    // Add debug logging
+    loggingBuilder.AddDebug();
 });
 
 builder.Services.AddIdentity<Users, IdentityRole<Guid>>(options =>
@@ -77,6 +81,21 @@ builder.Services.AddIdentity<Users, IdentityRole<Guid>>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+// Configure JWT authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "your_issuer",
+            ValidAudience = "your_audience",
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("bootcamp-aloi-net-deploy-aws-secret-key"))
+        };
+    });
 
 builder.Services.AddCors(options =>
 {
@@ -90,23 +109,6 @@ builder.Services.AddCors(options =>
         });
 });
 
-// Configure PostgreSQL cache
-builder.Services.AddDistributedPostgreSqlCache(options =>
-{
-    options.ConnectionString = builder.Configuration.GetConnectionString("PostgreSqlCache");
-    options.SchemaName = "public";
-    options.TableName = "SessionData";
-});
-
-// Configure session services
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session expiry time
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});
-
-
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
@@ -118,9 +120,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseSession();
-
 app.UseCors("AllowSpecificOrigin");
+app.UseMiddleware<JwtMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
