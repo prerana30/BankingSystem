@@ -104,9 +104,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigin",
         builder =>
         {
-            builder.WithOrigins("http://127.0.0.1:5173")
-                   .AllowAnyHeader()
-                   .AllowAnyMethod();
+            builder
+                .WithOrigins("*") // Allow requests from any origin
+                .AllowAnyHeader()
+                .AllowAnyMethod();
         });
 });
 var app = builder.Build();
@@ -117,12 +118,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors("AllowSpecificOrigin");
 //app.UseAuthentication();
 //app.UseAuthorization();
 
 app.MapControllers();
-app.UseCors("AllowSpecificOrigin");
+
 
 // Seed data during application startup
 using (var scope = app.Services.CreateScope())
