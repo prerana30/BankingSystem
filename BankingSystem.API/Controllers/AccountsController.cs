@@ -11,7 +11,7 @@ namespace BankingSystem.API.Controllers
     /// </summary>
     [ApiController]
     [Route("api/accounts")]
-    [RequireLoggedIn]
+    //[RequireLoggedIn]
     public class AccountsController : ControllerBase
     {
         private readonly IAccountService accountServices;
@@ -71,7 +71,7 @@ namespace BankingSystem.API.Controllers
         /// <param name="accountId">The id of the account.</param>
         /// <returns>A NoContent response.</returns>
         [HttpDelete("{accountId}")]
-        [CustomAuthorize("TellerPerson")]
+        //[CustomAuthorize("TellerPerson")]
         public ActionResult DeleteAccount(Guid accountId)
         {
             accountServices.DeleteAccount(accountId);
@@ -85,7 +85,7 @@ namespace BankingSystem.API.Controllers
         /// <param name="email">The email of the user.</param>
         /// <returns>The updated <see cref="Accounts"/>.</returns>
         [HttpPut]
-        [CustomAuthorize("AccountHolder")]
+        //[CustomAuthorize("AccountHolder")]
         public async Task<ActionResult<Accounts>> UpdateAccounts(AccountUpdateDTO updateModel, string email)
         {
             var user = await userServices.GetUserByEmailAsync(email);
