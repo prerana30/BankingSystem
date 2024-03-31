@@ -11,7 +11,7 @@ namespace BankingSystem.API.Controllers
     /// Controller for handling transactions
     /// </summary>
     [ApiController]
-    [Route("[controller]")]
+    [Route("/api/transactions")]
     [Produces("application/json")]
     public class TransactionController : ControllerBase
     {
@@ -64,11 +64,9 @@ namespace BankingSystem.API.Controllers
         [ProducesResponseType(typeof(Transaction), StatusCodes.Status200OK)]
         [Route("deposit")]
         public async Task<ActionResult<Transaction>> DepositTransaction(DepositTransactionDTO transaction, long accountNumber)
-        {
-            // Get the user associated with the current HttpContext.User
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            var depositAccount = await _transactionServices.DepositTransactionAsync(transaction, accountNumber, user.Id);
-
+        {          
+            var depositAccount = await _transactionServices.DepositTransactionAsync(transaction, accountNumber);
+            
             return Ok(depositAccount);
         }
 

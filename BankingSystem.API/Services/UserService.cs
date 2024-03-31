@@ -25,7 +25,7 @@ namespace BankingSystem.API.Services
         private readonly SignInManager<Users> _signInManager;
         private readonly IPasswordHasher<Users> _passwordHasher;
 
-       private readonly GetLoggedinUser _getLoggedinUser;
+        private readonly GetLoggedinUser _getLoggedinUser;
 
         public UserService(IUserRepository userRepository, IMapper mapper, IAccountService accountServices, UserManager<Users> userManager, SignInManager<Users> signInManager, IPasswordHasher<Users> passwordHasher, GetLoggedinUser getLoggedinUser)
         {
@@ -81,7 +81,7 @@ namespace BankingSystem.API.Services
                 PhoneNumber = finalUser.PhoneNumber,
                 Address = finalUser.Address,
                 DateOfBirth = finalUser.DateOfBirth,
-                CreatedBy= finalUser.CreatedBy,
+                CreatedBy = finalUser.CreatedBy,
                 CreatedAt = DateTime.UtcNow,
 
                 SecurityStamp = Guid.NewGuid().ToString(),
@@ -214,9 +214,9 @@ namespace BankingSystem.API.Services
                 var newPasswordHash = _passwordHasher.HashPassword(existingUser, password);
                 existingUser.PasswordHash = newPasswordHash;
             }
-            var userId= _getLoggedinUser.GetCurrentUserId(); 
+            var userId = _getLoggedinUser.GetCurrentUserId();
             existingUser.ModifiedBy = userId;
-            
+
             var user = await UserRepository.UpdatePasswordAsync(existingUser);
             return await AddRoleForDisplay(user);
         }
@@ -239,7 +239,8 @@ namespace BankingSystem.API.Services
             if (!string.IsNullOrEmpty(oldPassword) && !string.IsNullOrEmpty(newPassword) && _passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash, oldPassword) == PasswordVerificationResult.Success)
             {
                 //if password is not empty and not same as in the database; update it
-                if (_passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash, newPassword) != PasswordVerificationResult.Success){
+                if (_passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash, newPassword) != PasswordVerificationResult.Success)
+                {
                     // Hash the new password
                     var newPasswordHash = _passwordHasher.HashPassword(existingUser, newPassword);
                     existingUser.PasswordHash = newPasswordHash;
@@ -256,7 +257,7 @@ namespace BankingSystem.API.Services
 
             var userId = _getLoggedinUser.GetCurrentUserId();
             existingUser.ModifiedBy = userId;
-           
+
             var user = await UserRepository.UpdatePasswordAsync(existingUser);
             return await AddRoleForDisplay(user);
         }
@@ -271,15 +272,14 @@ namespace BankingSystem.API.Services
                 {
                     // User is successfully logged in, retrieve the user from the database
                     var existingUser = await _userManager.FindByNameAsync(username);
-                    var jwtToken = await GenerateJwtToken(existingUser); // Generate JWT token
                     var user = await AddRoleForDisplay(existingUser);// After generating the JWT token in your login method
+
+                    var jwtToken = await GenerateJwtToken(user); // Generate JWT token
+                    user.token = jwtToken;
+
                     return user;
                 }
-                else
-                {
-                    // Handle failed login attempt
-                    throw new Exception("Invalid login attempt.");
-                }
+                return null;
             }
             catch (Exception e)
             {
@@ -289,19 +289,22 @@ namespace BankingSystem.API.Services
             }
         }
 
-        private async Task<string> GenerateJwtToken(Users user)
+        public async Task Logout()
+        {
+            // Sign out the user
+            await _signInManager.SignOutAsync();
+        }
+
+        private async Task<string> GenerateJwtToken(UserInfoDisplayDTO user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("bootcamp-aloi-net-deploy-aws-secret-key"));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var roles = await _userManager.GetRolesAsync(user);
-            var userType = roles.FirstOrDefault(); // Assuming a user can have only one role
 
             var claims = new[]
             {
                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // Convert user.Id to string
                new Claim(ClaimTypes.Name, user.UserName),
-               new Claim(ClaimTypes.Role, userType)
+               new Claim(ClaimTypes.Role, user.UserType)
             // Add additional claims as needed (e.g., roles)
         };
 

@@ -4,6 +4,7 @@ using BankingSystem.API.Services.IServices;
 using BankingSystem.API.Utilities.CustomAuthorizations;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BankingSystem.API.Controllers
 {
@@ -59,9 +60,9 @@ namespace BankingSystem.API.Controllers
         /// <param name="password">The user's password.</param>
         /// <returns>The logged in user.</returns>
         [HttpPost("login")]
-        public async Task<ActionResult<UserInfoDisplayDTO>> Login(string username, string password)
+        public async Task<ActionResult<UserInfoDisplayDTO>> Login([FromBody] UserLoginDTO userlogin)
         {
-            var user = await userService.Login(username, password);
+            var user = await userService.Login(userlogin.UserName, userlogin.Password);
             if (user == null)
             {
                 // return NotFound("Email or Password is incorrect.");
@@ -70,6 +71,26 @@ namespace BankingSystem.API.Controllers
             return Ok(user);
         }
 
+        [HttpPost("logout")]
+        public async Task<ActionResult> Logout()
+        {
+            try
+            {
+                await userService.Logout();
+
+                // Clear authentication cookies or tokens
+                //await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+                // Reset user identity
+                HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity());
+                return Ok("Logged out successfully");
+            }
+            catch (Exception ex)
+            {
+                // Log any errors and return an error response
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error occurred: {ex.Message}");
+            }
+        }
 
         /// <summary>
         /// Creates a new user using the given UserCreationDTO.
