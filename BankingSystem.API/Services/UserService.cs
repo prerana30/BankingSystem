@@ -195,6 +195,16 @@ namespace BankingSystem.API.Services
             existingUser.ModifiedBy = userId;
 
             var user = await UserRepository.UpdateUsersAsync(finalUser);
+
+            // Update the user's username for authentication
+            var token = await _userManager.GenerateChangeEmailTokenAsync(existingUser, user.UserName);
+            var result = await _userManager.ChangeEmailAsync(existingUser, user.UserName, token);
+            if (!result.Succeeded)
+            {
+                // Handle the error, e.g., log or throw exception
+                throw new Exception("UserManager could not be updated with new username.");
+
+            }
             return await AddRoleForDisplay(user);
         }
 
@@ -207,14 +217,14 @@ namespace BankingSystem.API.Services
                 throw new Exception($"User with username {userName} not found.");
             }
 
-            //if password is not empty and not same as in the database; update it
-            if (!string.IsNullOrEmpty(password) && _passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash, password) != PasswordVerificationResult.Success)
+            var token = await _userManager.GeneratePasswordResetTokenAsync(existingUser);
+            var result = await _userManager.ResetPasswordAsync(existingUser, token, password);
+            if (!result.Succeeded)
             {
-                // Hash the new password
-                var newPasswordHash = _passwordHasher.HashPassword(existingUser, password);
-                existingUser.PasswordHash = newPasswordHash;
+                throw new Exception($"Failed to reset password for user {userName}.");
             }
-            var userId= _getLoggedinUser.GetCurrentUserId(); 
+
+            var userId = _getLoggedinUser.GetCurrentUserId();
             existingUser.ModifiedBy = userId;
             
             var user = await UserRepository.UpdatePasswordAsync(existingUser);
@@ -235,23 +245,23 @@ namespace BankingSystem.API.Services
             var existingUser = await GetUserAsync(Id);
             ValidateExistingUser(existingUser, Id);
 
-            //if password is not empty and oldPassword == database password
-            if (!string.IsNullOrEmpty(oldPassword) && !string.IsNullOrEmpty(newPassword) && _passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash, oldPassword) == PasswordVerificationResult.Success)
-            {
-                //if password is not empty and not same as in the database; update it
-                if (_passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash, newPassword) != PasswordVerificationResult.Success){
-                    // Hash the new password
-                    var newPasswordHash = _passwordHasher.HashPassword(existingUser, newPassword);
-                    existingUser.PasswordHash = newPasswordHash;
-                }
-                else
-                {
-                    throw new Exception($"New Password cannot be same as the old one.");
-                }
-            }
-            else
+            // Validate old password
+            var passwordValid = await _userManager.CheckPasswordAsync(existingUser, oldPassword);
+            if (!passwordValid)
             {
                 throw new Exception($"Old Password is incorrect.");
+            }
+
+            if(oldPassword== newPassword)
+            {
+                throw new Exception($"New Password cannot be same as the old one.");
+            }
+
+            // Change password
+            var result = await _userManager.ChangePasswordAsync(existingUser, oldPassword, newPassword);
+            if (!result.Succeeded)
+            {
+                throw new Exception($"Failed to change password for user with ID {Id}.");
             }
 
             var userId = _getLoggedinUser.GetCurrentUserId();
