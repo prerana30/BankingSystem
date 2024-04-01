@@ -37,16 +37,16 @@ namespace BankingSystem.API.Controllers
         /// <response code="200">Returns the transactions for the given account</response>
         /// <response code="404">If no transactions are found</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<Transaction>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<TransactionDisplayDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("{accountNumber}")]
         [RequireLoggedIn]
-        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactions(long accountNumber)
+        public async Task<ActionResult<IEnumerable<TransactionDisplayDTO>>> GetTransactions(long accountNumber)
         {
             var transactions = await _transactionServices.GetTransactionsOfAccountAsync(accountNumber);
             if (transactions == null)
             {
-                var list = new List<Transaction>();
+                var list = new List<TransactionDisplayDTO>();
                 return NotFound(list);
             }
             return Ok(transactions);
