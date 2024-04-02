@@ -48,7 +48,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<IKycRepository, KycRepository>();
 builder.Services.AddScoped<IKycService, KycService>();
-
+builder.Services.AddScoped<IFileUploadService,FileUploadService>();
 builder.Services.AddScoped<FileStorageHelper>();
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
