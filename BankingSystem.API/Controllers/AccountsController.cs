@@ -102,24 +102,16 @@ namespace BankingSystem.API.Controllers
         /// <returns>The updated <see cref="Accounts"/>.</returns>
         [HttpPut]
         //[CustomAuthorize("AccountHolder")]
-        public async Task<ActionResult<Accounts>> UpdateAccounts(AccountUpdateDTO updateModel, string email)
+        public async Task<ActionResult<Accounts>> UpdateAccounts(AccountUpdateDTO updateModel, long accountNumber)
         {
-            var user = await userServices.GetUserByEmailAsync(email);
+            var accountUpdate = await accountServices.GetAccountByAccountNumberAsync(accountNumber);
 
-            if (user == null)
+            if (accountUpdate == null)
             {
-                return NotFound("User not found");
+                return NotFound("Account not found");
             }
 
-            var userId = user.Id;
-
-            var checkAccount = await accountServices.GetAccountByUserIdAsync(userId);
-            if (checkAccount == null)
-            {
-                return NotFound("User account does not exist");
-            }
-
-            var accountId = checkAccount.AccountId;
+            var accountId = accountUpdate.AccountId;
 
             var newAccount = await accountServices.UpdateAccountsAsync(accountId, updateModel);
             if (newAccount == null)
